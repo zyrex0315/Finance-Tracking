@@ -92,7 +92,7 @@ export default function Header({ activePage, setActivePage }) {
         
         <div className="h-9 w-9 rounded-full overflow-hidden flex items-center justify-center">
           <img
-            src="/118238820.jpg"
+            src="/Finance-Tracking/118238820.jpg"
             alt="User Avatar"
             className="h-full w-full object-cover"
           />
