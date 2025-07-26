@@ -203,3 +203,32 @@ export const calculateMonthlyExpenses = () => {
   });
   return Math.round(expenses * 100) / 100;
 };
+
+export const calculatePreviousMonthlyIncome = () => {
+  const now = new Date();
+  const prevMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const prevMonthStr = format(prevMonth, 'yyyy-MM');
+  let income = 0;
+  transactions.forEach((tx) => {
+    if (tx.isIncome && tx.date.startsWith(prevMonthStr)) income += tx.amount;
+  });
+  return Math.round(income * 100) / 100;
+};
+
+export const calculatePreviousMonthlyExpenses = () => {
+  const now = new Date();
+  const prevMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const prevMonthStr = format(prevMonth, 'yyyy-MM');
+  let expenses = 0;
+  transactions.forEach((tx) => {
+    if (!tx.isIncome && tx.date.startsWith(prevMonthStr)) expenses += tx.amount;
+  });
+  return Math.round(expenses * 100) / 100;
+};
+
+export const calculatePreviousMonthlySaving = () => {
+  // Saving = income - expenses
+  return (
+    calculatePreviousMonthlyIncome() - calculatePreviousMonthlyExpenses()
+  );
+};
