@@ -1,21 +1,43 @@
-import React, { useEffect, useState } from 'react';
-import { Bell, Menu, Search, Sun, Moon, X } from 'lucide-react';
+import React, { useState } from 'react';
+import { Menu, X } from 'lucide-react';
 import { calculateTotalBalance } from '../data/mockData.js';
+import { useLocation, Link } from 'react-router-dom';
 
-export default function Header({ activePage, setActivePage }) {
+export default function Header() {
   const balance = calculateTotalBalance();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const location = useLocation();
 
- 
-  
+  const getPageTitle = () => {
+    switch (location.pathname) {
+      case '/':
+        return 'Dashboard';
+      case '/transactions':
+        return 'Transactions';
+      case '/reports':
+        return 'Reports';
+      case '/budget':
+        return 'Budget';
+      default:
+        return 'Dashboard';
+    }
+  };
+
+  const menuItems = [
+    { name: 'Dashboard', path: '/' },
+    { name: 'Transactions', path: '/transactions' },
+    { name: 'Reports', path: '/reports' },
+    { name: 'Budget', path: '/budget' },
+  ];
+
   return (
     <>
       {/* Mobile Sidebar */}
       {sidebarOpen && (
         <div className="fixed inset-0 z-40 flex sm:hidden">
-          
+
           <div className="fixed inset-0 bg-black bg-opacity-30" onClick={() => setSidebarOpen(false)}></div>
-         
+
           <div className="relative w-64 bg-white dark:bg-gray-900 h-full shadow-lg z-50 flex flex-col p-6">
             <button
               className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
@@ -25,10 +47,19 @@ export default function Header({ activePage, setActivePage }) {
               <X size={24} className="text-gray-500 dark:text-gray-400" />
             </button>
             <nav className="mt-10 space-y-4">
-              <button onClick={() => { setActivePage('Dashboard'); setSidebarOpen(false); }} className={`block text-left w-full text-lg font-medium px-0 py-2 rounded ${activePage === 'Dashboard' ? 'text-indigo-600' : 'text-gray-800 dark:text-gray-100'} hover:text-indigo-600`}>Dashboard</button>
-              {/* <button onClick={() => { setActivePage('Transactions'); setSidebarOpen(false); }} className={`block text-left w-full text-lg font-medium px-0 py-2 rounded ${activePage === 'Transactions' ? 'text-indigo-600' : 'text-gray-800 dark:text-gray-100'} hover:text-indigo-600`}>Transactions</button>
-              <button onClick={() => { setActivePage('Budget'); setSidebarOpen(false); }} className={`block text-left w-full text-lg font-medium px-0 py-2 rounded ${activePage === 'Budget' ? 'text-indigo-600' : 'text-gray-800 dark:text-gray-100'} hover:text-indigo-600`}>Budget</button>
-              <button onClick={() => { setActivePage('Reports'); setSidebarOpen(false); }} className={`block text-left w-full text-lg font-medium px-0 py-2 rounded ${activePage === 'Reports' ? 'text-indigo-600' : 'text-gray-800 dark:text-gray-100'} hover:text-indigo-600`}>Reports</button> */}
+              {menuItems.map((item) => (
+                <Link
+                  key={item.name}
+                  to={item.path}
+                  onClick={() => setSidebarOpen(false)}
+                  className={`block text-left w-full text-lg font-medium px-0 py-2 rounded ${location.pathname === item.path
+                      ? 'text-indigo-600'
+                      : 'text-gray-800 dark:text-gray-100'
+                    } hover:text-indigo-600`}
+                >
+                  {item.name}
+                </Link>
+              ))}
             </nav>
           </div>
         </div>
@@ -41,7 +72,7 @@ export default function Header({ activePage, setActivePage }) {
           >
             <Menu size={24} />
           </button>
-          <h2 className="text-xl font-bold text-gray-800">{activePage}</h2>
+          <h2 className="text-xl font-bold text-gray-800">{getPageTitle()}</h2>
         </div>
         <div className="flex items-center space-x-4">
           {/* Remove theme toggle button */}

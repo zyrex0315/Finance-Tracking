@@ -1,10 +1,9 @@
 import React from 'react';
-import { getRecentTransactions } from '../data/mockData.js';
 import { Activity, ArrowDown, ArrowRight, ArrowUp, BookOpen, Car, CircleDollarSign, Coffee, Film, House, Plane, ShoppingBag, Zap } from 'lucide-react';
 
-export default function RecentTransactions() {
-  const transactions = getRecentTransactions();
-  
+export default function RecentTransactions({ transactions = [] }) {
+  const recentTransactions = transactions.slice(0, 5);
+
   const getCategoryIcon = (category) => {
     switch (category) {
       case 'Food & Dining':
@@ -32,12 +31,12 @@ export default function RecentTransactions() {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      month: 'short', 
-      day: 'numeric' 
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric'
     });
   };
-  
+
   return (
     <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
       <div className="p-5 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
@@ -47,7 +46,7 @@ export default function RecentTransactions() {
           <ArrowRight size={14} className="ml-1" />
         </button>
       </div>
-      
+
       <div className="overflow-x-auto">
         <table className="w-full whitespace-nowrap">
           <thead className="bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-xs font-medium">
@@ -59,8 +58,8 @@ export default function RecentTransactions() {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-            {transactions.map((transaction) => (
-              <tr 
+            {recentTransactions.map((transaction) => (
+              <tr
                 key={transaction.id}
                 className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer"
               >

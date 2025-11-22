@@ -1,22 +1,38 @@
 import React from 'react';
-import { 
-  calculateTotalBalance, 
-  calculateMonthlyIncome, 
-  calculateMonthlyExpenses,
-  calculatePreviousMonthlyIncome,
-  calculatePreviousMonthlyExpenses,
-  calculatePreviousMonthlySaving
-} from '../data/mockData.js';
 import { ArrowDownRight, ArrowUpRight, ArrowRight, Banknote, Wallet, PiggyBank } from 'lucide-react';
+import { format, subMonths, startOfMonth, endOfMonth, isWithinInterval } from 'date-fns';
 
-export default function DashboardSummary() {
-  const totalBalance = calculateTotalBalance();
-  const monthlyIncome = calculateMonthlyIncome();
-  const monthlyExpenses = calculateMonthlyExpenses();
-  const previousIncome = calculatePreviousMonthlyIncome();
-  const previousExpenses = calculatePreviousMonthlyExpenses();
-  const monthlySaving = monthlyIncome - monthlyExpenses;
-  const previousSaving = calculatePreviousMonthlySaving();
+export default function DashboardSummary({ transactions = [] }) {
+  // Helper to filter transactions by month offset (0 = current, 1 = previous)
+  const getTransactionsByMonth = (offset) => {
+    const date = subMonths(new Date(), offset);
+    const start = startOfMonth(date);
+    const end = endOfMonth(date);
+
+    return transactions.filter(t =>
+      isWithinInterval(new Date(t.date), { start, end })
+    );
+  };
+
+  const currentMonthTransactions = getTransactionsByMonth(0);
+  const previousMonthTransactions = getTransactionsByMonth(1);
+
+  const calculateStats = (txs) => {
+    const income = txs.filter(t => t.isIncome).reduce((sum, t) => sum + t.amount, 0);
+    const expenses = txs.filter(t => !t.isIncome).reduce((sum, t) => sum + t.amount, 0);
+    return { income, expenses, saving: income - expenses };
+  };
+
+  const currentStats = calculateStats(currentMonthTransactions);
+  const previousStats = calculateStats(previousMonthTransactions);
+
+  const monthlyIncome = currentStats.income;
+  const monthlyExpenses = currentStats.expenses;
+  const monthlySaving = currentStats.saving;
+
+  const previousIncome = previousStats.income;
+  const previousExpenses = previousStats.expenses;
+  const previousSaving = previousStats.saving;
 
   // Calculate percentage changes
   const getPercentageChange = (current, previous) => {
@@ -33,8 +49,8 @@ export default function DashboardSummary() {
     if (change < 0) return <ArrowDownRight className="text-red-500" size={18} />;
     return <ArrowRight className="text-gray-400" size={18} />;
   };
-  
-  
+
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
       {/* Total Income Card */}

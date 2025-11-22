@@ -1,15 +1,31 @@
 import React, { useState } from 'react';
-import { getTransactions } from '../data/mockData.js';
-import { Activity, ArrowDown, ArrowUp, BookOpen, Calendar, Car, CircleDollarSign, Coffee, Download, Film, Filter, House, Plane, Plus, Search, ShoppingBag, Zap } from 'lucide-react';
+import { fetchTransactions } from '../data/api.js';
 
 export default function Transactions() {
-  const allTransactions = getTransactions();
-  const [transactions, setTransactions] = useState(allTransactions.slice(0, 10));
+  const [allTransactions, setAllTransactions] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [dateRange, setDateRange] = useState({ from: '', to: '' });
-  
+
+  useEffect(() => {
+    const loadTransactions = async () => {
+      try {
+        const data = await fetchTransactions();
+        setAllTransactions(data);
+        setTransactions(data.slice(0, 10));
+      } catch (error) {
+        console.error('Error fetching transactions:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadTransactions();
+  }, []);
+
   const categories = [
     'Food & Dining',
     'Shopping',
@@ -22,7 +38,7 @@ export default function Transactions() {
     'Education',
     'Other'
   ];
-  
+
   const getCategoryIcon = (category) => {
     switch (category) {
       case 'Food & Dining':
@@ -47,33 +63,33 @@ export default function Transactions() {
         return <CircleDollarSign size={16} />;
     }
   };
-  
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
     });
   };
-  
+
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
-    
+
     if (e.target.value === '') {
       setTransactions(allTransactions.slice(0, 10));
       return;
     }
-    
+
     const filteredTransactions = allTransactions.filter(
-      transaction => 
+      transaction =>
         transaction.description.toLowerCase().includes(e.target.value.toLowerCase()) ||
         transaction.category.toLowerCase().includes(e.target.value.toLowerCase())
     );
-    
+
     setTransactions(filteredTransactions.slice(0, 10));
   };
-  
+
   const toggleCategoryFilter = (category) => {
     if (selectedCategories.includes(category)) {
       setSelectedCategories(selectedCategories.filter(cat => cat !== category));
@@ -81,43 +97,43 @@ export default function Transactions() {
       setSelectedCategories([...selectedCategories, category]);
     }
   };
-  
+
   const applyFilters = () => {
     let filtered = allTransactions;
-    
+
     // Apply category filter
     if (selectedCategories.length > 0) {
-      filtered = filtered.filter(transaction => 
+      filtered = filtered.filter(transaction =>
         selectedCategories.includes(transaction.category)
       );
     }
-    
+
     // Apply date range filter
     if (dateRange.from) {
-      filtered = filtered.filter(transaction => 
+      filtered = filtered.filter(transaction =>
         new Date(transaction.date) >= new Date(dateRange.from)
       );
     }
-    
+
     if (dateRange.to) {
-      filtered = filtered.filter(transaction => 
+      filtered = filtered.filter(transaction =>
         new Date(transaction.date) <= new Date(dateRange.to)
       );
     }
-    
+
     // Apply search term
     if (searchTerm) {
       filtered = filtered.filter(
-        transaction => 
+        transaction =>
           transaction.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
           transaction.category.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
-    
+
     setTransactions(filtered.slice(0, 10));
     setShowFilters(false);
   };
-  
+
   const resetFilters = () => {
     setSelectedCategories([]);
     setDateRange({ from: '', to: '' });
@@ -125,11 +141,11 @@ export default function Transactions() {
     setTransactions(allTransactions.slice(0, 10));
     setShowFilters(false);
   };
-  
+
   const loadMore = () => {
     setTransactions(prev => [...prev, ...allTransactions.slice(prev.length, prev.length + 10)]);
   };
-  
+
   return (
     <div className="p-4 sm:p-6 bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 min-h-screen">
       <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -137,7 +153,7 @@ export default function Transactions() {
           <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">Transactions</h2>
           <p className="text-sm text-gray-500 dark:text-gray-400">View and manage your expenses and income</p>
         </div>
-        
+
         <div className="flex flex-wrap gap-2">
 
           <button className="px-3 sm:px-4 py-2 text-sm font-medium rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 dark:bg-indigo-700 dark:hover:bg-indigo-800 transition-colors flex items-center gap-2">
@@ -146,7 +162,7 @@ export default function Transactions() {
           </button>
         </div>
       </div>
-      
+
       <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
         <div className="p-4 border-b border-gray-100 dark:border-gray-700 flex flex-col sm:flex-row gap-3 justify-between">
           <div className="relative w-full sm:w-64">
@@ -157,14 +173,14 @@ export default function Transactions() {
               onChange={handleSearch}
               className="pl-10 pr-4 py-2 w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
             />
-            <Search 
-              size={16} 
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" 
+            <Search
+              size={16}
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500"
             />
           </div>
-          
+
           <div className="flex gap-2">
-            <button 
+            <button
               onClick={() => setShowFilters(!showFilters)}
               className="px-3 sm:px-4 py-2 text-sm font-medium rounded-lg border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center gap-2"
             >
@@ -176,14 +192,14 @@ export default function Transactions() {
                 </span>
               )}
             </button>
-            
+
             <button className="px-3 sm:px-4 py-2 text-sm font-medium rounded-lg border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center gap-2">
               <Calendar size={16} className="hidden sm:inline" />
               This Month
             </button>
           </div>
         </div>
-        
+
         {showFilters && (
           <div className="p-4 bg-gray-50 dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
             <div className="mb-4">
@@ -194,8 +210,8 @@ export default function Transactions() {
                     key={category}
                     onClick={() => toggleCategoryFilter(category)}
                     className={`px-3 py-1.5 text-xs font-medium rounded-full flex items-center gap-1.5
-                      ${selectedCategories.includes(category) 
-                        ? 'bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-700' 
+                      ${selectedCategories.includes(category)
+                        ? 'bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-700'
                         : 'bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700'
                       } border transition-colors`}
                   >
@@ -205,7 +221,7 @@ export default function Transactions() {
                 ))}
               </div>
             </div>
-            
+
             <div className="mb-4">
               <h4 className="font-medium text-gray-700 dark:text-gray-200 mb-2">Date Range</h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -229,7 +245,7 @@ export default function Transactions() {
                 </div>
               </div>
             </div>
-            
+
             <div className="flex justify-end gap-2">
               <button
                 onClick={resetFilters}
@@ -246,7 +262,7 @@ export default function Transactions() {
             </div>
           </div>
         )}
-        
+
         <div className="overflow-x-auto">
           <table className="w-full whitespace-nowrap">
             <thead className="bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-xs font-medium">
@@ -259,8 +275,8 @@ export default function Transactions() {
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
               {transactions.map((transaction) => (
-                <tr 
-                  key={transaction.id} 
+                <tr
+                  key={transaction.id}
                   className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer"
                 >
                   <td className="py-3 px-4">
@@ -294,10 +310,10 @@ export default function Transactions() {
             </tbody>
           </table>
         </div>
-        
+
         {transactions.length < allTransactions.length && (
           <div className="p-4 border-t border-gray-100 dark:border-gray-700">
-            <button 
+            <button
               onClick={loadMore}
               className="w-full py-2 bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             >
