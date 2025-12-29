@@ -1,5 +1,5 @@
 {
-  "name": "finance-management",
+  "name": "finance-tracker",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -7,26 +7,29 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "preview": "vite preview"
   },
   "dependencies": {
-    "date-fns": "^4.1.0",
-    "lucide-react": "^0.510.0",
-    "mongodb-memory-server": "^11.0.1",
-    "nanoid": "^5.1.5",
-    "react": "19.0.0",
-    "react-dom": "19.0.0",
-    "react-router-dom": "^7.9.6",
-    "recharts": "^3.1.0"
+    "clsx": "^2.1.0",
+    "lucide-react": "^0.344.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.22.3",
+    "recharts": "^2.12.2",
+    "tailwind-merge": "^2.2.1",
+    "zustand": "^4.5.2"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.6.0",
-    "autoprefixer": "^10.4.13",
-    "gh-pages": "^6.0.0",
-    "postcss": "^8.4.21",
-    "tailwindcss": "^3.3.2",
-    "vite": "^7.0.4"
+    "@types/react": "^18.2.64",
+    "@types/react-dom": "^18.2.21",
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.18",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.34.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "postcss": "^8.4.35",
+    "tailwindcss": "^3.4.1",
+    "vite": "^5.1.5"
   }
 }

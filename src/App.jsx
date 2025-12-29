@@ -1,35 +1,28 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
-import PrivateRoute from './components/PrivateRoute';
-import Layout from './components/Layout';
-import Login from './pages/Login';
-import Register from './pages/Register';
+import MainLayout from './layouts/MainLayout';
 import Dashboard from './pages/Dashboard';
 import Transactions from './pages/Transactions';
-import Reports from './pages/Reports';
-import Budget from './pages/Budget';
+import Budgets from './pages/Budgets';
+import Analytics from './pages/Analytics';
+import Settings from './pages/Settings';
 
-export default function App() {
-  return (
-    <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+function App() {
+    return (
+        <Router>
+            <Routes>
+                <Route path="/" element={<MainLayout />}>
+                    <Route index element={<Dashboard />} />
+                    <Route path="transactions" element={<Transactions />} />
+                    <Route path="budgets" element={<Budgets />} />
+                    <Route path="analytics" element={<Analytics />} />
+                    <Route path="settings" element={<Settings />} />
 
-          <Route element={<PrivateRoute />}>
-            <Route element={<Layout />}>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/transactions" element={<Transactions />} />
-              <Route path="/reports" element={<Reports />} />
-              <Route path="/budget" element={<Budget />} />
-            </Route>
-          </Route>
-
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Router>
-    </AuthProvider>
-  );
+                    {/* Fallback to Dashboard */}
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                </Route>
+            </Routes>
+        </Router>
+    );
 }
+
+export default App;
