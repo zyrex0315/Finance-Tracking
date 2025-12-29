@@ -1,0 +1,112 @@
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Mail, Lock, AlertCircle, ArrowRight } from 'lucide-react';
+import useAuthStore from '../context/authStore';
+
+const Login = () => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const { login, error } = useAuthStore();
+    const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+        try {
+            await login(email, password);
+            navigate('/');
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-xl">
+                <div>
+                    <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                        Welcome back
+                    </h2>
+                    <p className="mt-2 text-center text-sm text-gray-600">
+                        Enter your details to access your finance tracker
+                    </p>
+                </div>
+                <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+                    {error && (
+                        <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg flex items-center gap-2 text-sm">
+                            <AlertCircle size={16} />
+                            {error}
+                        </div>
+                    )}
+                    <div className="rounded-md shadow-sm space-y-4">
+                        <div className="relative">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <Mail className="h-5 w-5 text-gray-400" />
+                            </div>
+                            <input
+                                id="email-address"
+                                name="email"
+                                type="email"
+                                autoComplete="email"
+                                required
+                                className="appearance-none rounded-lg relative block w-full pl-10 px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm transition-colors"
+                                placeholder="Email address"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                        </div>
+                        <div className="relative">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <Lock className="h-5 w-5 text-gray-400" />
+                            </div>
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                autoComplete="current-password"
+                                required
+                                className="appearance-none rounded-lg relative block w-full pl-10 px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm transition-colors"
+                                placeholder="Password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                        </div>
+                    </div>
+
+                    <div>
+                        <button
+                            type="submit"
+                            disabled={isLoading}
+                            className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                        >
+                            {isLoading ? (
+                                <span className="absolute left-0 inset-y-0 flex items-center pl-3">
+                                    <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                </span>
+                            ) : (
+                                <span className="absolute left-0 inset-y-0 flex items-center pl-3">
+                                    <ArrowRight className="h-5 w-5 text-white group-hover:translate-x-1 transition-transform" />
+                                </span>
+                            )}
+                            Sign in
+                        </button>
+                    </div>
+
+                    <div className="text-center mt-4">
+                        <p className="text-sm text-gray-600">
+                            Don't have an account?{' '}
+                            <Link to="/signup" className="font-medium text-primary-600 hover:text-primary-500 hover:underline">
+                                Sign up now
+                            </Link>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+};
+
+export default Login;
