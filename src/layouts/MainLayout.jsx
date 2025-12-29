@@ -18,7 +18,7 @@ const MainLayout = () => {
     };
 
     return (
-        <div className="flex min-h-screen bg-gray-50 font-sans text-gray-900">
+        <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900 font-sans text-gray-900 dark:text-gray-100 transition-colors duration-200">
             <Sidebar />
             <div className="flex-1 md:ml-64 flex flex-col min-h-screen">
                 <Navbar title={getPageTitle(location.pathname)} />

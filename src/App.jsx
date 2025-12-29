@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import useAuthStore from './context/authStore';
+import useThemeStore from './context/themeStore';
 
 import MainLayout from './layouts/MainLayout';
 import Dashboard from './pages/Dashboard';
@@ -14,11 +15,13 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
     const { initializeAuth } = useAuthStore();
+    const { initializeTheme } = useThemeStore();
 
     useEffect(() => {
         const unsubscribe = initializeAuth();
+        initializeTheme();
         return () => unsubscribe();
-    }, [initializeAuth]);
+    }, [initializeAuth, initializeTheme]);
 
     return (
         <Router>
