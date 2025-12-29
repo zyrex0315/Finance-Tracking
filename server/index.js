@@ -2,7 +2,8 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import Transaction from './models/Transaction.js';
+import authRoutes from './routes/auth.js';
+import transactionRoutes from './routes/transactions.js';
 
 dotenv.config();
 
@@ -21,33 +22,8 @@ mongoose.connect(MONGODB_URI)
     .catch(err => console.error('MongoDB connection error:', err));
 
 // Routes
-app.get('/api/transactions', async (req, res) => {
-    try {
-        const transactions = await Transaction.find().sort({ date: -1 });
-        res.json(transactions);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-});
-
-app.post('/api/transactions', async (req, res) => {
-    try {
-        const newTransaction = new Transaction(req.body);
-        const savedTransaction = await newTransaction.save();
-        res.status(201).json(savedTransaction);
-    } catch (error) {
-        res.status(400).json({ message: error.message });
-    }
-});
-
-app.delete('/api/transactions/:id', async (req, res) => {
-    try {
-        await Transaction.findByIdAndDelete(req.params.id);
-        res.json({ message: 'Transaction deleted' });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-});
+app.use('/api/auth', authRoutes);
+app.use('/api/transactions', transactionRoutes);
 
 // Start Server
 app.listen(PORT, () => {
