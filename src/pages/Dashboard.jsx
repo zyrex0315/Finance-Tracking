@@ -12,10 +12,12 @@ export default function Dashboard() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const data = await fetchTransactions();
-        setTransactions(data);
+        // Fetch enough transactions for charts and summary (last ~200 should suffice for now)
+        const data = await fetchTransactions({ limit: 200 });
+        setTransactions(data.transactions || []);
       } catch (error) {
         console.error('Error loading dashboard data:', error);
+        setTransactions([]);
       } finally {
         setLoading(false);
       }

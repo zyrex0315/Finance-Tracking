@@ -27,8 +27,16 @@ export const loginUser = async (credentials) => {
     return data;
 };
 
-export const fetchTransactions = async () => {
-    const response = await fetch(`${API_URL}/transactions`, {
+export const fetchTransactions = async (params = {}) => {
+    const searchParams = new URLSearchParams();
+    if (params.page) searchParams.append('page', params.page);
+    if (params.limit) searchParams.append('limit', params.limit);
+    if (params.search) searchParams.append('search', params.search);
+    if (params.category) searchParams.append('category', params.category);
+    if (params.startDate) searchParams.append('startDate', params.startDate);
+    if (params.endDate) searchParams.append('endDate', params.endDate);
+
+    const response = await fetch(`${API_URL}/transactions?${searchParams.toString()}`, {
         headers: getAuthHeaders()
     });
     if (!response.ok) {

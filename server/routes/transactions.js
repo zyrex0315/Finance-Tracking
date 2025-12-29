@@ -4,11 +4,45 @@ import { auth } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// Get all transactions for the logged-in user
+// Get all transactions with pagination and filtering
 router.get('/', auth, async (req, res) => {
     try {
-        const transactions = await Transaction.find({ user: req.user.id }).sort({ date: -1 });
-        res.json(transactions);
+        const { page = 1, limit = 10, search, category, startDate, endDate } = req.query;
+        const query = { user: req.user.id };
+
+        // Search Filter
+        if (search) {
+            query.$or = [
+                { description: { $regex: search, $options: 'i' } },
+                { category: { $regex: search, $options: 'i' } }
+            ];
+        }
+
+        // Category Filter
+        if (category) {
+            query.category = category;
+        }
+
+        // Date Range Filter
+        if (startDate || endDate) {
+            query.date = {};
+            if (startDate) query.date.$gte = new Date(startDate);
+            if (endDate) query.date.$lte = new Date(endDate);
+        }
+
+        const transactions = await Transaction.find(query)
+            .sort({ date: -1 })
+            .limit(limit * 1)
+            .skip((page - 1) * limit);
+
+        const count = await Transaction.countDocuments(query);
+
+        res.json({
+            transactions,
+            totalPages: Math.ceil(count / limit),
+            currentPage: Number(page),
+            totalTransactions: count
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

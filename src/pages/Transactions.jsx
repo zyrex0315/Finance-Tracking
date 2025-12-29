@@ -1,66 +1,87 @@
-import React, { useState } from 'react';
-import { fetchTransactions } from '../data/api.js';
+import React, { useState, useEffect, useCallback } from 'react';
+import {
+  Search, Filter, Plus, Calendar,
+  ArrowUp, ArrowDown,
+  Coffee, ShoppingBag, House, Car, Film, Activity, Plane, Zap, BookOpen, CircleDollarSign, Loader2
+} from 'lucide-react';
+import { fetchTransactions, addTransaction } from '../data/api.js';
 
 export default function Transactions() {
-  const [allTransactions, setAllTransactions] = useState([]);
   const [transactions, setTransactions] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [dateRange, setDateRange] = useState({ from: '', to: '' });
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const loadTransactions = async () => {
-      try {
-        const data = await fetchTransactions();
-        setAllTransactions(data);
-        setTransactions(data.slice(0, 10));
-      } catch (error) {
-        console.error('Error fetching transactions:', error);
-      } finally {
-        setLoading(false);
+  const loadTransactions = useCallback(async (reset = false) => {
+    if (loading) return;
+    setLoading(true);
+    setError(null);
+
+    try {
+      const currentPage = reset ? 1 : page;
+      const params = {
+        page: currentPage,
+        limit: 10,
+        search: searchTerm,
+        category: selectedCategories.length > 0 ? selectedCategories[0] : undefined, // Backend currently supports single category filter, or we need to update backend to support array. Let's stick to single or first for now or update backend later.
+        startDate: dateRange.from,
+        endDate: dateRange.to
+      };
+
+      const data = await fetchTransactions(params);
+
+      if (reset) {
+        setTransactions(data.transactions);
+        setPage(2); // Next page will be 2
+      } else {
+        setTransactions(prev => [...prev, ...data.transactions]);
+        setPage(prev => prev + 1);
       }
-    };
 
-    loadTransactions();
+      setHasMore(data.currentPage < data.totalPages);
+    } catch (err) {
+      setError('Failed to load transactions');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }, [page, searchTerm, selectedCategories, dateRange, loading]);
+
+  // Initial load
+  useEffect(() => {
+    loadTransactions(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Search Debounce could be added here, currently triggers on Enter or explicit button, 
+  // but to keep it simple let's trigger on Enter or blur for search? 
+  // Or just rely on the 'Apply Filters' / 'Search' logic.
+  // Converting search to live search with server might be heavy without debounce.
+  // For now, let's make Search trigger only on Enter or when "Apply Filters" happens.
+
   const categories = [
-    'Food & Dining',
-    'Shopping',
-    'Housing',
-    'Transportation',
-    'Entertainment',
-    'Healthcare',
-    'Travel',
-    'Utilities',
-    'Education',
-    'Other'
+    'Food & Dining', 'Shopping', 'Housing', 'Transportation',
+    'Entertainment', 'Healthcare', 'Travel', 'Utilities',
+    'Education', 'Other'
   ];
 
   const getCategoryIcon = (category) => {
     switch (category) {
-      case 'Food & Dining':
-        return <Coffee size={16} />;
-      case 'Shopping':
-        return <ShoppingBag size={16} />;
-      case 'Housing':
-        return <House size={16} />;
-      case 'Transportation':
-        return <Car size={16} />;
-      case 'Entertainment':
-        return <Film size={16} />;
-      case 'Healthcare':
-        return <Activity size={16} />;
-      case 'Travel':
-        return <Plane size={16} />;
-      case 'Utilities':
-        return <Zap size={16} />;
-      case 'Education':
-        return <BookOpen size={16} />;
-      default:
-        return <CircleDollarSign size={16} />;
+      case 'Food & Dining': return <Coffee size={16} />;
+      case 'Shopping': return <ShoppingBag size={16} />;
+      case 'Housing': return <House size={16} />;
+      case 'Transportation': return <Car size={16} />;
+      case 'Entertainment': return <Film size={16} />;
+      case 'Healthcare': return <Activity size={16} />;
+      case 'Travel': return <Plane size={16} />;
+      case 'Utilities': return <Zap size={16} />;
+      case 'Education': return <BookOpen size={16} />;
+      default: return <CircleDollarSign size={16} />;
     }
   };
 
@@ -75,62 +96,27 @@ export default function Transactions() {
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
+  };
 
-    if (e.target.value === '') {
-      setTransactions(allTransactions.slice(0, 10));
-      return;
+  const handleSearchSubmit = (e) => {
+    if (e.key === 'Enter') {
+      loadTransactions(true);
     }
-
-    const filteredTransactions = allTransactions.filter(
-      transaction =>
-        transaction.description.toLowerCase().includes(e.target.value.toLowerCase()) ||
-        transaction.category.toLowerCase().includes(e.target.value.toLowerCase())
-    );
-
-    setTransactions(filteredTransactions.slice(0, 10));
   };
 
   const toggleCategoryFilter = (category) => {
+    // For now, simple single select or toggle. 
+    // Backend example supported single 'category' param.
+    // Let's implement single select behavior to match backend simplicity for now.
     if (selectedCategories.includes(category)) {
-      setSelectedCategories(selectedCategories.filter(cat => cat !== category));
+      setSelectedCategories([]);
     } else {
-      setSelectedCategories([...selectedCategories, category]);
+      setSelectedCategories([category]);
     }
   };
 
   const applyFilters = () => {
-    let filtered = allTransactions;
-
-    // Apply category filter
-    if (selectedCategories.length > 0) {
-      filtered = filtered.filter(transaction =>
-        selectedCategories.includes(transaction.category)
-      );
-    }
-
-    // Apply date range filter
-    if (dateRange.from) {
-      filtered = filtered.filter(transaction =>
-        new Date(transaction.date) >= new Date(dateRange.from)
-      );
-    }
-
-    if (dateRange.to) {
-      filtered = filtered.filter(transaction =>
-        new Date(transaction.date) <= new Date(dateRange.to)
-      );
-    }
-
-    // Apply search term
-    if (searchTerm) {
-      filtered = filtered.filter(
-        transaction =>
-          transaction.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          transaction.category.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    setTransactions(filtered.slice(0, 10));
+    loadTransactions(true);
     setShowFilters(false);
   };
 
@@ -138,12 +124,23 @@ export default function Transactions() {
     setSelectedCategories([]);
     setDateRange({ from: '', to: '' });
     setSearchTerm('');
-    setTransactions(allTransactions.slice(0, 10));
-    setShowFilters(false);
+    // We need to trigger reload after cleaning state. 
+    // State updates are async, so we can't call loadTransactions immediately with new state.
+    // A clearer way:
+    // setStates... then useEffect triggers? No, that causes double fetches.
+    // We can pass empty params explicitly.
+    // But simplest is to just reset state and let user click 'Apply' or auto-trigger? 
+    // Let's auto trigger.
+
+    // Hacky but works for now:
+    setSearchTerm('');
+    setSelectedCategories([]);
+    setDateRange({ from: '', to: '' });
+    setTimeout(() => loadTransactions(true), 0);
   };
 
-  const loadMore = () => {
-    setTransactions(prev => [...prev, ...allTransactions.slice(prev.length, prev.length + 10)]);
+  const handleLoadMore = () => {
+    loadTransactions(false);
   };
 
   return (
@@ -155,7 +152,7 @@ export default function Transactions() {
         </div>
 
         <div className="flex flex-wrap gap-2">
-
+          {/* Add Transaction Logic TODO */}
           <button className="px-3 sm:px-4 py-2 text-sm font-medium rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 dark:bg-indigo-700 dark:hover:bg-indigo-800 transition-colors flex items-center gap-2">
             <Plus size={16} />
             Add Transaction
@@ -171,6 +168,7 @@ export default function Transactions() {
               placeholder="Search transactions..."
               value={searchTerm}
               onChange={handleSearch}
+              onKeyDown={handleSearchSubmit}
               className="pl-10 pr-4 py-2 w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
             />
             <Search
@@ -191,11 +189,6 @@ export default function Transactions() {
                   {selectedCategories.length}
                 </span>
               )}
-            </button>
-
-            <button className="px-3 sm:px-4 py-2 text-sm font-medium rounded-lg border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center gap-2">
-              <Calendar size={16} className="hidden sm:inline" />
-              This Month
             </button>
           </div>
         </div>
@@ -263,6 +256,21 @@ export default function Transactions() {
           </div>
         )}
 
+        {/* Error State */}
+        {error && (
+          <div className="p-4 text-center text-red-600 bg-red-50 dark:bg-red-900/20">
+            {error}
+            <button onClick={() => loadTransactions(true)} className="ml-2 underline hover:text-red-800">Retry</button>
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!loading && transactions.length === 0 && !error && (
+          <div className="p-8 text-center text-gray-500 dark:text-gray-400">
+            <p>No transactions found.</p>
+          </div>
+        )}
+
         <div className="overflow-x-auto">
           <table className="w-full whitespace-nowrap">
             <thead className="bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-xs font-medium">
@@ -276,7 +284,7 @@ export default function Transactions() {
             <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
               {transactions.map((transaction) => (
                 <tr
-                  key={transaction.id}
+                  key={transaction._id || transaction.id} // MongoDB uses _id
                   className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer"
                 >
                   <td className="py-3 px-4">
@@ -311,16 +319,23 @@ export default function Transactions() {
           </table>
         </div>
 
-        {transactions.length < allTransactions.length && (
-          <div className="p-4 border-t border-gray-100 dark:border-gray-700">
+        {/* Load More / Loading State */}
+        <div className="p-4 border-t border-gray-100 dark:border-gray-700">
+          {loading ? (
+            <div className="flex justify-center py-2">
+              <Loader2 className="animate-spin text-indigo-600" size={24} />
+            </div>
+          ) : hasMore ? (
             <button
-              onClick={loadMore}
+              onClick={handleLoadMore}
               className="w-full py-2 bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             >
               Load More
             </button>
-          </div>
-        )}
+          ) : transactions.length > 0 && (
+            <p className="text-center text-sm text-gray-500">No more transactions</p>
+          )}
+        </div>
       </div>
     </div>
   );
