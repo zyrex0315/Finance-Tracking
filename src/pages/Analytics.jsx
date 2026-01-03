@@ -6,29 +6,35 @@ import {
 import { TrendingUp, TrendingDown, PiggyBank, Calendar } from 'lucide-react';
 import useTransactionStore from '../context/transactionStore';
 import useAuthStore from '../context/authStore';
+import useCurrencyStore from '../context/currencyStore';
 
 const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#06B6D4', '#F97316'];
 
-const SummaryCard = ({ title, amount, icon: Icon, color, subtitle }) => (
-    <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-200">
-        <div className="flex items-center gap-4">
-            <div className={`p-3 rounded-xl ${color}`}>
-                <Icon size={24} />
-            </div>
-            <div>
-                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{title}</p>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">${amount.toFixed(2)}</h3>
-                {subtitle && <p className="text-xs text-gray-400 mt-1">{subtitle}</p>}
+
+const SummaryCard = ({ title, amount, icon: Icon, color, subtitle }) => {
+    const { formatAmount } = useCurrencyStore();
+    return (
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-200">
+            <div className="flex items-center gap-4">
+                <div className={`p-3 rounded-xl ${color}`}>
+                    <Icon size={24} />
+                </div>
+                <div>
+                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{title}</p>
+                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{formatAmount(amount)}</h3>
+                    {subtitle && <p className="text-xs text-gray-400 mt-1">{subtitle}</p>}
+                </div>
             </div>
         </div>
-    </div>
-);
+    );
+};
 
 const Analytics = () => {
     const { transactions, fetchTransactions, loading } = useTransactionStore();
     const { currentUser } = useAuthStore();
+    const { formatAmount } = useCurrencyStore();
     const [timeRange, setTimeRange] = useState('30'); // '7', '30', '90', 'all'
-
+    // ... (logic remains the same)
     useEffect(() => {
         if (currentUser) {
             fetchTransactions();
@@ -59,7 +65,6 @@ const Analytics = () => {
 
     // Prepare data for Monthly Comparison (Bar Chart)
     const trendData = useMemo(() => {
-        // Group by date (simplified to last 7/30 days or months)
         const grouped = filteredTransactions.reduce((acc, curr) => {
             const dateStr = new Date(curr.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
             if (!acc[dateStr]) acc[dateStr] = { date: dateStr, income: 0, expense: 0 };
@@ -105,8 +110,8 @@ const Analytics = () => {
                             key={range.value}
                             onClick={() => setTimeRange(range.value)}
                             className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${timeRange === range.value
-                                    ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm'
-                                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+                                ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm'
+                                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
                                 }`}
                         >
                             {range.label}
@@ -162,6 +167,7 @@ const Analytics = () => {
                                     <Tooltip
                                         contentStyle={{ backgroundColor: '#1F2937', color: '#fff', borderRadius: '8px', border: 'none' }}
                                         itemStyle={{ color: '#fff' }}
+                                        formatter={(val) => formatAmount(val)}
                                     />
                                     <Legend verticalAlign="bottom" height={36} />
                                 </PieChart>
@@ -194,6 +200,7 @@ const Analytics = () => {
                                     <Tooltip
                                         cursor={{ fill: 'transparent' }}
                                         contentStyle={{ backgroundColor: '#1F2937', color: '#fff', borderRadius: '8px', border: 'none' }}
+                                        formatter={(val) => formatAmount(val)}
                                     />
                                     <Legend />
                                     <Bar dataKey="income" name="Income" fill="#10B981" radius={[4, 4, 0, 0]} barSize={20} />
@@ -217,7 +224,7 @@ const Analytics = () => {
                                     <div key={cat.name} className="space-y-2">
                                         <div className="flex justify-between text-sm">
                                             <span className="font-medium text-gray-700 dark:text-gray-300">{cat.name}</span>
-                                            <span className="text-gray-900 dark:text-white font-bold">${cat.value.toFixed(2)} ({percentage.toFixed(1)}%)</span>
+                                            <span className="text-gray-900 dark:text-white font-bold">{formatAmount(cat.value)} ({percentage.toFixed(1)}%)</span>
                                         </div>
                                         <div className="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2">
                                             <div
@@ -240,5 +247,6 @@ const Analytics = () => {
         </div>
     );
 };
+
 
 export default Analytics;

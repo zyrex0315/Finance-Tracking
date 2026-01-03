@@ -7,11 +7,13 @@ import {
 import useTransactionStore from '../context/transactionStore';
 import useBudgetStore from '../context/budgetStore';
 import useAuthStore from '../context/authStore';
+import useCurrencyStore from '../context/currencyStore';
 import { Link } from 'react-router-dom';
 
 const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'];
 
 const DashboardStats = ({ title, amount, type, icon: Icon }) => {
+    const { formatAmount } = useCurrencyStore();
     const isIncome = type === 'income';
     const isExpense = type === 'expense';
 
@@ -32,7 +34,7 @@ const DashboardStats = ({ title, amount, type, icon: Icon }) => {
             <div>
                 <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">{title}</p>
                 <h3 className={`text-2xl font-bold mt-1 ${colorClass}`}>
-                    ${amount.toFixed(2)}
+                    {formatAmount(amount)}
                 </h3>
             </div>
         </div>
@@ -43,6 +45,7 @@ const Dashboard = () => {
     const { transactions, fetchTransactions, loading } = useTransactionStore();
     const { budgets, fetchBudgets } = useBudgetStore();
     const { currentUser } = useAuthStore();
+    const { formatAmount } = useCurrencyStore();
 
     useEffect(() => {
         if (currentUser) {
@@ -121,7 +124,7 @@ const Dashboard = () => {
                 <div className="hidden sm:block text-right">
                     <p className="text-sm font-medium text-gray-400">Current Balance</p>
                     <p className={`text-xl font-bold ${balance >= 0 ? 'text-blue-600 dark:text-blue-400' : 'text-red-600'}`}>
-                        ${balance.toFixed(2)}
+                        {formatAmount(balance)}
                     </p>
                 </div>
             </div>
@@ -140,7 +143,7 @@ const Dashboard = () => {
                                         Budget Alert: {alert.category}
                                     </p>
                                     <p className="text-xs text-gray-500 dark:text-gray-400">
-                                        You've spent ${alert.spent.toFixed(0)} of your ${alert.limit.toFixed(0)} monthly limit.
+                                        You've spent {formatAmount(alert.spent)} of your {formatAmount(alert.limit)} monthly limit.
                                     </p>
                                 </div>
                             </div>
@@ -197,6 +200,7 @@ const Dashboard = () => {
                                     <YAxis hide />
                                     <Tooltip
                                         contentStyle={{ backgroundColor: '#1F2937', color: '#fff', borderRadius: '8px', border: 'none' }}
+                                        formatter={(val) => formatAmount(val)}
                                     />
                                     <Area type="monotone" dataKey="amount" stroke="#3B82F6" fillOpacity={1} fill="url(#colorValue)" strokeWidth={2} />
                                 </AreaChart>
@@ -232,7 +236,7 @@ const Dashboard = () => {
                                                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                                 ))}
                                             </Pie>
-                                            <Tooltip />
+                                            <Tooltip formatter={(val) => formatAmount(val)} />
                                         </PieChart>
                                     </ResponsiveContainer>
                                 </div>
@@ -243,7 +247,7 @@ const Dashboard = () => {
                                                 <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
                                                 <span className="text-gray-500 dark:text-gray-400 truncate max-w-[80px]">{item.name}</span>
                                             </div>
-                                            <span className="font-bold text-gray-700 dark:text-gray-200">${item.value.toFixed(0)}</span>
+                                            <span className="font-bold text-gray-700 dark:text-gray-200">{formatAmount(item.value)}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -289,7 +293,7 @@ const Dashboard = () => {
                                         </td>
                                         <td className={`px-6 py-4 text-right font-bold text-sm ${t.type === 'income' ? 'text-green-600 dark:text-green-400' : 'text-gray-900 dark:text-white'
                                             }`}>
-                                            {t.type === 'income' ? '+' : '-'}${t.amount.toLocaleString()}
+                                            {t.type === 'income' ? '+' : '-'}{formatAmount(t.amount)}
                                         </td>
                                     </tr>
                                 ))}
@@ -301,5 +305,6 @@ const Dashboard = () => {
         </div>
     );
 };
+
 
 export default Dashboard;
