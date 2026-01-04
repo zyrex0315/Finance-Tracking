@@ -180,7 +180,7 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="flex-[2] py-4 rounded-2xl font-black text-white bg-blue-600 hover:bg-blue-700 shadow-xl shadow-blue-500/30 transition-all disabled:opacity-50"
+                            className="flex-[2] py-4 rounded-2xl font-black text-white bg-blue-600 hover:bg-blue-700 shadow-lg transition-all disabled:opacity-50"
                         >
                             {isLoading ? 'PROCESSING...' : 'ADD TRANSACTION'}
                         </button>

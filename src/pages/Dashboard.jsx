@@ -9,6 +9,7 @@ import useBudgetStore from '../context/budgetStore';
 import useAuthStore from '../context/authStore';
 import useCurrencyStore from '../context/currencyStore';
 import { Link } from 'react-router-dom';
+import clsx from 'clsx';
 
 const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'];
 
@@ -18,22 +19,24 @@ const DashboardStats = ({ title, amount, type, icon: Icon }) => {
     const isExpense = type === 'expense';
 
     let colorClass = 'text-gray-900 dark:text-white';
-    if (isIncome) colorClass = 'text-green-600 dark:text-green-400';
-    if (isExpense) colorClass = 'text-red-600 dark:text-red-400';
+    if (isIncome) colorClass = 'text-emerald-500 dark:text-emerald-400';
+    if (isExpense) colorClass = 'text-rose-500 dark:text-rose-400';
 
     return (
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 transition-transform hover:scale-[1.02] duration-200">
+        <div className="bg-white dark:bg-white/5 backdrop-blur-xl p-6 rounded-3xl border border-gray-100 dark:border-white/10 transition-all hover:translate-y-[-4px] hover:shadow-xl duration-300 group">
             <div className="flex items-center justify-between mb-4">
-                <div className={`p-3 rounded-full ${isIncome ? 'bg-green-100 text-green-600 dark:bg-green-900/30' :
-                    isExpense ? 'bg-red-100 text-red-600 dark:bg-red-900/30' :
-                        'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'
-                    }`}>
+                <div className={clsx(
+                    'p-3 rounded-2xl transition-colors duration-300',
+                    isIncome ? 'bg-emerald-500/10 text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white' :
+                        isExpense ? 'bg-rose-500/10 text-rose-500 group-hover:bg-rose-500 group-hover:text-white' :
+                            'bg-blue-500/10 text-blue-500 group-hover:bg-blue-500 group-hover:text-white'
+                )}>
                     <Icon size={24} />
                 </div>
             </div>
             <div>
-                <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">{title}</p>
-                <h3 className={`text-2xl font-bold mt-1 ${colorClass}`}>
+                <p className="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">{title}</p>
+                <h3 className={`text-2xl font-bold mt-1 tracking-tight ${colorClass}`}>
                     {formatAmount(amount)}
                 </h3>
             </div>
@@ -54,76 +57,88 @@ const Dashboard = () => {
         }
     }, [currentUser, fetchTransactions, fetchBudgets]);
 
-    // Summary Stats
-    const income = useMemo(() => transactions
-        .filter(t => t.type === 'income')
-        .reduce((acc, curr) => acc + curr.amount, 0), [transactions]);
-
-    const expense = useMemo(() => transactions
-        .filter(t => t.type === 'expense')
-        .reduce((acc, curr) => acc + curr.amount, 0), [transactions]);
-
-    const balance = income - expense;
-
-    // Budget Alerts: Find categories over 90%
-    const budgetAlerts = useMemo(() => {
-        const now = new Date();
-        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-
-        const monthlyTransactions = transactions.filter(t =>
-            t.type === 'expense' && new Date(t.date) >= startOfMonth
-        );
-
-        const categorySpending = monthlyTransactions.reduce((acc, curr) => {
-            acc[curr.category] = (acc[curr.category] || 0) + curr.amount;
+    const { income, expense, balance } = useMemo(() => {
+        return transactions.reduce((acc, t) => {
+            const amount = Number(t.amount);
+            if (t.type === 'income') acc.income += amount;
+            else acc.expense += amount;
+            acc.balance = acc.income - acc.expense;
             return acc;
-        }, {});
-
-        return budgets
-            .map(b => ({
-                ...b,
-                spent: categorySpending[b.category] || 0
-            }))
-            .filter(b => b.spent >= b.limit * 0.9)
-            .sort((a, b) => (b.spent / b.limit) - (a.spent / a.limit));
-    }, [transactions, budgets]);
-
-    // Chart Data: Balance Trend (Last 10 transactions of activity)
-    const trendData = useMemo(() => {
-        const grouped = transactions.slice(0, 10).reduce((acc, curr) => {
-            const dateStr = new Date(curr.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-            if (!acc[dateStr]) acc[dateStr] = { date: dateStr, amount: 0 };
-            acc[dateStr].amount += curr.type === 'income' ? curr.amount : -curr.amount;
-            return acc;
-        }, {});
-        return Object.values(grouped);
+        }, { income: 0, expense: 0, balance: 0 });
     }, [transactions]);
 
-    // Chart Data: Expense Categories
+    const recentTransactions = useMemo(() => {
+        return [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+    }, [transactions]);
+
+    const trendData = useMemo(() => {
+        const last7Days = [...Array(7)].map((_, i) => {
+            const d = new Date();
+            d.setDate(d.getDate() - i);
+            return d.toISOString().split('T')[0];
+        }).reverse();
+
+        return last7Days.map(date => {
+            const dayAmount = transactions
+                .filter(t => {
+                    if (!t.date) return false;
+                    const d = t.date instanceof Date ? t.date : new Date(t.date);
+                    return d.toISOString().split('T')[0] === date;
+                })
+                .reduce((acc, t) => acc + (t.type === 'income' ? t.amount : -t.amount), 0);
+            return {
+                date: new Date(date).toLocaleDateString(undefined, { weekday: 'short' }),
+                amount: dayAmount
+            };
+        });
+    }, [transactions]);
+
     const categoryData = useMemo(() => {
-        const expenses = transactions.filter(t => t.type === 'expense');
-        const grouped = expenses.reduce((acc, curr) => {
-            acc[curr.category] = (acc[curr.category] || 0) + curr.amount;
-            return acc;
-        }, {});
-        return Object.entries(grouped)
+        const categories = transactions
+            .filter(t => t.type === 'expense')
+            .reduce((acc, t) => {
+                acc[t.category] = (acc[t.category] || 0) + t.amount;
+                return acc;
+            }, {});
+
+        return Object.entries(categories)
             .map(([name, value]) => ({ name, value }))
             .sort((a, b) => b.value - a.value)
             .slice(0, 5);
     }, [transactions]);
 
-    const recentTransactions = transactions.slice(0, 5);
+    const budgetAlerts = useMemo(() => {
+        const now = new Date();
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+        const monthlyExpenses = transactions.filter(t =>
+            t.type === 'expense' && new Date(t.date) >= startOfMonth
+        );
+
+        const spendingByCategory = monthlyExpenses.reduce((acc, t) => {
+            acc[t.category] = (acc[t.category] || 0) + t.amount;
+            return acc;
+        }, {});
+
+        return budgets
+            .map(budget => ({
+                ...budget,
+                spent: spendingByCategory[budget.category] || 0
+            }))
+            .filter(b => b.spent >= b.limit * 0.8)
+            .sort((a, b) => (b.spent / b.limit) - (a.spent / a.limit));
+    }, [transactions, budgets]);
 
     return (
-        <div className="p-6 max-w-7xl mx-auto space-y-8 dark:bg-gray-900 min-h-screen transition-colors duration-200">
-            <div className="mb-0 flex justify-between items-end">
+        <div className="p-8 max-w-7xl mx-auto space-y-10">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Dashboard Overview</h1>
-                    <p className="text-gray-500 dark:text-gray-400">Welcome back, {currentUser?.displayName || 'User'}</p>
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Financial Overview</h1>
+                    <p className="text-slate-500 dark:text-slate-400 mt-1">Ready to manage your wealth, {currentUser?.displayName?.split(' ')[0] || 'User'}?</p>
                 </div>
-                <div className="hidden sm:block text-right">
-                    <p className="text-sm font-medium text-gray-400">Current Balance</p>
-                    <p className={`text-xl font-bold ${balance >= 0 ? 'text-blue-600 dark:text-blue-400' : 'text-red-600'}`}>
+                <div className="bg-white/5 backdrop-blur-md px-6 py-4 rounded-3xl border border-white/10 flex flex-col items-end">
+                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-none mb-1">Total Balance</p>
+                    <p className={`text-2xl font-bold tracking-tight ${balance >= 0 ? 'text-primary-500' : 'text-rose-500'}`}>
                         {formatAmount(balance)}
                     </p>
                 </div>
@@ -131,24 +146,24 @@ const Dashboard = () => {
 
             {/* Budget Alerts Section */}
             {budgetAlerts.length > 0 && (
-                <div className="space-y-3">
+                <div className="space-y-4">
                     {budgetAlerts.map(alert => (
-                        <div key={alert.id} className="bg-white dark:bg-gray-800 border-l-4 border-red-500 p-4 rounded-xl shadow-sm flex items-center justify-between group transition-all hover:translate-x-1">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg">
+                        <div key={alert.id} className="bg-rose-500/10 backdrop-blur-md border border-rose-500/20 p-5 rounded-3xl flex items-center justify-between group animate-in fade-in slide-in-from-top-4 duration-500">
+                            <div className="flex items-center gap-4">
+                                <div className="p-3 bg-rose-500 text-white rounded-2xl shadow-lg shadow-rose-500/20">
                                     <AlertCircle size={20} />
                                 </div>
                                 <div>
-                                    <p className="text-sm font-bold text-gray-900 dark:text-white">
+                                    <p className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-tight">
                                         Budget Alert: {alert.category}
                                     </p>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                                        You've spent {formatAmount(alert.spent)} of your {formatAmount(alert.limit)} monthly limit.
+                                    <p className="text-xs text-slate-500 mt-0.5">
+                                        You've spent <span className="text-rose-400 font-semibold">{formatAmount(alert.spent)}</span> of your {formatAmount(alert.limit)} monthly limit.
                                     </p>
                                 </div>
                             </div>
-                            <Link to="/budgets" className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline uppercase tracking-tight">
-                                Manage
+                            <Link to="/budgets" className="px-5 py-2 bg-rose-500/20 text-rose-500 text-xs font-bold rounded-xl hover:bg-rose-500 hover:text-white transition-all uppercase tracking-widest">
+                                Fix Now
                             </Link>
                         </div>
                     ))}
@@ -156,7 +171,7 @@ const Dashboard = () => {
             )}
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <DashboardStats
                     title="Total Balance"
                     amount={balance}
@@ -178,58 +193,65 @@ const Dashboard = () => {
             </div>
 
             {/* Charts Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Balance Trend */}
-                <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
-                    <div className="flex items-center gap-2 mb-6">
-                        <BarChart3 className="text-blue-500" size={20} />
-                        <h2 className="text-lg font-bold text-gray-900 dark:text-white">Financial Activity</h2>
+                <div className="bg-white dark:bg-white/5 backdrop-blur-xl p-8 rounded-3xl border border-gray-100 dark:border-white/10 shadow-xl">
+                    <div className="flex items-center justify-between mb-8">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-blue-500/10 text-blue-500 rounded-xl">
+                                <BarChart3 size={20} />
+                            </div>
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Activity Trend</h2>
+                        </div>
                     </div>
-                    <div className="h-[240px] w-full">
+                    <div className="h-[280px] w-full">
                         {trendData.length > 0 ? (
                             <ResponsiveContainer width="100%" height="100%">
                                 <AreaChart data={trendData}>
                                     <defs>
                                         <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.1} />
+                                            <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.3} />
                                             <stop offset="95%" stopColor="#3B82F6" stopOpacity={0} />
                                         </linearGradient>
                                     </defs>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#374151" opacity={0.1} />
-                                    <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: '#9CA3AF', fontSize: 12 }} />
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#475569" opacity={0.1} />
+                                    <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 11, fontWeight: 500 }} />
                                     <YAxis hide />
                                     <Tooltip
-                                        contentStyle={{ backgroundColor: '#1F2937', color: '#fff', borderRadius: '8px', border: 'none' }}
+                                        contentStyle={{ backgroundColor: '#1e293b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', color: '#fff' }}
+                                        itemStyle={{ color: '#fff', fontWeight: 'bold' }}
                                         formatter={(val) => formatAmount(val)}
                                     />
-                                    <Area type="monotone" dataKey="amount" stroke="#3B82F6" fillOpacity={1} fill="url(#colorValue)" strokeWidth={2} />
+                                    <Area type="monotone" dataKey="amount" stroke="#3B82F6" fillOpacity={1} fill="url(#colorValue)" strokeWidth={3} />
                                 </AreaChart>
                             </ResponsiveContainer>
                         ) : (
-                            <div className="h-full flex items-center justify-center text-gray-400 text-sm italic py-12">Add transactions to see charts</div>
+                            <div className="h-full flex items-center justify-center text-slate-500 text-sm italic py-12">No data yet</div>
                         )}
                     </div>
                 </div>
 
                 {/* Spending by Category */}
-                <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
-                    <div className="flex items-center gap-2 mb-6">
-                        <PieIcon className="text-purple-500" size={20} />
-                        <h2 className="text-lg font-bold text-gray-900 dark:text-white">Top Categories</h2>
+                <div className="bg-white dark:bg-white/5 backdrop-blur-xl p-8 rounded-3xl border border-gray-100 dark:border-white/10 shadow-xl">
+                    <div className="flex items-center gap-3 mb-8">
+                        <div className="p-2 bg-purple-500/10 text-purple-500 rounded-xl">
+                            <PieIcon size={20} />
+                        </div>
+                        <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Category Mix</h2>
                     </div>
-                    <div className="h-[240px] w-full flex items-center">
+                    <div className="h-[280px] w-full flex flex-col md:flex-row items-center gap-8">
                         {categoryData.length > 0 ? (
                             <>
-                                <div className="w-1/2 h-full">
+                                <div className="w-full md:w-1/2 h-full">
                                     <ResponsiveContainer width="100%" height="100%">
                                         <PieChart>
                                             <Pie
                                                 data={categoryData}
                                                 cx="50%"
                                                 cy="50%"
-                                                innerRadius={45}
-                                                outerRadius={65}
-                                                paddingAngle={5}
+                                                innerRadius={60}
+                                                outerRadius={85}
+                                                paddingAngle={8}
                                                 dataKey="value"
                                             >
                                                 {categoryData.map((entry, index) => (
@@ -240,58 +262,70 @@ const Dashboard = () => {
                                         </PieChart>
                                     </ResponsiveContainer>
                                 </div>
-                                <div className="w-1/2 space-y-3 pl-4">
+                                <div className="w-full md:w-1/2 space-y-4">
                                     {categoryData.map((item, index) => (
-                                        <div key={item.name} className="flex items-center justify-between text-xs">
-                                            <div className="flex items-center gap-2">
-                                                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
-                                                <span className="text-gray-500 dark:text-gray-400 truncate max-w-[80px]">{item.name}</span>
+                                        <div key={item.name} className="flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-3 h-3 rounded-full shadow-lg" style={{ backgroundColor: COLORS[index % COLORS.length], boxShadow: `0 0 10px ${COLORS[index % COLORS.length]}80` }} />
+                                                <span className="text-sm font-medium text-slate-500 dark:text-slate-400 truncate max-w-[100px]">{item.name}</span>
                                             </div>
-                                            <span className="font-bold text-gray-700 dark:text-gray-200">{formatAmount(item.value)}</span>
+                                            <span className="text-sm font-bold text-gray-900 dark:text-white">{formatAmount(item.value)}</span>
                                         </div>
                                     ))}
                                 </div>
                             </>
                         ) : (
-                            <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm italic">Categorized spending shows here</div>
+                            <div className="w-full h-full flex items-center justify-center text-slate-500 text-sm italic">Analyze your spending</div>
                         )}
                     </div>
                 </div>
             </div>
 
             {/* Recent Transactions */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden transition-colors duration-200">
-                <div className="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
-                    <div className="flex items-center gap-2">
-                        <History className="text-gray-400" size={20} />
-                        <h2 className="text-lg font-bold text-gray-900 dark:text-white">Recent Activity</h2>
+            <div className="bg-white dark:bg-white/5 backdrop-blur-xl rounded-3xl border border-gray-100 dark:border-white/10 shadow-xl overflow-hidden">
+                <div className="p-8 border-b border-gray-100 dark:border-white/10 flex justify-between items-center">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 bg-slate-500/10 text-slate-500 rounded-xl">
+                            <History size={20} />
+                        </div>
+                        <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Recent Activity</h2>
                     </div>
-                    <Link to="/transactions" className="text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline dark:text-blue-400 dark:hover:text-blue-300">
-                        View History
+                    <Link to="/transactions" className="px-5 py-2.5 bg-primary-600 text-white text-xs font-bold rounded-xl hover:bg-primary-500 transition-all shadow-lg shadow-primary-600/20 uppercase tracking-widest">
+                        Full History
                     </Link>
                 </div>
 
                 {loading ? (
-                    <div className="p-12 text-center text-gray-500 dark:text-gray-400 animate-pulse">Updating activity...</div>
+                    <div className="p-16 text-center text-slate-500 animate-pulse font-medium">Processing records...</div>
                 ) : recentTransactions.length === 0 ? (
-                    <div className="p-12 text-center text-gray-500 dark:text-gray-400 italic">Start tracking your transactions!</div>
+                    <div className="p-16 text-center text-slate-500 italic font-medium">No activity recorded yet.</div>
                 ) : (
                     <div className="overflow-x-auto">
                         <table className="w-full text-left">
-                            <thead className="bg-gray-50 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400 text-xs uppercase font-medium">
+                            <thead className="bg-slate-500/5 text-slate-500 text-[10px] uppercase font-bold tracking-[0.1em]">
                                 <tr>
-                                    <th className="px-6 py-3">Description</th>
-                                    <th className="px-6 py-3 text-right">Amount</th>
+                                    <th className="px-8 py-4">Transaction</th>
+                                    <th className="px-8 py-4 text-right">Amount</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
+                            <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                                 {recentTransactions.map((t) => (
-                                    <tr key={t.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                                        <td className="px-6 py-4">
-                                            <p className="font-medium text-gray-900 dark:text-white leading-none mb-1">{t.description || "No description"}</p>
-                                            <span className="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-500">{t.category} • {t.date ? new Date(t.date).toLocaleDateString() : 'N/A'}</span>
+                                    <tr key={t.id} className="hover:bg-primary-500/5 transition-all group">
+                                        <td className="px-8 py-5">
+                                            <div className="flex items-center gap-4">
+                                                <div className={clsx(
+                                                    'w-10 h-10 rounded-xl flex items-center justify-center font-bold text-xs shadow-sm transition-transform group-hover:scale-110',
+                                                    t.type === 'income' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-rose-500/10 text-rose-500'
+                                                )}>
+                                                    {t.category[0].toUpperCase()}
+                                                </div>
+                                                <div>
+                                                    <p className="font-bold text-gray-900 dark:text-white tracking-tight">{t.description || "Untitled"}</p>
+                                                    <p className="text-[10px] uppercase font-bold text-slate-500 mt-0.5 tracking-wider">{t.category} • {t.date ? new Date(t.date).toLocaleDateString() : 'N/A'}</p>
+                                                </div>
+                                            </div>
                                         </td>
-                                        <td className={`px-6 py-4 text-right font-bold text-sm ${t.type === 'income' ? 'text-green-600 dark:text-green-400' : 'text-gray-900 dark:text-white'
+                                        <td className={`px-8 py-5 text-right font-bold text-lg tracking-tight ${t.type === 'income' ? 'text-emerald-500' : 'text-gray-900 dark:text-white'
                                             }`}>
                                             {t.type === 'income' ? '+' : '-'}{formatAmount(t.amount)}
                                         </td>

@@ -37,52 +37,52 @@ const Transactions = () => {
     });
 
     return (
-        <div className="p-6 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
+        <div className="p-8 max-w-7xl mx-auto space-y-10 animate-in fade-in duration-700">
             {/* Header */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Transactions</h1>
-                    <p className="text-gray-500 dark:text-gray-400">Manage your income and expenses</p>
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Transactions</h1>
+                    <p className="text-slate-500 dark:text-slate-400 mt-1">Manage your income and expenses with precision</p>
                 </div>
                 <button
                     onClick={() => setIsModalOpen(true)}
-                    className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 font-bold"
+                    className="btn-primary flex items-center gap-2 px-6 py-3 rounded-2xl uppercase tracking-widest text-xs"
                 >
-                    <Plus size={20} />
+                    <Plus size={18} />
                     Add Transaction
                 </button>
             </div>
 
             {/* Error Message */}
             {error && (
-                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 p-4 rounded-xl flex items-center gap-3">
-                    <AlertCircle size={20} />
-                    <p className="text-sm font-medium">{error}</p>
+                <div className="bg-rose-500/10 backdrop-blur-md border border-rose-500/20 text-rose-400 p-5 rounded-3xl flex items-center gap-4 animate-in slide-in-from-top-4 duration-500">
+                    <AlertCircle size={24} />
+                    <p className="text-sm font-bold tracking-tight">{error}</p>
                 </div>
             )}
 
             {/* Filters */}
-            <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col sm:flex-row gap-4 items-center justify-between transition-colors">
-                <div className="relative w-full sm:w-96">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <div className="bg-white dark:bg-white/5 backdrop-blur-xl p-6 rounded-[2.5rem] border border-gray-100 dark:border-white/10 flex flex-col lg:flex-row gap-6 items-center justify-between shadow-xl">
+                <div className="relative w-full lg:w-[450px] group">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-primary-500 transition-colors" size={18} />
                     <input
                         type="text"
                         placeholder="Search transactions..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:text-white transition-all"
+                        className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-transparent dark:border-white/5 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:bg-white dark:focus:bg-[#1e293b] dark:text-white transition-all font-medium"
                     />
                 </div>
-                <div className="flex bg-gray-50 dark:bg-gray-900 p-1 rounded-xl">
+                <div className="flex bg-gray-100 dark:bg-white/5 p-1.5 rounded-2xl border border-transparent dark:border-white/5">
                     {['all', 'income', 'expense'].map((type) => (
                         <button
                             key={type}
                             onClick={() => setFilterType(type)}
                             className={clsx(
-                                "px-5 py-1.5 rounded-lg text-sm font-bold capitalize transition-all",
+                                "px-6 py-2 rounded-xl text-xs font-bold capitalize transition-all tracking-widest",
                                 filterType === type
-                                    ? "bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow-sm"
-                                    : "text-gray-500 dark:text-gray-400 hover:text-gray-700"
+                                    ? "bg-white dark:bg-primary-600 text-primary-600 dark:text-white shadow-lg shadow-primary-600/20"
+                                    : "text-slate-500 hover:text-primary-600 dark:hover:text-white"
                             )}
                         >
                             {type}
@@ -92,63 +92,63 @@ const Transactions = () => {
             </div>
 
             {/* List */}
-            <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden transition-colors">
+            <div className="bg-white dark:bg-white/5 backdrop-blur-xl rounded-[2.5rem] shadow-2xl border border-gray-100 dark:border-white/10 overflow-hidden">
                 {loading ? (
-                    <div className="p-20 text-center animate-pulse text-gray-400 font-medium">Updating transaction history...</div>
+                    <div className="p-24 text-center animate-pulse text-slate-500 font-bold uppercase tracking-[0.2em]">Synchronizing Records...</div>
                 ) : filteredTransactions.length === 0 ? (
-                    <div className="p-20 text-center flex flex-col items-center">
-                        <div className="w-20 h-20 bg-gray-50 dark:bg-gray-900 rounded-full flex items-center justify-center mb-6">
-                            <Plus className="text-gray-300" size={32} />
+                    <div className="p-24 text-center flex flex-col items-center">
+                        <div className="w-24 h-24 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-8 border border-transparent dark:border-white/5 shadow-inner">
+                            <Plus className="text-slate-300" size={36} />
                         </div>
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-white">No Record Found</h3>
-                        <p className="text-gray-500 dark:text-gray-400 mt-2 max-w-[240px]">Start tracking your finances by adding your first transaction.</p>
+                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Empty Vault</h3>
+                        <p className="text-slate-500 mt-2 max-w-[280px] font-medium italic">Your financial history starts with a single transaction.</p>
                     </div>
                 ) : (
-                    <div className="overflow-x-auto text-sm">
+                    <div className="overflow-x-auto">
                         <table className="w-full text-left">
-                            <thead className="bg-gray-50/50 dark:bg-gray-900/50 border-b border-gray-100 dark:border-gray-700">
+                            <thead className="bg-slate-500/5 text-slate-500 text-[10px] uppercase font-bold tracking-[0.2em] border-b border-gray-100 dark:border-white/5">
                                 <tr>
-                                    <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Date</th>
-                                    <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Description</th>
-                                    <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Category</th>
-                                    <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest text-right">Amount</th>
-                                    <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest text-center">Action</th>
+                                    <th className="px-8 py-5">Date</th>
+                                    <th className="px-8 py-5">Transaction</th>
+                                    <th className="px-8 py-5">Category</th>
+                                    <th className="px-8 py-5 text-right">Amount</th>
+                                    <th className="px-8 py-5 text-center">Action</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-50 dark:divide-gray-750">
+                            <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                                 {filteredTransactions.map((t) => (
-                                    <tr key={t.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-700/50 transition-colors group">
-                                        <td className="px-6 py-5 whitespace-nowrap text-gray-500 dark:text-gray-400 font-medium">
+                                    <tr key={t.id} className="hover:bg-primary-500/5 transition-all group">
+                                        <td className="px-8 py-6 whitespace-nowrap text-slate-500 font-bold text-xs uppercase tracking-tighter">
                                             {t.date ? new Date(t.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
                                         </td>
-                                        <td className="px-6 py-5 text-gray-900 dark:text-white">
-                                            <div className="flex items-center gap-4">
+                                        <td className="px-8 py-6">
+                                            <div className="flex items-center gap-5">
                                                 <div className={clsx(
-                                                    "w-10 h-10 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110",
-                                                    t.type === 'income' ? "bg-green-50 text-green-600 dark:bg-green-900/20" : "bg-red-50 text-red-600 dark:bg-red-900/20"
+                                                    "w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:rotate-12 group-hover:scale-110 shadow-sm",
+                                                    t.type === 'income' ? "bg-emerald-500/10 text-emerald-500 shadow-emerald-500/10" : "bg-rose-500/10 text-rose-500 shadow-rose-500/10"
                                                 )}>
-                                                    {t.type === 'income' ? <ArrowUpRight size={18} /> : <ArrowDownLeft size={18} />}
+                                                    {t.type === 'income' ? <ArrowUpRight size={22} /> : <ArrowDownLeft size={22} />}
                                                 </div>
-                                                <span className="font-bold tracking-tight">{t.description || "Unspecified Record"}</span>
+                                                <span className="font-bold text-gray-900 dark:text-white tracking-tight text-base">{t.description || "Unnamed Entry"}</span>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-5 whitespace-nowrap">
-                                            <span className="px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest bg-gray-50 dark:bg-gray-900 text-gray-500 dark:text-gray-400 border border-gray-100 dark:border-gray-700 group-hover:bg-white dark:group-hover:bg-gray-800 transition-colors">
+                                        <td className="px-8 py-6 whitespace-nowrap">
+                                            <span className="px-5 py-2 rounded-[14px] text-[10px] font-black uppercase tracking-[0.15em] bg-gray-50 dark:bg-white/5 text-slate-500 border border-gray-100 dark:border-white/10 group-hover:bg-white dark:group-hover:bg-white/10 transition-colors">
                                                 {t.category}
                                             </span>
                                         </td>
                                         <td className={clsx(
-                                            "px-6 py-5 whitespace-nowrap text-right font-black text-base",
-                                            t.type === 'income' ? "text-green-600 dark:text-green-400" : "text-gray-900 dark:text-white"
+                                            "px-8 py-6 whitespace-nowrap text-right font-bold text-xl tracking-tight",
+                                            t.type === 'income' ? "text-emerald-500" : "text-gray-900 dark:text-white"
                                         )}>
                                             {t.type === 'income' ? '+' : '-'}{formatAmount(t.amount)}
                                         </td>
-                                        <td className="px-6 py-5 whitespace-nowrap text-center">
+                                        <td className="px-8 py-6 whitespace-nowrap text-center">
                                             <button
                                                 onClick={() => handleDelete(t.id)}
-                                                className="text-gray-300 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 w-8 h-8 rounded-lg flex items-center justify-center mx-auto transition-all"
+                                                className="text-slate-300 hover:text-rose-500 hover:bg-rose-500/10 w-10 h-10 rounded-xl flex items-center justify-center mx-auto transition-all duration-300 hover:scale-110 active:scale-90"
                                             >
-                                                <Trash2 size={16} />
+                                                <Trash2 size={18} />
                                             </button>
                                         </td>
                                     </tr>

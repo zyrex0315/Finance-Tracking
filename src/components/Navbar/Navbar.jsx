@@ -5,31 +5,36 @@ const Navbar = ({ title }) => {
     const { theme, toggleTheme } = useThemeStore();
 
     return (
-        <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 h-16 flex items-center justify-between px-6 sticky top-0 z-10 transition-colors duration-200">
-            <h1 className="text-xl font-bold text-gray-800 dark:text-white">{title}</h1>
+        <header className="bg-white/70 dark:bg-[#0f172a]/70 backdrop-blur-xl border-b border-gray-200 dark:border-white/10 h-20 flex items-center justify-between px-8 sticky top-0 z-20 transition-all duration-300">
+            <div>
+                <h1 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">{title}</h1>
+                <p className="text-[10px] text-slate-500 font-medium uppercase tracking-[0.2em] mt-0.5">Overview</p>
+            </div>
 
-            <div className="flex items-center gap-4">
-                <div className="relative hidden sm:block">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <div className="flex items-center gap-6">
+                <div className="relative hidden lg:block group">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-primary-500 transition-colors" size={16} />
                     <input
                         type="text"
-                        placeholder="Search..."
-                        className="pl-10 pr-4 py-2 border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-64 bg-gray-50 dark:bg-gray-700 dark:text-white placeholder-gray-400 transition-colors duration-200"
+                        placeholder="Search for anything..."
+                        className="pl-11 pr-4 py-2.5 bg-gray-100 dark:bg-white/5 border border-transparent dark:border-white/5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:bg-white dark:focus:bg-[#1e293b] w-72 text-gray-900 dark:text-white placeholder-slate-500 transition-all duration-200"
                     />
                 </div>
 
-                <button
-                    onClick={toggleTheme}
-                    className="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200"
-                    title={theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
-                >
-                    {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
-                </button>
+                <div className="flex items-center gap-2 p-1.5 bg-gray-100 dark:bg-white/5 rounded-xl border border-transparent dark:border-white/5">
+                    <button
+                        onClick={toggleTheme}
+                        className="p-2 text-slate-500 hover:text-primary-500 dark:hover:text-white rounded-lg transition-all"
+                        title={theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
+                    >
+                        {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+                    </button>
 
-                <button className="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg relative transition-colors duration-200">
-                    <Bell size={20} />
-                    <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></span>
-                </button>
+                    <button className="p-2 text-slate-500 hover:text-primary-500 dark:hover:text-white rounded-lg relative transition-all">
+                        <Bell size={18} />
+                        <span className="absolute top-2 right-2 w-2 h-2 bg-primary-500 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.5)]"></span>
+                    </button>
+                </div>
             </div>
         </header>
     );

@@ -14,68 +14,72 @@ const BudgetCard = ({ category, spent, limit, onDelete, onEdit }) => {
     const isNear = spent > limit * 0.8 && !isOver;
 
     return (
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md">
-            <div className="flex justify-between items-start mb-4">
-                <div className="flex items-center gap-3">
+        <div className="bg-white dark:bg-white/5 backdrop-blur-xl p-8 rounded-[2.5rem] border border-gray-100 dark:border-white/10 transition-all hover:translate-y-[-8px] hover:shadow-2xl hover:shadow-primary-600/10 shadow-xl group">
+            <div className="flex justify-between items-start mb-6">
+                <div className="flex items-center gap-4">
                     <div className={clsx(
-                        "p-2 rounded-lg",
-                        isOver ? "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400" :
-                            isNear ? "bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400" :
-                                "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
+                        "p-3 rounded-2xl shadow-lg transition-transform group-hover:rotate-6",
+                        isOver ? "bg-rose-500 text-white shadow-rose-500/30" :
+                            isNear ? "bg-amber-500 text-white shadow-amber-500/30" :
+                                "bg-blue-600 text-white shadow-sm"
                     )}>
-                        <Target size={20} />
+                        <Target size={24} />
                     </div>
                     <div>
-                        <h3 className="font-bold text-gray-900 dark:text-white tracking-tight">{category}</h3>
-                        <p className="text-[10px] text-gray-400 uppercase tracking-widest font-black">Monthly Budget</p>
+                        <h3 className="font-bold text-gray-900 dark:text-white tracking-tight text-xl">{category}</h3>
+                        <p className="text-[10px] text-slate-500 uppercase tracking-[0.2em] font-black">Control Limit</p>
                     </div>
                 </div>
-                <div className="flex gap-1">
-                    <button onClick={onEdit} className="p-1.5 text-gray-300 hover:text-blue-500 transition-colors">
+                <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button onClick={onEdit} className="p-2 bg-slate-100 dark:bg-white/10 text-slate-500 hover:text-primary-500 rounded-xl transition-all">
                         <Edit2 size={16} />
                     </button>
-                    <button onClick={onDelete} className="p-1.5 text-gray-300 hover:text-red-500 transition-colors">
+                    <button onClick={onDelete} className="p-2 bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white rounded-xl transition-all">
                         <Trash2 size={16} />
                     </button>
                 </div>
             </div>
 
-            <div className="space-y-4">
-                <div className="flex justify-between items-end">
-                    <div className="flex flex-col">
-                        <span className="text-sm font-bold text-gray-400">Spent</span>
-                        <span className="text-2xl font-black text-gray-900 dark:text-white leading-tight">
-                            {formatAmount(spent)}
-                            <span className="text-xs font-normal text-gray-400 ml-1.5 tracking-tight italic">/ {formatAmount(limit)}</span>
-                        </span>
+            <div className="space-y-6">
+                <div>
+                    <div className="flex justify-between items-center mb-2">
+                        <div className="flex flex-col">
+                            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Utilization</span>
+                            <span className="text-3xl font-black text-gray-900 dark:text-white tracking-tighter">
+                                {formatAmount(spent)}
+                                <span className="text-sm font-bold text-slate-500 ml-2 tracking-tight">/ {formatAmount(limit)}</span>
+                            </span>
+                        </div>
+                        <div className={clsx(
+                            "px-4 py-1.5 rounded-xl text-xs font-black shadow-sm",
+                            isOver ? "bg-rose-500/10 text-rose-500" :
+                                isNear ? "bg-amber-500/10 text-amber-500" :
+                                    "bg-primary-500/10 text-primary-500"
+                        )}>
+                            {percentage.toFixed(0)}%
+                        </div>
                     </div>
-                    <div className={clsx(
-                        "px-3 py-1 rounded-lg text-xs font-black",
-                        isOver ? "bg-red-50 text-red-600 dark:bg-red-900/20" :
-                            isNear ? "bg-amber-50 text-amber-600 dark:bg-amber-900/20" :
-                                "bg-blue-50 text-blue-600 dark:bg-blue-900/20"
-                    )}>
-                        {percentage.toFixed(0)}%
+
+                    <div className="w-full bg-slate-100 dark:bg-white/5 rounded-full h-3.5 overflow-hidden p-0.5 border border-transparent dark:border-white/5">
+                        <div
+                            className={clsx(
+                                "h-full rounded-full transition-all duration-1000 relative",
+                                isOver ? "bg-rose-500" :
+                                    isNear ? "bg-amber-500" :
+                                        "bg-primary-600"
+                            )}
+                            style={{ width: `${percentage}%` }}
+                        >
+                            <div className="absolute top-0 right-0 h-full w-4 bg-white/20 blur-sm rounded-full" />
+                        </div>
                     </div>
                 </div>
 
-                <div className="w-full bg-gray-50 dark:bg-gray-900 rounded-full h-2.5 overflow-hidden">
-                    <div
-                        className={clsx(
-                            "h-full rounded-full transition-all duration-1000",
-                            isOver ? "bg-red-500 shadow-[0_0_12px_rgba(239,68,68,0.4)]" :
-                                isNear ? "bg-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.4)]" :
-                                    "bg-blue-500 shadow-[0_0_12px_rgba(59,130,246,0.4)]"
-                        )}
-                        style={{ width: `${percentage}%` }}
-                    />
-                </div>
-
-                <div className="flex justify-between text-[11px] font-bold py-1 px-1 mt-1">
-                    <span className="text-gray-400 bg-gray-50 dark:bg-gray-900 px-2.5 py-1 rounded-md">{isOver ? 'EXCEEDED BY' : 'REMAINING'}</span>
+                <div className="flex justify-between text-xs font-bold pt-4 border-t border-gray-50 dark:border-white/5">
+                    <span className="text-slate-500 uppercase tracking-[0.1em]">{isOver ? 'Exceeded By' : 'Safe Margin'}</span>
                     <span className={clsx(
-                        "px-2.5 py-1 rounded-md",
-                        isOver ? "bg-red-50 text-red-600 dark:bg-red-900/20" : "bg-green-50 text-green-600 dark:bg-green-900/20"
+                        "font-black tracking-tight",
+                        isOver ? "text-rose-500" : "text-emerald-500"
                     )}>
                         {formatAmount(Math.abs(limit - spent))}
                     </span>
@@ -125,32 +129,35 @@ const BudgetModal = ({ isOpen, onClose, initialData = null }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-300">
-            <div className="bg-white dark:bg-gray-800 rounded-[2.5rem] w-full max-w-md overflow-hidden shadow-2xl border border-gray-100 dark:border-gray-700 animate-in zoom-in-95 duration-200">
-                <div className="p-8 border-b border-gray-50 dark:border-gray-700">
-                    <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
-                        {initialData ? 'Edit Budget' : 'Smart Budget'}
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-[#0f172a]/80 backdrop-blur-xl animate-in fade-in duration-500">
+            <div className="bg-white dark:bg-[#1e293b] rounded-[3rem] w-full max-w-md overflow-hidden shadow-2xl border border-gray-100 dark:border-white/10 animate-in zoom-in-95 duration-300 relative">
+                {/* Decorative blob in modal */}
+                <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary-600/20 rounded-full blur-3xl pointer-events-none" />
+
+                <div className="p-10 border-b border-gray-50 dark:border-white/10 relative z-10">
+                    <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">
+                        {initialData ? 'Update Limit' : 'Smart Budgeting'}
                     </h2>
-                    <p className="text-gray-400 text-sm mt-1">Define your monthly spending limit</p>
+                    <p className="text-slate-500 text-sm mt-1 font-medium italic">Set clear rules for your financial freedom</p>
                 </div>
-                <form onSubmit={handleSubmit} className="p-8 space-y-6">
+                <form onSubmit={handleSubmit} className="p-10 space-y-8 relative z-10">
                     <div>
-                        <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Category</label>
+                        <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-3">Target Category</label>
                         <select
                             required
                             disabled={!!initialData}
                             value={category}
                             onChange={(e) => setCategory(e.target.value)}
-                            className="w-full p-4 rounded-2xl border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-4 focus:ring-blue-500/10 outline-none disabled:opacity-50 transition-all font-bold"
+                            className="w-full p-4.5 rounded-2xl border border-gray-100 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white focus:ring-4 focus:ring-primary-500/20 outline-none disabled:opacity-50 transition-all font-bold appearance-none cursor-pointer"
                         >
-                            <option value="">Select Category</option>
+                            <option value="">Choose Wisely</option>
                             {categories.map(cat => (
                                 <option key={cat} value={cat}>{cat}</option>
                             ))}
                         </select>
                     </div>
                     <div>
-                        <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Monthly Limit ({currencyInfo.symbol})</label>
+                        <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-3">Monthly Safeguard ({currencyInfo.symbol})</label>
                         <div className="relative">
                             <input
                                 type="number"
@@ -159,25 +166,25 @@ const BudgetModal = ({ isOpen, onClose, initialData = null }) => {
                                 value={limit}
                                 onChange={(e) => setLimit(e.target.value)}
                                 placeholder="0.00"
-                                className="w-full p-4 pl-12 rounded-2xl border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-black"
+                                className="w-full p-4.5 pl-14 rounded-2xl border border-gray-100 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white focus:ring-4 focus:ring-primary-500/20 outline-none transition-all font-black text-lg"
                             />
-                            <span className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 font-bold">{currencyInfo.symbol}</span>
+                            <span className="absolute left-6 top-1/2 -translate-y-1/2 text-primary-500 font-bold text-lg">{currencyInfo.symbol}</span>
                         </div>
                     </div>
                     <div className="flex gap-4 pt-4">
                         <button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 px-4 py-4 rounded-2xl border border-gray-100 dark:border-gray-700 text-gray-500 dark:text-gray-400 font-bold hover:bg-gray-50 dark:hover:bg-gray-750 transition-all"
+                            className="btn-secondary flex-1 px-6 py-4 rounded-2xl uppercase tracking-widest text-xs"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
                             disabled={isSaving}
-                            className="flex-1 px-4 py-4 rounded-2xl bg-blue-600 text-white font-black hover:bg-blue-700 disabled:opacity-50 transition-all shadow-xl shadow-blue-500/30"
+                            className="btn-primary flex-1 px-6 py-4 rounded-2xl uppercase tracking-widest text-xs"
                         >
-                            {isSaving ? 'Processing...' : 'Save Limit'}
+                            {isSaving ? 'Saving...' : 'Lock Goal'}
                         </button>
                     </div>
                 </form>
@@ -227,39 +234,39 @@ const Budgets = () => {
     };
 
     return (
-        <div className="p-6 max-w-7xl mx-auto space-y-10 animate-in fade-in duration-500">
-            <div className="flex justify-between items-end">
+        <div className="p-8 max-w-7xl mx-auto space-y-10 animate-in fade-in duration-700">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
                 <div>
-                    <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Smart Budgets</h1>
-                    <p className="text-gray-500 dark:text-gray-400 font-medium">Manage your financial guardrails</p>
+                    <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Smart Thresholds</h1>
+                    <p className="text-slate-500 font-medium">Create boundaries for a healthier financial life</p>
                 </div>
                 <button
                     onClick={() => setIsModalOpen(true)}
-                    className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-2xl font-black hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20 active:scale-95"
+                    className="btn-primary flex items-center gap-2 px-8 py-3.5 rounded-2xl uppercase tracking-[0.15em] text-xs"
                 >
                     <Plus size={20} />
-                    <span>Set Budget</span>
+                    <span>Set Barrier</span>
                 </button>
             </div>
 
             {budgets.length === 0 ? (
-                <div className="bg-white dark:bg-gray-800 p-20 rounded-[3rem] text-center border border-gray-100 dark:border-gray-700 shadow-sm flex flex-col items-center">
-                    <div className="bg-blue-50 dark:bg-blue-900/20 w-24 h-24 rounded-3xl flex items-center justify-center mb-8 text-blue-600 dark:text-blue-400">
-                        <Target size={48} />
+                <div className="bg-white dark:bg-white/5 backdrop-blur-xl p-24 rounded-[4rem] text-center border border-gray-100 dark:border-white/10 shadow-2xl flex flex-col items-center">
+                    <div className="bg-primary-600/10 w-32 h-32 rounded-[2.5rem] flex items-center justify-center mb-10 text-primary-500 shadow-inner">
+                        <Target size={60} strokeWidth={1.5} />
                     </div>
-                    <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-3">Plan Your Spending</h3>
-                    <p className="text-gray-500 dark:text-gray-400 max-w-sm mx-auto mb-10 font-medium">
-                        Set category limits to track your monthly spending habits and save more effectively.
+                    <h3 className="text-3xl font-black text-gray-900 dark:text-white mb-4 tracking-tight">Financial Discipline</h3>
+                    <p className="text-slate-500 max-w-md mx-auto mb-12 font-medium leading-relaxed italic">
+                        Define how much you're willing to spend in each category. We'll watch your back and notify you if things get tight.
                     </p>
                     <button
                         onClick={() => setIsModalOpen(true)}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3.5 rounded-2xl font-black transition-all hover:scale-105 active:scale-95 shadow-xl shadow-blue-500/20"
+                        className="btn-primary px-10 py-4 rounded-3xl uppercase tracking-widest text-xs"
                     >
-                        Create Your First Budget
+                        Initialize Your First Budget
                     </button>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                     {budgets.map(budget => (
                         <BudgetCard
                             key={budget.id}
@@ -277,16 +284,15 @@ const Budgets = () => {
                 </div>
             )}
 
-            {/* Educational Note */}
-            <div className="bg-blue-50 dark:bg-gray-800/50 p-8 rounded-[2rem] border border-blue-100 dark:border-gray-700 flex gap-6 items-start transition-all hover:border-amber-500/30">
-                <div className="p-3 bg-amber-500/10 rounded-2xl">
-                    <AlertTriangle className="text-amber-500" size={28} />
+            {/* Insight Note */}
+            <div className="bg-primary-600/10 backdrop-blur-md p-10 rounded-[3rem] border border-primary-600/20 flex gap-8 items-center transition-all hover:border-amber-500/40 group">
+                <div className="p-4 bg-amber-500 text-white rounded-2xl shadow-xl shadow-amber-500/20 group-hover:rotate-12 transition-transform duration-500">
+                    <AlertTriangle size={32} />
                 </div>
                 <div>
-                    <h4 className="font-black text-blue-900 dark:text-white tracking-tight">How it works</h4>
-                    <p className="text-blue-800/70 dark:text-gray-400 text-sm mt-1 leading-relaxed max-w-2xl font-medium">
-                        Budgets track expenses for the current month and reset automatically on the 1st.
-                        We'll notify you when you reach <span className="text-amber-500 font-bold">80%</span> of your limit.
+                    <h4 className="font-black text-gray-900 dark:text-white tracking-tight text-xl">How it works</h4>
+                    <p className="text-slate-500 text-base mt-1 leading-relaxed max-w-3xl font-medium">
+                        Your budgets automatically synchronize with your transactions. We'll signal a critical warning as you hit <span className="text-rose-500 font-black">90%</span> of your target, keeping you on the path to financial freedom.
                     </p>
                 </div>
             </div>
