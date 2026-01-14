@@ -204,6 +204,14 @@ const Transactions = () => {
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
             />
+
+            {/* Mobile FAB */}
+            <button
+                onClick={() => setIsModalOpen(true)}
+                className="md:hidden fixed bottom-24 right-6 w-14 h-14 bg-blue-600 text-white rounded-full shadow-2xl flex items-center justify-center z-50 active:scale-90 transition-transform shadow-blue-600/40"
+            >
+                <Plus size={28} />
+            </button>
         </div>
     );
 };

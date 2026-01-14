@@ -94,7 +94,7 @@ const Analytics = () => {
     if (loading && transactions.length === 0) {
         return (
             <div className="p-16 flex flex-col items-center justify-center space-y-4">
-                <div className="w-12 h-12 border-4 border-primary-600 border-t-transparent rounded-full animate-spin" />
+                <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
                 <p className="text-slate-500 font-bold uppercase tracking-widest text-xs animate-pulse text-center">Crunching your financial data...</p>
             </div>
         );

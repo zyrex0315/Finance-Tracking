@@ -10,6 +10,9 @@ import useAuthStore from '../context/authStore';
 import useCurrencyStore from '../context/currencyStore';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
+import { useState } from 'react';
+import AddTransactionModal from '../components/Modals/AddTransactionModal';
+import { Plus } from 'lucide-react';
 
 const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'];
 
@@ -49,6 +52,7 @@ const Dashboard = () => {
     const { budgets, fetchBudgets } = useBudgetStore();
     const { currentUser } = useAuthStore();
     const { formatAmount } = useCurrencyStore();
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         if (currentUser) {
@@ -310,7 +314,7 @@ const Dashboard = () => {
                             </thead>
                             <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                                 {recentTransactions.map((t) => (
-                                    <tr key={t.id} className="hover:bg-primary-500/5 transition-all group">
+                                    <tr key={t.id} className="hover:bg-blue-500/5 transition-all group">
                                         <td className="px-4 md:px-8 py-4 md:py-5">
                                             <div className="flex items-center gap-3 md:gap-4">
                                                 <div className={clsx(
@@ -336,6 +340,19 @@ const Dashboard = () => {
                     </div>
                 )}
             </div>
+
+            <AddTransactionModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+            />
+
+            {/* Mobile FAB */}
+            <button
+                onClick={() => setIsModalOpen(true)}
+                className="md:hidden fixed bottom-24 right-6 w-14 h-14 bg-blue-600 text-white rounded-full shadow-2xl flex items-center justify-center z-50 active:scale-90 transition-transform shadow-blue-600/40"
+            >
+                <Plus size={28} />
+            </button>
         </div>
     );
 };

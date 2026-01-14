@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import { Plus, Target, AlertTriangle, Trash2, Edit2 } from 'lucide-react';
 import useBudgetStore from '../context/budgetStore';
 import useTransactionStore from '../context/transactionStore';
@@ -31,7 +32,7 @@ const BudgetCard = ({ category, spent, limit, onDelete, onEdit }) => {
                     </div>
                 </div>
                 <div className="flex gap-2 md:opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button onClick={onEdit} className="p-2 bg-slate-100 dark:bg-white/10 text-slate-500 hover:text-primary-500 rounded-xl transition-all">
+                    <button onClick={onEdit} className="p-2 bg-slate-100 dark:bg-white/10 text-slate-500 hover:text-blue-500 rounded-xl transition-all">
                         <Edit2 size={16} />
                     </button>
                     <button onClick={onDelete} className="p-2 bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white rounded-xl transition-all">
@@ -54,7 +55,7 @@ const BudgetCard = ({ category, spent, limit, onDelete, onEdit }) => {
                             "px-4 py-1.5 rounded-xl text-xs font-black shadow-sm",
                             isOver ? "bg-rose-500/10 text-rose-500" :
                                 isNear ? "bg-amber-500/10 text-amber-500" :
-                                    "bg-primary-500/10 text-primary-500"
+                                    "bg-blue-500/10 text-blue-500"
                         )}>
                             {percentage.toFixed(0)}%
                         </div>
@@ -66,7 +67,7 @@ const BudgetCard = ({ category, spent, limit, onDelete, onEdit }) => {
                                 "h-full rounded-full transition-all duration-1000 relative",
                                 isOver ? "bg-rose-500" :
                                     isNear ? "bg-amber-500" :
-                                        "bg-primary-600"
+                                        "bg-blue-600"
                             )}
                             style={{ width: `${percentage}%` }}
                         >
@@ -128,68 +129,84 @@ const BudgetModal = ({ isOpen, onClose, initialData = null }) => {
 
     if (!isOpen) return null;
 
-    return (
-        <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center sm:p-4 bg-[#0f172a]/80 backdrop-blur-xl animate-in fade-in duration-500">
-            <div className="bg-white dark:bg-[#1e293b] rounded-t-[2.5rem] sm:rounded-[3rem] w-full max-w-md overflow-hidden shadow-2xl border-t sm:border border-gray-100 dark:border-white/10 animate-in slide-in-from-bottom-full sm:zoom-in-95 duration-500 sm:duration-300 relative">
-                {/* Decorative blob in modal */}
-                <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary-600/20 rounded-full blur-3xl pointer-events-none" />
+    return createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center sm:p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-300">
+            <div className="bg-white/95 dark:bg-[#111827]/95 backdrop-blur-2xl w-full max-w-md shadow-2xl border-t sm:border border-gray-100 dark:border-white/10 animate-in slide-in-from-bottom-full sm:zoom-in-95 duration-500 sm:duration-300 flex flex-col max-h-[96dvh] sm:max-h-[min(90vh,800px)] overflow-hidden">
 
-                <div className="p-6 md:p-10 border-b border-gray-50 dark:border-white/10 relative z-10">
+                {/* Mobile Handle */}
+                <div className="sm:hidden flex justify-center pt-3 shrink-0">
+                    <div className="w-12 h-1 bg-gray-200 dark:bg-gray-700 rounded-full" />
+                </div>
+
+                <div className="p-5 md:p-10 border-b border-gray-50 dark:border-white/10 shrink-0 relative bg-gray-50/50 dark:bg-white/5">
                     <h2 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white tracking-tight">
                         {initialData ? 'Update Limit' : 'Smart Budgeting'}
                     </h2>
                     <p className="text-slate-500 text-xs md:text-sm mt-1 font-medium italic">Set clear rules for your financial freedom</p>
+                    {/* Decorative blob in header */}
+                    <div className="absolute -top-12 -right-12 w-24 h-24 bg-blue-600/10 rounded-full blur-2xl pointer-events-none" />
                 </div>
-                <form onSubmit={handleSubmit} className="p-6 md:p-10 space-y-6 md:space-y-8 relative z-10">
-                    <div>
-                        <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-3">Target Category</label>
-                        <select
-                            required
-                            disabled={!!initialData}
-                            value={category}
-                            onChange={(e) => setCategory(e.target.value)}
-                            className="w-full p-4.5 rounded-2xl border border-gray-100 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white focus:ring-4 focus:ring-primary-500/20 outline-none disabled:opacity-50 transition-all font-bold appearance-none cursor-pointer"
-                        >
-                            <option value="">Choose Wisely</option>
-                            {categories.map(cat => (
-                                <option key={cat} value={cat}>{cat}</option>
-                            ))}
-                        </select>
-                    </div>
-                    <div>
-                        <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-3">Monthly Safeguard ({currencyInfo.symbol})</label>
-                        <div className="relative">
-                            <input
-                                type="number"
-                                required
-                                min="1"
-                                value={limit}
-                                onChange={(e) => setLimit(e.target.value)}
-                                placeholder="0.00"
-                                className="w-full p-4.5 pl-14 rounded-2xl border border-gray-100 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white focus:ring-4 focus:ring-primary-500/20 outline-none transition-all font-black text-lg"
-                            />
-                            <span className="absolute left-6 top-1/2 -translate-y-1/2 text-primary-500 font-bold text-lg">{currencyInfo.symbol}</span>
+
+                <form onSubmit={handleSubmit} className="flex-1 flex flex-col min-h-0">
+                    <div className="flex-1 p-5 md:p-10 space-y-6 md:space-y-8 overflow-y-auto min-h-0">
+                        <div>
+                            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-3">Target Category</label>
+                            <div className="relative">
+                                <select
+                                    required
+                                    disabled={!!initialData}
+                                    value={category}
+                                    onChange={(e) => setCategory(e.target.value)}
+                                    className="w-full p-4 rounded-2xl border border-gray-100 dark:border-white/10 bg-gray-50 dark:bg-[#0f172a] text-gray-900 dark:text-white focus:ring-4 focus:ring-blue-500/20 outline-none disabled:opacity-50 transition-all font-bold appearance-none cursor-pointer"
+                                >
+                                    <option value="">Choose Wisely</option>
+                                    {categories.map(cat => (
+                                        <option key={cat} value={cat}>{cat}</option>
+                                    ))}
+                                </select>
+                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-3">Monthly Safeguard ({currencyInfo.symbol})</label>
+                            <div className="relative">
+                                <input
+                                    type="number"
+                                    required
+                                    min="1"
+                                    value={limit}
+                                    onChange={(e) => setLimit(e.target.value)}
+                                    placeholder="0.00"
+                                    className="w-full p-4 pl-14 rounded-2xl border border-gray-100 dark:border-white/10 bg-gray-50 dark:bg-[#0f172a] text-gray-900 dark:text-white focus:ring-4 focus:ring-blue-500/20 outline-none transition-all font-black text-lg"
+                                />
+                                <span className="absolute left-6 top-1/2 -translate-y-1/2 text-blue-500 font-bold text-lg">{currencyInfo.symbol}</span>
+                            </div>
                         </div>
                     </div>
-                    <div className="flex gap-4 pt-4">
+                    <div className="p-5 pb-10 md:p-10 border-t border-gray-50 dark:border-white/10 flex gap-4 bg-white dark:bg-[#111827] shrink-0 mt-auto">
                         <button
                             type="button"
                             onClick={onClose}
-                            className="btn-secondary flex-1 px-6 py-4 rounded-2xl uppercase tracking-widest text-xs"
+                            className="btn-secondary flex-1 px-6 py-4 rounded-2xl uppercase tracking-widest text-[10px] font-black"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
                             disabled={isSaving}
-                            className="btn-primary flex-1 px-6 py-4 rounded-2xl uppercase tracking-widest text-xs"
+                            className="btn-primary flex-1 px-6 py-4 rounded-2xl uppercase tracking-widest text-[10px] font-black shadow-blue-600/20 active:scale-[0.98]"
                         >
                             {isSaving ? 'Saving...' : 'Lock Goal'}
                         </button>
                     </div>
                 </form>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 };
 
@@ -302,6 +319,14 @@ const Budgets = () => {
                 onClose={handleCloseModal}
                 initialData={editingBudget}
             />
+
+            {/* Mobile FAB */}
+            <button
+                onClick={() => setIsModalOpen(true)}
+                className="md:hidden fixed bottom-24 right-6 w-14 h-14 bg-blue-600 text-white rounded-full shadow-2xl flex items-center justify-center z-50 active:scale-90 transition-transform shadow-blue-600/40"
+            >
+                <Plus size={28} />
+            </button>
         </div>
     );
 };
