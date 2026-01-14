@@ -15,44 +15,44 @@ const BudgetCard = ({ category, spent, limit, onDelete, onEdit }) => {
     const isNear = spent > limit * 0.8 && !isOver;
 
     return (
-        <div className="bg-white dark:bg-white/5 backdrop-blur-xl p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] border border-gray-100 dark:border-white/10 transition-all hover:translate-y-[-8px] hover:shadow-2xl hover:shadow-blue-600/10 shadow-xl group">
-            <div className="flex justify-between items-start mb-6">
-                <div className="flex items-center gap-4">
+        <div className="bg-white dark:bg-white/5 backdrop-blur-xl p-3 md:p-8 rounded-2xl md:rounded-[2.5rem] border border-gray-100 dark:border-white/10 transition-all hover:translate-y-[-8px] hover:shadow-2xl hover:shadow-blue-600/10 shadow-xl group">
+            <div className="flex justify-between items-start mb-4 md:mb-6">
+                <div className="flex items-center gap-3 md:gap-4">
                     <div className={clsx(
-                        "p-3 rounded-2xl shadow-lg transition-transform group-hover:rotate-6",
+                        "p-2 md:p-3 rounded-xl md:rounded-2xl shadow-lg transition-transform group-hover:rotate-6",
                         isOver ? "bg-rose-500 text-white shadow-rose-500/30" :
                             isNear ? "bg-amber-500 text-white shadow-amber-500/30" :
                                 "bg-blue-600 text-white shadow-sm"
                     )}>
-                        <Target size={24} />
+                        <Target size={18} className="md:w-6 md:h-6" />
                     </div>
                     <div>
-                        <h3 className="font-bold text-gray-900 dark:text-white tracking-tight text-lg md:text-xl">{category}</h3>
-                        <p className="text-[10px] text-slate-500 uppercase tracking-[0.2em] font-black">Control Limit</p>
+                        <h3 className="font-black text-gray-900 dark:text-white tracking-tight text-base md:text-xl">{category}</h3>
+                        <p className="text-[8px] md:text-[10px] text-slate-500 uppercase tracking-widest font-black">Control Limit</p>
                     </div>
                 </div>
-                <div className="flex gap-2 md:opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button onClick={onEdit} className="p-2 bg-slate-100 dark:bg-white/10 text-slate-500 hover:text-blue-500 rounded-xl transition-all">
-                        <Edit2 size={16} />
+                <div className="flex gap-1.5 md:gap-2 md:opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button onClick={onEdit} className="p-1.5 md:p-2 bg-slate-100 dark:bg-white/10 text-slate-500 hover:text-blue-500 rounded-lg md:rounded-xl transition-all">
+                        <Edit2 size={12} className="md:w-4 md:h-4" />
                     </button>
-                    <button onClick={onDelete} className="p-2 bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white rounded-xl transition-all">
-                        <Trash2 size={16} />
+                    <button onClick={onDelete} className="p-1.5 md:p-2 bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white rounded-lg md:rounded-xl transition-all">
+                        <Trash2 size={12} className="md:w-4 md:h-4" />
                     </button>
                 </div>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-4 md:space-y-6">
                 <div>
-                    <div className="flex justify-between items-center mb-2">
+                    <div className="flex justify-between items-center mb-1.5 md:mb-2">
                         <div className="flex flex-col">
-                            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Utilization</span>
-                            <span className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white tracking-tighter">
+                            <span className="text-[8px] md:text-[10px] font-black text-slate-500 uppercase tracking-widest mb-0.5 md:mb-1">Utilization</span>
+                            <span className="text-lg md:text-3xl font-black text-gray-900 dark:text-white tracking-tighter">
                                 {formatAmount(spent)}
-                                <span className="text-xs md:text-sm font-bold text-slate-500 ml-1 md:ml-2 tracking-tight">/ {formatAmount(limit)}</span>
+                                <span className="text-[10px] md:text-sm font-bold text-slate-500 ml-1 md:ml-2 tracking-tight">/ {formatAmount(limit)}</span>
                             </span>
                         </div>
                         <div className={clsx(
-                            "px-4 py-1.5 rounded-xl text-xs font-black shadow-sm",
+                            "px-2 md:px-4 py-1 rounded-lg md:rounded-xl text-[10px] md:text-xs font-black shadow-sm",
                             isOver ? "bg-rose-500/10 text-rose-500" :
                                 isNear ? "bg-amber-500/10 text-amber-500" :
                                     "bg-blue-500/10 text-blue-500"
@@ -61,7 +61,7 @@ const BudgetCard = ({ category, spent, limit, onDelete, onEdit }) => {
                         </div>
                     </div>
 
-                    <div className="w-full bg-slate-100 dark:bg-white/5 rounded-full h-3.5 overflow-hidden p-0.5 border border-transparent dark:border-white/5">
+                    <div className="w-full bg-slate-100 dark:bg-white/5 rounded-full h-2 md:h-3.5 overflow-hidden p-0.5 border border-transparent dark:border-white/5">
                         <div
                             className={clsx(
                                 "h-full rounded-full transition-all duration-1000 relative",
@@ -76,8 +76,8 @@ const BudgetCard = ({ category, spent, limit, onDelete, onEdit }) => {
                     </div>
                 </div>
 
-                <div className="flex justify-between text-xs font-bold pt-4 border-t border-gray-50 dark:border-white/5">
-                    <span className="text-slate-500 uppercase tracking-[0.1em]">{isOver ? 'Exceeded By' : 'Safe Margin'}</span>
+                <div className="flex justify-between text-[10px] md:text-xs font-bold pt-3 md:pt-4 border-t border-gray-50 dark:border-white/5">
+                    <span className="text-slate-500 uppercase tracking-widest">{isOver ? 'Exceeded By' : 'Safe Margin'}</span>
                     <span className={clsx(
                         "font-black tracking-tight",
                         isOver ? "text-rose-500" : "text-emerald-500"

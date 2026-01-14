@@ -14,18 +14,18 @@ const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899'
 const SummaryCard = ({ title, amount, icon: Icon, color, subtitle }) => {
     const { formatAmount } = useCurrencyStore();
     return (
-        <div className="bg-white dark:bg-white/5 backdrop-blur-xl p-6 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] border border-gray-100 dark:border-white/10 transition-all hover:translate-y-[-4px] hover:shadow-2xl hover:shadow-blue-600/10 duration-300 group">
-            <div className="flex items-center gap-4 md:gap-6">
+        <div className="bg-white dark:bg-white/5 backdrop-blur-xl p-2 md:p-8 rounded-2xl md:rounded-[2.5rem] border border-gray-100 dark:border-white/10 transition-all hover:translate-y-[-4px] hover:shadow-2xl hover:shadow-blue-600/10 duration-300 group">
+            <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-6">
                 <div className={clsx(
-                    "p-4 rounded-2xl shadow-lg transition-transform group-hover:scale-110 group-hover:rotate-3",
+                    "p-1.5 md:p-4 rounded-lg md:rounded-2xl shadow-lg transition-transform group-hover:scale-110 group-hover:rotate-3",
                     color
                 )}>
-                    <Icon size={24} strokeWidth={2.5} />
+                    <Icon size={14} className="md:w-6 md:h-6" strokeWidth={2.5} />
                 </div>
-                <div className="flex-1">
-                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">{title}</p>
-                    <h3 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white tracking-tight">{formatAmount(amount)}</h3>
-                    {subtitle && <p className="text-xs font-bold text-slate-500 dark:text-slate-400 mt-1 italic opacity-80">{subtitle}</p>}
+                <div className="flex-1 min-w-0">
+                    <p className="text-[8px] md:text-[10px] font-black text-slate-500 uppercase tracking-widest mb-0.5 md:mb-1 line-clamp-1">{title}</p>
+                    <h3 className="text-[13px] md:text-2xl font-black text-gray-900 dark:text-white tracking-tight truncate">{formatAmount(amount)}</h3>
+                    {subtitle && <p className="hidden md:block text-xs font-bold text-slate-500 dark:text-slate-400 mt-1 italic opacity-80">{subtitle}</p>}
                 </div>
             </div>
         </div>
@@ -109,7 +109,7 @@ const Analytics = () => {
                     <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm md:text-base italic">Deep analytical insights for your wealth strategy</p>
                 </div>
 
-                <div className="flex bg-white/5 backdrop-blur-md p-1.5 rounded-2xl border border-gray-100 dark:border-white/10 shadow-lg w-full md:w-auto">
+                <div className="flex bg-white/5 backdrop-blur-md p-1 rounded-xl md:rounded-2xl border border-gray-100 dark:border-white/10 shadow-sm md:shadow-lg w-full md:w-auto">
                     {[
                         { label: '7D', value: '7' },
                         { label: '30D', value: '30' },
@@ -120,7 +120,7 @@ const Analytics = () => {
                             key={range.value}
                             onClick={() => setTimeRange(range.value)}
                             className={clsx(
-                                "px-4 md:px-6 py-2.5 rounded-xl text-[10px] font-black tracking-widest transition-all flex-1 md:flex-none",
+                                "px-2 md:px-6 py-1.5 md:py-2.5 rounded-lg md:rounded-xl text-[9px] md:text-[10px] font-black tracking-widest transition-all flex-1 md:flex-none",
                                 timeRange === range.value
                                     ? 'bg-blue-600 text-white shadow-md'
                                     : 'text-slate-500 hover:text-blue-500 hover:bg-white/10'
@@ -133,7 +133,7 @@ const Analytics = () => {
             </div>
 
             {/* Summary Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
+            <div className="grid grid-cols-3 gap-3 md:gap-8">
                 <SummaryCard
                     title="Total Income"
                     amount={totalIncome}

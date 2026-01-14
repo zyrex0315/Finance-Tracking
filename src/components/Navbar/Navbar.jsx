@@ -5,13 +5,13 @@ const Navbar = ({ title }) => {
     const { theme, toggleTheme } = useThemeStore();
 
     return (
-        <header className="bg-white/70 dark:bg-[#0f172a]/70 backdrop-blur-xl border-b border-gray-200 dark:border-white/10 h-20 flex items-center justify-between px-4 md:px-8 sticky top-0 z-20 transition-all duration-300">
+        <header className="bg-white/70 dark:bg-[#0f172a]/70 backdrop-blur-xl border-b border-gray-200 dark:border-white/10 h-16 md:h-20 flex items-center justify-between px-3 md:px-8 sticky top-0 z-20 transition-all duration-300">
             <div>
-                <h1 className="text-lg md:text-xl font-bold text-gray-900 dark:text-white tracking-tight">{title}</h1>
+                <h1 className="text-base md:text-xl font-black text-gray-900 dark:text-white tracking-tight">{title}</h1>
                 <p className="hidden md:block text-[10px] text-slate-500 font-medium uppercase tracking-[0.2em] mt-0.5">Overview</p>
             </div>
 
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4 md:gap-6">
                 <div className="relative hidden lg:block group">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500 transition-colors" size={16} />
                     <input

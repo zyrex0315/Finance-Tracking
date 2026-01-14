@@ -26,20 +26,20 @@ const DashboardStats = ({ title, amount, type, icon: Icon }) => {
     if (isExpense) colorClass = 'text-rose-500 dark:text-rose-400';
 
     return (
-        <div className="bg-white dark:bg-white/5 backdrop-blur-xl p-6 rounded-3xl border border-gray-100 dark:border-white/10 transition-all hover:translate-y-[-4px] hover:shadow-xl duration-300 group">
-            <div className="flex items-center justify-between mb-4">
+        <div className="bg-white dark:bg-white/5 backdrop-blur-xl p-2 md:p-6 rounded-2xl md:rounded-3xl border border-gray-100 dark:border-white/10 transition-all hover:translate-y-[-4px] hover:shadow-xl duration-300 group">
+            <div className="flex items-center justify-between mb-1.5 md:mb-4">
                 <div className={clsx(
-                    'p-3 rounded-2xl transition-colors duration-300',
+                    'p-1.5 md:p-3 rounded-lg md:rounded-2xl transition-colors duration-300',
                     isIncome ? 'bg-emerald-500/10 text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white' :
                         isExpense ? 'bg-rose-500/10 text-rose-500 group-hover:bg-rose-500 group-hover:text-white' :
                             'bg-blue-500/10 text-blue-500 group-hover:bg-blue-500 group-hover:text-white'
                 )}>
-                    <Icon size={24} />
+                    <Icon size={14} className="md:w-6 md:h-6" />
                 </div>
             </div>
             <div>
-                <p className="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">{title}</p>
-                <h3 className={`text-2xl font-bold mt-1 tracking-tight ${colorClass}`}>
+                <p className="text-slate-500 dark:text-slate-400 text-[8px] md:text-xs font-black uppercase tracking-wider line-clamp-1">{title}</p>
+                <h3 className={`text-[13px] md:text-2xl font-black mt-0.5 md:mt-1 tracking-tight truncate ${colorClass}`}>
                     {formatAmount(amount)}
                 </h3>
             </div>
@@ -175,9 +175,9 @@ const Dashboard = () => {
             )}
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
+            <div className="grid grid-cols-3 gap-3 md:gap-8">
                 <DashboardStats
-                    title="Total Balance"
+                    title="Total Savings"
                     amount={balance}
                     type="balance"
                     icon={CreditCard}
@@ -308,28 +308,28 @@ const Dashboard = () => {
                         <table className="w-full text-left">
                             <thead className="bg-slate-500/5 text-slate-500 text-[10px] uppercase font-bold tracking-[0.1em]">
                                 <tr>
-                                    <th className="px-4 md:px-8 py-4">Transaction</th>
-                                    <th className="px-4 md:px-8 py-4 text-right">Amount</th>
+                                    <th className="px-3 md:px-8 py-3 md:py-4">Transaction</th>
+                                    <th className="px-3 md:px-8 py-3 md:py-4 text-right">Amount</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                                 {recentTransactions.map((t) => (
                                     <tr key={t.id} className="hover:bg-blue-500/5 transition-all group">
-                                        <td className="px-4 md:px-8 py-4 md:py-5">
-                                            <div className="flex items-center gap-3 md:gap-4">
+                                        <td className="px-3 md:px-8 py-3 md:py-5">
+                                            <div className="flex items-center gap-2.5 md:gap-4">
                                                 <div className={clsx(
-                                                    'w-9 h-9 md:w-10 md:h-10 rounded-xl flex items-center justify-center font-bold text-xs shadow-sm transition-transform group-hover:scale-110 shrink-0',
+                                                    'w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl flex items-center justify-center font-bold text-[10px] md:text-xs shadow-sm transition-transform group-hover:scale-110 shrink-0',
                                                     t.type === 'income' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-rose-500/10 text-rose-500'
                                                 )}>
                                                     {t.category[0].toUpperCase()}
                                                 </div>
                                                 <div className="min-w-0 overflow-hidden">
-                                                    <p className="font-bold text-gray-900 dark:text-white tracking-tight truncate text-sm md:text-base">{t.description || "Untitled"}</p>
-                                                    <p className="text-[10px] uppercase font-bold text-slate-500 mt-0.5 tracking-wider truncate">{t.category} • {t.date ? new Date(t.date).toLocaleDateString() : 'N/A'}</p>
+                                                    <p className="font-black text-gray-900 dark:text-white tracking-tight truncate text-[13px] md:text-base">{t.description || "Untitled"}</p>
+                                                    <p className="text-[9px] uppercase font-bold text-slate-500 mt-0.5 tracking-wider truncate">{t.category} • {t.date ? new Date(t.date).toLocaleDateString() : 'N/A'}</p>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className={`px-4 md:px-8 py-4 md:py-5 text-right font-bold text-base md:text-lg tracking-tight shrink-0 ${t.type === 'income' ? 'text-emerald-500' : 'text-gray-900 dark:text-white'
+                                        <td className={`px-3 md:px-8 py-3 md:py-5 text-right font-black text-[13px] md:text-lg tracking-tight shrink-0 ${t.type === 'income' ? 'text-emerald-500' : 'text-gray-900 dark:text-white'
                                             }`}>
                                             {t.type === 'income' ? '+' : '-'}{formatAmount(t.amount)}
                                         </td>

@@ -59,22 +59,22 @@ const Settings = () => {
                                 <div key={item.label}>
                                     <div
                                         onClick={item.type === 'toggle' ? item.action : undefined}
-                                        className={`p-4 md:p-6 flex items-center justify-between transition-all ${item.type === 'toggle' ? 'hover:bg-blue-500/5 cursor-pointer' : ''} group`}
+                                        className={`p-3 md:p-6 flex items-center justify-between transition-all ${item.type === 'toggle' ? 'hover:bg-blue-500/5 cursor-pointer' : ''} group`}
                                     >
-                                        <div className="flex items-center gap-4 md:gap-6">
+                                        <div className="flex items-center gap-3 md:gap-6">
                                             <div className={clsx(
-                                                "p-3 md:p-4 rounded-2xl shadow-lg transition-transform group-hover:scale-110",
+                                                "p-2 md:p-4 rounded-xl md:rounded-2xl shadow-lg transition-transform group-hover:scale-110",
                                                 item.color === 'blue' ? 'bg-blue-600/10 text-blue-500 shadow-blue-600/10' :
                                                     item.color === 'indigo' ? 'bg-indigo-500/10 text-indigo-500 shadow-indigo-500/10' :
                                                         item.color === 'purple' ? 'bg-purple-500/10 text-purple-500 shadow-purple-500/10' :
                                                             item.color === 'emerald' ? 'bg-emerald-500/10 text-emerald-500 shadow-emerald-500/10' :
                                                                 'bg-amber-500/10 text-amber-500 shadow-amber-500/10'
                                             )}>
-                                                <item.icon size={22} strokeWidth={2.5} />
+                                                <item.icon size={18} className="md:w-6 md:h-6" strokeWidth={2.5} />
                                             </div>
-                                            <div>
-                                                <p className="font-bold text-gray-900 dark:text-white leading-tight text-base md:text-lg tracking-tight">{item.label}</p>
-                                                <p className="text-[10px] md:text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">{item.desc}</p>
+                                            <div className="min-w-0">
+                                                <p className="font-black text-gray-900 dark:text-white leading-tight text-sm md:text-lg tracking-tight truncate">{item.label}</p>
+                                                <p className="text-[9px] md:text-xs text-slate-500 dark:text-slate-400 mt-0.5 md:mt-1 font-medium truncate">{item.desc}</p>
                                             </div>
                                         </div>
 
@@ -88,18 +88,18 @@ const Settings = () => {
                                     </div>
 
                                     {item.type === 'selector' && (
-                                        <div className="px-4 pb-6 md:px-6 md:pb-8 flex flex-wrap gap-2 md:gap-3">
+                                        <div className="px-3 pb-4 md:px-6 md:pb-8 flex flex-wrap gap-2 md:gap-3">
                                             {item.options.map(opt => (
                                                 <button
                                                     key={opt.value}
                                                     onClick={() => item.onSelect(opt.value)}
-                                                    className={`flex items-center gap-2 px-4 md:px-6 py-2.5 md:py-3 rounded-[14px] md:rounded-2xl text-[10px] md:text-xs font-black transition-all border uppercase tracking-widest ${item.currentValue === opt.value
+                                                    className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-6 py-2 md:py-3 rounded-xl md:rounded-2xl text-[9px] md:text-xs font-black transition-all border uppercase tracking-widest ${item.currentValue === opt.value
                                                         ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
                                                         : 'bg-gray-50 dark:bg-white/5 text-slate-500 dark:text-slate-400 border-gray-100 dark:border-white/10 hover:border-blue-500/50 hover:bg-white dark:hover:bg-white/10'
                                                         }`}
                                                 >
                                                     {opt.label}
-                                                    {item.currentValue === opt.value && <Check size={14} strokeWidth={4} />}
+                                                    {item.currentValue === opt.value && <Check size={12} strokeWidth={4} className="md:w-3.5 md:h-3.5" />}
                                                 </button>
                                             ))}
                                         </div>
@@ -112,15 +112,15 @@ const Settings = () => {
 
                 <button
                     onClick={logout}
-                    className="w-full p-5 md:p-6 flex items-center justify-between bg-rose-500/5 dark:bg-rose-500/5 rounded-[2rem] md:rounded-[2.5rem] border border-rose-500/20 text-rose-500 hover:bg-rose-500/10 transition-all group overflow-hidden relative"
+                    className="w-full p-4 md:p-6 flex items-center justify-between bg-rose-500/5 dark:bg-rose-500/5 rounded-2xl md:rounded-[2.5rem] border border-rose-500/20 text-rose-500 hover:bg-rose-500/10 transition-all group overflow-hidden relative"
                 >
-                    <div className="flex items-center gap-4 md:gap-6 relative z-10">
-                        <div className="p-3 md:p-4 bg-rose-500 text-white rounded-xl md:rounded-2xl shadow-xl shadow-rose-500/30 group-hover:rotate-12 transition-transform duration-500">
-                            <LogOut size={22} className="md:w-6 md:h-6" strokeWidth={2.5} />
+                    <div className="flex items-center gap-3 md:gap-6 relative z-10">
+                        <div className="p-2.5 md:p-4 bg-rose-500 text-white rounded-lg md:rounded-2xl shadow-xl shadow-rose-500/30 group-hover:rotate-12 transition-transform duration-500">
+                            <LogOut size={18} className="md:w-6 md:h-6" strokeWidth={2.5} />
                         </div>
                         <div className="text-left">
-                            <p className="font-black text-lg md:text-xl leading-tight uppercase tracking-widest">Terminate Session</p>
-                            <p className="text-[10px] md:text-xs font-bold opacity-60 mt-0.5">Safely log out of your account</p>
+                            <p className="font-black text-sm md:text-xl leading-tight uppercase tracking-widest">Terminate Session</p>
+                            <p className="text-[9px] md:text-xs font-bold opacity-60 mt-0.5">Safely log out of your account</p>
                         </div>
                     </div>
                     <div className="hidden md:block pr-4 relative z-10">
