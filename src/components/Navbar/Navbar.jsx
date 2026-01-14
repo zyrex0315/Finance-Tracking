@@ -5,10 +5,10 @@ const Navbar = ({ title }) => {
     const { theme, toggleTheme } = useThemeStore();
 
     return (
-        <header className="bg-white/70 dark:bg-[#0f172a]/70 backdrop-blur-xl border-b border-gray-200 dark:border-white/10 h-20 flex items-center justify-between px-8 sticky top-0 z-20 transition-all duration-300">
+        <header className="bg-white/70 dark:bg-[#0f172a]/70 backdrop-blur-xl border-b border-gray-200 dark:border-white/10 h-20 flex items-center justify-between px-4 md:px-8 sticky top-0 z-20 transition-all duration-300">
             <div>
-                <h1 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">{title}</h1>
-                <p className="text-[10px] text-slate-500 font-medium uppercase tracking-[0.2em] mt-0.5">Overview</p>
+                <h1 className="text-lg md:text-xl font-bold text-gray-900 dark:text-white tracking-tight">{title}</h1>
+                <p className="hidden md:block text-[10px] text-slate-500 font-medium uppercase tracking-[0.2em] mt-0.5">Overview</p>
             </div>
 
             <div className="flex items-center gap-6">

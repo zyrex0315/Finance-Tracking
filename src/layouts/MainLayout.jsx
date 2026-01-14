@@ -1,6 +1,7 @@
 import { Outlet, useLocation } from 'react-router-dom';
 import Sidebar from '../components/Sidebar/Sidebar';
 import Navbar from '../components/Navbar/Navbar';
+import MobileNav from '../components/Navigation/MobileNav';
 
 const MainLayout = () => {
     const location = useLocation();
@@ -26,10 +27,11 @@ const MainLayout = () => {
             <Sidebar />
             <div className="flex-1 md:ml-64 flex flex-col min-h-screen relative z-10">
                 <Navbar title={getPageTitle(location.pathname)} />
-                <main className="flex-1 overflow-x-hidden overflow-y-auto">
+                <main className="flex-1 overflow-x-hidden overflow-y-auto pb-24 md:pb-0">
                     <Outlet />
                 </main>
             </div>
+            <MobileNav />
         </div>
     );
 };
