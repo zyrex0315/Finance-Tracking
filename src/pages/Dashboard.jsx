@@ -130,15 +130,15 @@ const Dashboard = () => {
     }, [transactions, budgets]);
 
     return (
-        <div className="p-8 max-w-7xl mx-auto space-y-10">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+        <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6 md:space-y-10">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Financial Overview</h1>
                     <p className="text-slate-500 dark:text-slate-400 mt-1">Ready to manage your wealth, {currentUser?.displayName?.split(' ')[0] || 'User'}?</p>
                 </div>
-                <div className="bg-white/5 backdrop-blur-md px-6 py-4 rounded-3xl border border-white/10 flex flex-col items-end">
+                <div className="bg-white/5 backdrop-blur-md px-5 py-3 md:px-6 md:py-4 rounded-3xl border border-white/10 flex flex-col items-start md:items-end w-full md:w-auto">
                     <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-none mb-1">Total Balance</p>
-                    <p className={`text-2xl font-bold tracking-tight ${balance >= 0 ? 'text-primary-500' : 'text-rose-500'}`}>
+                    <p className={`text-xl md:text-2xl font-bold tracking-tight ${balance >= 0 ? 'text-blue-500' : 'text-rose-500'}`}>
                         {formatAmount(balance)}
                     </p>
                 </div>
@@ -171,7 +171,7 @@ const Dashboard = () => {
             )}
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
                 <DashboardStats
                     title="Total Balance"
                     amount={balance}
@@ -204,7 +204,7 @@ const Dashboard = () => {
                             <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Activity Trend</h2>
                         </div>
                     </div>
-                    <div className="h-[280px] w-full">
+                    <div className="h-[250px] md:h-[300px] w-full">
                         {trendData.length > 0 ? (
                             <ResponsiveContainer width="100%" height="100%">
                                 <AreaChart data={trendData}>
@@ -239,10 +239,10 @@ const Dashboard = () => {
                         </div>
                         <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Category Mix</h2>
                     </div>
-                    <div className="h-[280px] w-full flex flex-col md:flex-row items-center gap-8">
+                    <div className="min-h-[280px] h-auto lg:h-[280px] w-full flex flex-col lg:flex-row items-center gap-8 px-2">
                         {categoryData.length > 0 ? (
                             <>
-                                <div className="w-full md:w-1/2 h-full">
+                                <div className="w-full lg:w-1/2 h-[200px] lg:h-full">
                                     <ResponsiveContainer width="100%" height="100%">
                                         <PieChart>
                                             <Pie
@@ -262,7 +262,7 @@ const Dashboard = () => {
                                         </PieChart>
                                     </ResponsiveContainer>
                                 </div>
-                                <div className="w-full md:w-1/2 space-y-4">
+                                <div className="w-full lg:w-1/2 space-y-3 md:space-y-4 pb-4 lg:pb-0">
                                     {categoryData.map((item, index) => (
                                         <div key={item.name} className="flex items-center justify-between">
                                             <div className="flex items-center gap-3">
@@ -290,7 +290,7 @@ const Dashboard = () => {
                         </div>
                         <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Recent Activity</h2>
                     </div>
-                    <Link to="/transactions" className="px-5 py-2.5 bg-primary-600 text-white text-xs font-bold rounded-xl hover:bg-primary-500 transition-all shadow-lg shadow-primary-600/20 uppercase tracking-widest">
+                    <Link to="/transactions" className="btn-primary px-4 md:px-5 py-2 md:py-2.5 text-xs">
                         Full History
                     </Link>
                 </div>
@@ -304,28 +304,28 @@ const Dashboard = () => {
                         <table className="w-full text-left">
                             <thead className="bg-slate-500/5 text-slate-500 text-[10px] uppercase font-bold tracking-[0.1em]">
                                 <tr>
-                                    <th className="px-8 py-4">Transaction</th>
-                                    <th className="px-8 py-4 text-right">Amount</th>
+                                    <th className="px-4 md:px-8 py-4">Transaction</th>
+                                    <th className="px-4 md:px-8 py-4 text-right">Amount</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                                 {recentTransactions.map((t) => (
                                     <tr key={t.id} className="hover:bg-primary-500/5 transition-all group">
-                                        <td className="px-8 py-5">
-                                            <div className="flex items-center gap-4">
+                                        <td className="px-4 md:px-8 py-4 md:py-5">
+                                            <div className="flex items-center gap-3 md:gap-4">
                                                 <div className={clsx(
-                                                    'w-10 h-10 rounded-xl flex items-center justify-center font-bold text-xs shadow-sm transition-transform group-hover:scale-110',
+                                                    'w-9 h-9 md:w-10 md:h-10 rounded-xl flex items-center justify-center font-bold text-xs shadow-sm transition-transform group-hover:scale-110 shrink-0',
                                                     t.type === 'income' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-rose-500/10 text-rose-500'
                                                 )}>
                                                     {t.category[0].toUpperCase()}
                                                 </div>
-                                                <div>
-                                                    <p className="font-bold text-gray-900 dark:text-white tracking-tight">{t.description || "Untitled"}</p>
-                                                    <p className="text-[10px] uppercase font-bold text-slate-500 mt-0.5 tracking-wider">{t.category} • {t.date ? new Date(t.date).toLocaleDateString() : 'N/A'}</p>
+                                                <div className="min-w-0 overflow-hidden">
+                                                    <p className="font-bold text-gray-900 dark:text-white tracking-tight truncate text-sm md:text-base">{t.description || "Untitled"}</p>
+                                                    <p className="text-[10px] uppercase font-bold text-slate-500 mt-0.5 tracking-wider truncate">{t.category} • {t.date ? new Date(t.date).toLocaleDateString() : 'N/A'}</p>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className={`px-8 py-5 text-right font-bold text-lg tracking-tight ${t.type === 'income' ? 'text-emerald-500' : 'text-gray-900 dark:text-white'
+                                        <td className={`px-4 md:px-8 py-4 md:py-5 text-right font-bold text-base md:text-lg tracking-tight shrink-0 ${t.type === 'income' ? 'text-emerald-500' : 'text-gray-900 dark:text-white'
                                             }`}>
                                             {t.type === 'income' ? '+' : '-'}{formatAmount(t.amount)}
                                         </td>

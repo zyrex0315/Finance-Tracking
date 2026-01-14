@@ -55,10 +55,10 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
             <div className="bg-white dark:bg-gray-800 w-full max-w-lg rounded-[2.5rem] overflow-hidden shadow-2xl border border-gray-100 dark:border-gray-700 animate-in zoom-in-95 duration-200">
 
                 {/* Header */}
-                <div className="p-8 border-b border-gray-50 dark:border-gray-700 flex justify-between items-center bg-gray-50/50 dark:bg-gray-900/20">
+                <div className="p-6 md:p-8 border-b border-gray-50 dark:border-gray-700 flex justify-between items-center bg-gray-50/50 dark:bg-gray-900/20">
                     <div>
-                        <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">New Record</h3>
-                        <p className="text-gray-400 text-sm mt-0.5">Capture your financial activity</p>
+                        <h3 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white tracking-tight">New Record</h3>
+                        <p className="text-gray-400 text-xs md:text-sm mt-0.5">Capture your financial activity</p>
                     </div>
                     <button
                         onClick={onClose}
@@ -68,7 +68,7 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="p-8 space-y-6">
+                <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-6">
                     {/* Type Toggle */}
                     <div className="flex bg-gray-50 dark:bg-gray-900 p-1.5 rounded-2xl border border-gray-100 dark:border-gray-700">
                         <button
@@ -169,20 +169,20 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
                     </div>
 
                     {/* Actions */}
-                    <div className="flex gap-4 pt-4">
+                    <div className="flex gap-4 pt-4 md:pt-4">
                         <button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 py-4 rounded-2xl font-bold text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-750 transition-all border border-gray-100 dark:border-gray-700"
+                            className="flex-1 py-3.5 md:py-4 rounded-2xl font-bold text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-750 transition-all border border-gray-100 dark:border-gray-700 text-sm"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="flex-[2] py-4 rounded-2xl font-black text-white bg-blue-600 hover:bg-blue-700 shadow-lg transition-all disabled:opacity-50"
+                            className="flex-[2] py-3.5 md:py-4 rounded-2xl font-black text-white bg-blue-600 hover:bg-blue-700 shadow-lg transition-all disabled:opacity-50 text-sm md:text-base"
                         >
-                            {isLoading ? 'PROCESSING...' : 'ADD TRANSACTION'}
+                            {isLoading ? '...' : 'ADD TRANSACTION'}
                         </button>
                     </div>
                 </form>
