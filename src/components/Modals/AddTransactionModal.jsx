@@ -51,8 +51,8 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
         : ['Salary', 'Freelance', 'Investments', 'Gifts', 'Other'];
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-300">
-            <div className="bg-white dark:bg-gray-800 w-full max-w-lg rounded-[2.5rem] overflow-hidden shadow-2xl border border-gray-100 dark:border-gray-700 animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center sm:p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-300">
+            <div className="bg-white dark:bg-gray-800 w-full max-w-lg rounded-t-[2.5rem] sm:rounded-[2.5rem] overflow-hidden shadow-2xl border-t sm:border border-gray-100 dark:border-gray-700 animate-in slide-in-from-bottom-full sm:zoom-in-95 duration-500 sm:duration-200">
 
                 {/* Header */}
                 <div className="p-6 md:p-8 border-b border-gray-50 dark:border-gray-700 flex justify-between items-center bg-gray-50/50 dark:bg-gray-900/20">

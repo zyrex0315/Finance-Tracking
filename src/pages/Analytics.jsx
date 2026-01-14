@@ -14,8 +14,8 @@ const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899'
 const SummaryCard = ({ title, amount, icon: Icon, color, subtitle }) => {
     const { formatAmount } = useCurrencyStore();
     return (
-        <div className="bg-white dark:bg-white/5 backdrop-blur-xl p-8 rounded-[2.5rem] border border-gray-100 dark:border-white/10 transition-all hover:translate-y-[-4px] hover:shadow-2xl hover:shadow-primary-600/10 duration-300 group">
-            <div className="flex items-center gap-6">
+        <div className="bg-white dark:bg-white/5 backdrop-blur-xl p-6 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] border border-gray-100 dark:border-white/10 transition-all hover:translate-y-[-4px] hover:shadow-2xl hover:shadow-blue-600/10 duration-300 group">
+            <div className="flex items-center gap-4 md:gap-6">
                 <div className={clsx(
                     "p-4 rounded-2xl shadow-lg transition-transform group-hover:scale-110 group-hover:rotate-3",
                     color
@@ -24,7 +24,7 @@ const SummaryCard = ({ title, amount, icon: Icon, color, subtitle }) => {
                 </div>
                 <div className="flex-1">
                     <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">{title}</p>
-                    <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">{formatAmount(amount)}</h3>
+                    <h3 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white tracking-tight">{formatAmount(amount)}</h3>
                     {subtitle && <p className="text-xs font-bold text-slate-500 dark:text-slate-400 mt-1 italic opacity-80">{subtitle}</p>}
                 </div>
             </div>
@@ -101,15 +101,15 @@ const Analytics = () => {
     }
 
     return (
-        <div className="p-8 max-w-7xl mx-auto space-y-12 animate-in fade-in duration-700">
+        <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-8 md:space-y-12 animate-in fade-in duration-700">
             {/* Header Area */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 md:gap-8">
                 <div>
-                    <h1 className="text-4xl font-black text-gray-900 dark:text-white tracking-tight">Intelligence Hub</h1>
-                    <p className="text-slate-500 dark:text-slate-400 mt-1 italic">Deep analytical insights for your wealth strategy</p>
+                    <h1 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white tracking-tight">Intelligence Hub</h1>
+                    <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm md:text-base italic">Deep analytical insights for your wealth strategy</p>
                 </div>
 
-                <div className="flex bg-white/5 backdrop-blur-md p-1.5 rounded-2xl border border-gray-100 dark:border-white/10 shadow-lg">
+                <div className="flex bg-white/5 backdrop-blur-md p-1.5 rounded-2xl border border-gray-100 dark:border-white/10 shadow-lg w-full md:w-auto">
                     {[
                         { label: '7D', value: '7' },
                         { label: '30D', value: '30' },
@@ -120,10 +120,10 @@ const Analytics = () => {
                             key={range.value}
                             onClick={() => setTimeRange(range.value)}
                             className={clsx(
-                                "px-6 py-2.5 rounded-xl text-[10px] font-black tracking-widest transition-all",
+                                "px-4 md:px-6 py-2.5 rounded-xl text-[10px] font-black tracking-widest transition-all flex-1 md:flex-none",
                                 timeRange === range.value
                                     ? 'bg-blue-600 text-white shadow-md'
-                                    : 'text-slate-500 hover:text-primary-500 hover:bg-white/10'
+                                    : 'text-slate-500 hover:text-blue-500 hover:bg-white/10'
                             )}
                         >
                             {range.label}
@@ -133,7 +133,7 @@ const Analytics = () => {
             </div>
 
             {/* Summary Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
                 <SummaryCard
                     title="Total Income"
                     amount={totalIncome}
@@ -150,22 +150,22 @@ const Analytics = () => {
                     title="Liquid Savings"
                     amount={savings}
                     icon={PiggyBank}
-                    color="bg-primary-500/10 text-primary-500 shadow-primary-500/20"
+                    color="bg-blue-500/10 text-blue-500 shadow-blue-500/20"
                     subtitle={`Efficiency: ${savingsRate.toFixed(1)}%`}
                 />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                 {/* Category Mix */}
-                <div className="bg-white dark:bg-white/5 backdrop-blur-xl p-10 rounded-[2.5rem] shadow-2xl border border-gray-100 dark:border-white/10 relative overflow-hidden">
-                    <div className="flex items-center gap-4 mb-10 relative z-10">
+                <div className="bg-white dark:bg-white/5 backdrop-blur-xl p-6 md:p-10 rounded-[2rem] md:rounded-[2.5rem] shadow-2xl border border-gray-100 dark:border-white/10 relative overflow-hidden">
+                    <div className="flex items-center gap-4 mb-8 md:mb-10 relative z-10">
                         <div className="p-3 bg-purple-500/10 text-purple-500 rounded-2xl">
                             <PieChartIcon size={24} strokeWidth={2.5} />
                         </div>
-                        <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Category Distribution</h2>
+                        <h2 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white tracking-tight">Category Distribution</h2>
                     </div>
 
-                    <div className="h-[350px] w-full relative z-10">
+                    <div className="h-[300px] md:h-[350px] w-full relative z-10">
                         {categoryData.length > 0 ? (
                             <ResponsiveContainer width="100%" height="100%">
                                 <PieChart>
@@ -202,15 +202,15 @@ const Analytics = () => {
                 </div>
 
                 {/* Trend Analysis */}
-                <div className="bg-white dark:bg-white/5 backdrop-blur-xl p-10 rounded-[2.5rem] shadow-2xl border border-gray-100 dark:border-white/10 relative overflow-hidden">
-                    <div className="flex items-center gap-4 mb-10 relative z-10">
-                        <div className="p-3 bg-primary-500/10 text-primary-500 rounded-2xl">
+                <div className="bg-white dark:bg-white/5 backdrop-blur-xl p-6 md:p-10 rounded-[2rem] md:rounded-[2.5rem] shadow-2xl border border-gray-100 dark:border-white/10 relative overflow-hidden">
+                    <div className="flex items-center gap-4 mb-8 md:mb-10 relative z-10">
+                        <div className="p-3 bg-blue-500/10 text-blue-500 rounded-2xl">
                             <Activity size={24} strokeWidth={2.5} />
                         </div>
-                        <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Flow Analysis</h2>
+                        <h2 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white tracking-tight">Flow Analysis</h2>
                     </div>
 
-                    <div className="h-[350px] w-full relative z-10">
+                    <div className="h-[300px] md:h-[350px] w-full relative z-10">
                         {trendData.length > 0 ? (
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart data={trendData}>
@@ -247,16 +247,16 @@ const Analytics = () => {
                 </div>
 
                 {/* Granular Breakdown */}
-                <div className="bg-white dark:bg-white/5 backdrop-blur-xl p-10 rounded-[2.5rem] shadow-2xl border border-gray-100 dark:border-white/10 lg:col-span-2 relative overflow-hidden">
-                    <div className="flex items-center gap-4 mb-10">
+                <div className="bg-white dark:bg-white/5 backdrop-blur-xl p-6 md:p-10 rounded-[2rem] md:rounded-[2.5rem] shadow-2xl border border-gray-100 dark:border-white/10 lg:col-span-2 relative overflow-hidden">
+                    <div className="flex items-center gap-4 mb-8 md:mb-10">
                         <div className="p-3 bg-amber-500/10 text-amber-500 rounded-2xl">
                             <TrendingDown size={24} strokeWidth={2.5} />
                         </div>
-                        <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Spending Structural Breakdown</h2>
+                        <h2 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white tracking-tight">Spending Structural Breakdown</h2>
                     </div>
 
                     {categoryData.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-10">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-8 md:gap-x-16 md:gap-y-10">
                             {categoryData.map((cat, index) => {
                                 const percentage = (cat.value / totalExpense) * 100;
                                 const color = COLORS[index % COLORS.length];
@@ -265,9 +265,9 @@ const Analytics = () => {
                                         <div className="flex justify-between items-end px-2">
                                             <div className="space-y-1">
                                                 <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{cat.name}</span>
-                                                <p className="text-lg font-black text-gray-900 dark:text-white tracking-tight">{formatAmount(cat.value)}</p>
+                                                <p className="text-base md:text-lg font-black text-gray-900 dark:text-white tracking-tight">{formatAmount(cat.value)}</p>
                                             </div>
-                                            <span className="text-xs font-black text-primary-500 bg-primary-500/10 px-3 py-1 rounded-lg">{percentage.toFixed(1)}%</span>
+                                            <span className="text-[10px] md:text-xs font-black text-blue-500 bg-blue-500/10 px-2 md:px-3 py-1 rounded-lg">{percentage.toFixed(1)}%</span>
                                         </div>
                                         <div className="w-full bg-slate-500/10 rounded-full h-3.5 p-0.5 overflow-hidden">
                                             <div

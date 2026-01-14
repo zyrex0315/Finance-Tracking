@@ -45,7 +45,7 @@ const Sidebar = () => {
                                 'flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium group',
                                 isActive
                                     ? 'bg-blue-600 text-white shadow-md'
-                                    : 'text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-primary-600 dark:hover:text-white'
+                                    : 'text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-blue-600 dark:hover:text-white'
                             )}
                         >
                             <Icon size={20} className={clsx('transition-transform duration-200 group-hover:scale-110', isActive ? 'text-white' : '')} />
@@ -58,7 +58,7 @@ const Sidebar = () => {
             <div className="p-4 mt-auto">
                 <div className="p-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/10 mb-4 transition-all hover:bg-white/10">
                     <div className="flex items-center gap-3 mb-3">
-                        <div className="w-10 h-10 rounded-xl bg-primary-600 flex items-center justify-center text-white font-bold shrink-0 shadow-lg shadow-primary-600/20">
+                        <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold shrink-0 shadow-lg shadow-blue-600/20">
                             {currentUser?.email?.[0].toUpperCase() || 'U'}
                         </div>
                         <div className="overflow-hidden">
