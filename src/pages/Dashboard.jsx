@@ -1,4 +1,3 @@
-
 import { useEffect, useMemo, useState } from 'react';
 import {
     CreditCard,
@@ -74,11 +73,7 @@ const DashboardStats = ({
                 'dark:bg-[#11151C] dark:border-white/[0.07]'
             )}
         >
-
-
-
             <div className="relative flex items-start justify-between">
-
                 <div
                     className={clsx(
                         'flex h-10 w-10 items-center justify-center rounded-xl',
@@ -107,7 +102,6 @@ const DashboardStats = ({
             </div>
 
             <div className="relative mt-6">
-
                 <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
                     {title}
                 </p>
@@ -178,9 +172,7 @@ const SectionHeader = ({
     action,
 }) => (
     <div className="flex items-center justify-between">
-
         <div className="flex items-center gap-3">
-
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-600 dark:bg-white/[0.06] dark:text-slate-300">
                 <Icon size={16} strokeWidth={1.8} />
             </div>
@@ -196,7 +188,6 @@ const SectionHeader = ({
                     </p>
                 )}
             </div>
-
         </div>
 
         {action}
@@ -417,7 +408,7 @@ const Dashboard = () => {
     ===================================================== */
 
     return (
-        <div className="min-h-full bg-[#F6F7F9] text-slate-900 dark:bg-[#080B10] dark:text-slate-100">
+        <div className="min-h-full bg-[#F6F7F9] text-slate-900 transition-colors duration-300 dark:bg-[#080B10] dark:text-slate-100">
 
             <div className="mx-auto max-w-[1500px] px-4 py-5 sm:px-6 lg:px-8 lg:py-7">
 
@@ -426,14 +417,12 @@ const Dashboard = () => {
                 ================================================= */}
 
                 <header className="mb-7">
-
                     <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
 
                         <div>
-
                             <div className="mb-3 flex items-center gap-2">
 
-                                <span className="h-1.5 w-1.5 rounded-full bg-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.8)]" />
+                                <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
 
                                 <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-slate-400">
                                     Personal Finance
@@ -448,12 +437,11 @@ const Dashboard = () => {
                             <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-500 dark:text-slate-400">
                                 Here's what's happening with your money today.
                             </p>
-
                         </div>
 
                         <div className="flex items-center gap-3">
 
-                            <div className="hidden items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-2.5 dark:border-white/[0.07] dark:bg-[#11151C] sm:flex">
+                            <div className="hidden items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-2.5 transition-colors dark:border-white/[0.07] dark:bg-[#11151C] sm:flex">
 
                                 <CalendarDays
                                     size={15}
@@ -473,11 +461,30 @@ const Dashboard = () => {
 
                             </div>
 
+                            {/* FIXED LIGHT/DARK ADD BUTTON */}
+
                             <button
                                 onClick={() =>
                                     setIsModalOpen(true)
                                 }
-                                className="group flex items-center gap-2 rounded-xl bg-slate-950 px-4 py-2.5 text-xs font-bold text-white shadow-lg shadow-slate-950/10 transition-all hover:-translate-y-0.5 hover:bg-indigo-600 dark:bg-white dark:text-slate-950 dark:hover:bg-indigo-400"
+                                className="
+                                    group flex items-center gap-2
+                                    rounded-xl
+                                    border border-slate-900
+                                    bg-slate-900
+                                    px-4 py-2.5
+                                    text-xs font-bold
+                                    text-white
+                                    shadow-sm
+                                    transition-all duration-200
+                                    hover:-translate-y-0.5
+                                    hover:bg-slate-800
+                                    active:translate-y-0
+                                    dark:border-white
+                                    dark:bg-white
+                                    dark:text-slate-950
+                                    dark:hover:bg-slate-200
+                                "
                             >
                                 <Plus
                                     size={15}
@@ -488,20 +495,32 @@ const Dashboard = () => {
                             </button>
 
                         </div>
-
                     </div>
-
                 </header>
 
                 {/* =================================================
                     HERO BALANCE
                 ================================================= */}
 
-                <section className="mb-5 overflow-hidden rounded-2xl bg-slate-950 p-6 text-white shadow-xl shadow-slate-950/10 dark:border dark:border-white/[0.06] dark:bg-[#11151C] md:p-7">
+                <section
+                    className="
+                        mb-5
+                        overflow-hidden
+                        rounded-2xl
+                        border border-slate-200
+                        bg-white
+                        p-6
+                        text-slate-900
+                        shadow-sm
+                        transition-colors duration-300
+                        dark:border-white/[0.06]
+                        dark:bg-[#11151C]
+                        dark:text-white
+                        md:p-7
+                    "
+                >
 
                     <div className="relative">
-
-
 
                         <div className="relative grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
 
@@ -509,35 +528,35 @@ const Dashboard = () => {
 
                                 <div className="mb-5 flex items-center gap-2">
 
-                                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10">
+                                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-600 dark:bg-white/10 dark:text-white">
                                         <Wallet size={15} />
                                     </div>
 
-                                    <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-white/50">
+                                    <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400 dark:text-white/50">
                                         Total balance
                                     </span>
 
                                 </div>
 
-                                <p className="text-4xl font-bold tracking-[-0.04em] md:text-5xl">
+                                <p className="text-4xl font-bold tracking-[-0.04em] text-slate-950 dark:text-white md:text-5xl">
                                     {formatAmount(balance)}
                                 </p>
 
                                 <div className="mt-4 flex items-center gap-2">
 
                                     {balance >= 0 ? (
-                                        <div className="flex items-center gap-1.5 rounded-full bg-emerald-400/10 px-2.5 py-1 text-[10px] font-bold text-emerald-300">
+                                        <div className="flex items-center gap-1.5 rounded-full  px-2.5 py-1 text-[10px] font-bold text-emerald-600  dark:text-emerald-300">
                                             <TrendingUp size={12} />
                                             Positive balance
                                         </div>
                                     ) : (
-                                        <div className="flex items-center gap-1.5 rounded-full bg-rose-400/10 px-2.5 py-1 text-[10px] font-bold text-rose-300">
+                                        <div className="flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold text-rose-600 dark:text-rose-300">
                                             <TrendingDown size={12} />
                                             Negative balance
                                         </div>
                                     )}
 
-                                    <span className="text-[10px] text-white/40">
+                                    <span className="text-[10px] text-slate-400 dark:text-white/40">
                                         Current financial position
                                     </span>
 
@@ -545,36 +564,44 @@ const Dashboard = () => {
 
                             </div>
 
+                            {/* FIXED TOTAL INCOME / EXPENSE / TRANSACTIONS BOXES */}
+
                             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:min-w-[430px]">
 
-                                <div className="rounded-xl border border-white/10 bg-white/[0.05] p-4 backdrop-blur-sm">
-                                    <p className="text-[9px] font-bold uppercase tracking-wider text-white/40">
+                                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 transition-colors dark:border-white/10 dark:bg-white/[0.05]">
+
+                                    <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 dark:text-white/40">
                                         Income
                                     </p>
 
-                                    <p className="mt-2 text-sm font-bold text-emerald-300">
+                                    <p className="mt-2 text-sm font-bold text-emerald-600 dark:text-emerald-300">
                                         {formatAmount(income)}
                                     </p>
+
                                 </div>
 
-                                <div className="rounded-xl border border-white/10 bg-white/[0.05] p-4 backdrop-blur-sm">
-                                    <p className="text-[9px] font-bold uppercase tracking-wider text-white/40">
+                                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 transition-colors dark:border-white/10 dark:bg-white/[0.05]">
+
+                                    <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 dark:text-white/40">
                                         Expenses
                                     </p>
 
-                                    <p className="mt-2 text-sm font-bold text-rose-300">
+                                    <p className="mt-2 text-sm font-bold text-rose-600 dark:text-rose-300">
                                         {formatAmount(expense)}
                                     </p>
+
                                 </div>
 
-                                <div className="col-span-2 rounded-xl border border-white/10 bg-white/[0.05] p-4 backdrop-blur-sm sm:col-span-1">
-                                    <p className="text-[9px] font-bold uppercase tracking-wider text-white/40">
+                                <div className="col-span-2 rounded-xl border border-slate-200 bg-slate-50 p-4 transition-colors dark:border-white/10 dark:bg-white/[0.05] sm:col-span-1">
+
+                                    <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 dark:text-white/40">
                                         Transactions
                                     </p>
 
-                                    <p className="mt-2 text-sm font-bold text-white">
+                                    <p className="mt-2 text-sm font-bold text-slate-900 dark:text-white">
                                         {transactions.length}
                                     </p>
+
                                 </div>
 
                             </div>
@@ -688,6 +715,7 @@ const Dashboard = () => {
                                         </div>
 
                                         <div className="h-1.5 overflow-hidden rounded-full bg-slate-200 dark:bg-white/10">
+
                                             <div
                                                 className={clsx(
                                                     'h-full rounded-full transition-all',
@@ -699,6 +727,7 @@ const Dashboard = () => {
                                                     width: `${progress}%`,
                                                 }}
                                             />
+
                                         </div>
 
                                     </div>
@@ -742,6 +771,7 @@ const Dashboard = () => {
                                     width="100%"
                                     height="100%"
                                 >
+
                                     <AreaChart
                                         data={trendData}
                                         margin={{
@@ -751,8 +781,6 @@ const Dashboard = () => {
                                             bottom: 0,
                                         }}
                                     >
-
-
 
                                         <CartesianGrid
                                             vertical={false}
@@ -816,6 +844,7 @@ const Dashboard = () => {
                                         />
 
                                     </AreaChart>
+
                                 </ResponsiveContainer>
                             ) : (
                                 <div className="flex h-full items-center justify-center text-xs text-slate-400">
@@ -850,12 +879,14 @@ const Dashboard = () => {
 
                             {categoryData.length > 0 ? (
                                 <>
+
                                     <div className="relative h-[190px] w-[190px] shrink-0">
 
                                         <ResponsiveContainer
                                             width="100%"
                                             height="100%"
                                         >
+
                                             <PieChart>
 
                                                 <Pie
@@ -868,6 +899,7 @@ const Dashboard = () => {
                                                     dataKey="value"
                                                     stroke="none"
                                                 >
+
                                                     {categoryData.map(
                                                         (
                                                             entry,
@@ -884,6 +916,7 @@ const Dashboard = () => {
                                                             />
                                                         )
                                                     )}
+
                                                 </Pie>
 
                                                 <Tooltip
@@ -895,6 +928,7 @@ const Dashboard = () => {
                                                 />
 
                                             </PieChart>
+
                                         </ResponsiveContainer>
 
                                         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
@@ -1000,6 +1034,7 @@ const Dashboard = () => {
                                         )}
 
                                     </div>
+
                                 </>
                             ) : (
                                 <div className="text-xs text-slate-400">
@@ -1031,6 +1066,7 @@ const Dashboard = () => {
                                     className="group flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-slate-600 transition hover:bg-slate-200 dark:bg-white/[0.05] dark:text-slate-300 dark:hover:bg-white/[0.08]"
                                 >
                                     View all
+
                                     <ArrowUpRight
                                         size={12}
                                         className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
@@ -1240,7 +1276,24 @@ const Dashboard = () => {
                     setIsModalOpen(true)
                 }
                 aria-label="Add transaction"
-                className="fixed bottom-6 right-5 z-40 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-950 text-white shadow-xl shadow-slate-950/20 transition-all hover:scale-105 active:scale-95 dark:bg-white dark:text-slate-950 md:hidden"
+                className="
+                    fixed bottom-6 right-5 z-40
+                    flex h-14 w-14 items-center justify-center
+                    rounded-2xl
+                    border border-slate-900
+                    bg-slate-900
+                    text-white
+                    shadow-lg
+                    transition-all duration-200
+                    hover:scale-105
+                    hover:bg-slate-800
+                    active:scale-95
+                    dark:border-white
+                    dark:bg-white
+                    dark:text-slate-950
+                    dark:hover:bg-slate-200
+                    md:hidden
+                "
             >
                 <Plus size={21} />
             </button>
