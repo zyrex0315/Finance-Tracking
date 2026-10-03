@@ -20,9 +20,7 @@ const MainLayout = () => {
 
     return (
         <div className="flex min-h-screen bg-gray-50 dark:bg-[#0f172a] font-sans text-gray-900 dark:text-slate-200 transition-colors duration-200 relative overflow-hidden">
-            {/* Background decorative elements */}
 
-            <div className="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/10 rounded-full blur-[120px] pointer-events-none" />
 
             <Sidebar />
             <div className="flex-1 md:ml-64 flex flex-col min-h-screen">

@@ -1,58 +1,233 @@
-import { useEffect, useMemo } from 'react';
-import { CreditCard, TrendingDown, TrendingUp, History, PieChart as PieIcon, BarChart3, AlertCircle } from 'lucide-react';
+
+import { useEffect, useMemo, useState } from 'react';
 import {
-    ResponsiveContainer, AreaChart, Area, XAxis, YAxis,
-    CartesianGrid, Tooltip, PieChart, Pie, Cell
+    CreditCard,
+    TrendingDown,
+    TrendingUp,
+    History,
+    PieChart as PieIcon,
+    AlertCircle,
+    Plus,
+    ArrowUpRight,
+    Wallet,
+    CalendarDays,
+    ArrowDownRight,
+    Activity,
+} from 'lucide-react';
+
+import {
+    ResponsiveContainer,
+    AreaChart,
+    Area,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    PieChart,
+    Pie,
+    Cell,
 } from 'recharts';
+
+import { Link } from 'react-router-dom';
+import clsx from 'clsx';
+
 import useTransactionStore from '../context/transactionStore';
 import useBudgetStore from '../context/budgetStore';
 import useAuthStore from '../context/authStore';
 import useCurrencyStore from '../context/currencyStore';
-import { Link } from 'react-router-dom';
-import clsx from 'clsx';
-import { useState } from 'react';
+
 import AddTransactionModal from '../components/Modals/AddTransactionModal';
-import { Plus } from 'lucide-react';
 
-const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'];
+/* =========================================================
+   DESIGN TOKENS
+========================================================= */
 
-const DashboardStats = ({ title, amount, type, icon: Icon }) => {
+const CHART_COLORS = [
+    '#6366F1',
+    '#8B5CF6',
+    '#EC4899',
+    '#F59E0B',
+    '#14B8A6',
+];
+
+/* =========================================================
+   STAT CARD
+========================================================= */
+
+const DashboardStats = ({
+    title,
+    amount,
+    type,
+    icon: Icon,
+}) => {
     const { formatAmount } = useCurrencyStore();
+
     const isIncome = type === 'income';
     const isExpense = type === 'expense';
 
-    let colorClass = 'text-gray-900 dark:text-white';
-    if (isIncome) colorClass = 'text-emerald-500 dark:text-emerald-400';
-    if (isExpense) colorClass = 'text-rose-500 dark:text-rose-400';
-
     return (
-        <div className="bg-white dark:bg-white/5 backdrop-blur-xl p-2 md:p-6 rounded-2xl md:rounded-3xl border border-gray-100 dark:border-white/10 transition-all hover:translate-y-[-4px] hover:shadow-xl duration-300 group">
-            <div className="flex items-center justify-between mb-1.5 md:mb-4">
-                <div className={clsx(
-                    'p-1.5 md:p-3 rounded-lg md:rounded-2xl transition-colors duration-300',
-                    isIncome ? 'bg-emerald-500/10 text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white' :
-                        isExpense ? 'bg-rose-500/10 text-rose-500 group-hover:bg-rose-500 group-hover:text-white' :
-                            'bg-blue-500/10 text-blue-500 group-hover:bg-blue-500 group-hover:text-white'
-                )}>
-                    <Icon size={14} className="md:w-6 md:h-6" />
+        <div
+            className={clsx(
+                'group relative overflow-hidden rounded-2xl border p-5 transition-all duration-300',
+                'hover:-translate-y-0.5 hover:shadow-xl',
+                'bg-white border-slate-200',
+                'dark:bg-[#11151C] dark:border-white/[0.07]'
+            )}
+        >
+
+
+
+            <div className="relative flex items-start justify-between">
+
+                <div
+                    className={clsx(
+                        'flex h-10 w-10 items-center justify-center rounded-xl',
+                        isIncome
+                            ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400'
+                            : isExpense
+                                ? 'bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400'
+                                : 'bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400'
+                    )}
+                >
+                    <Icon size={18} strokeWidth={1.8} />
                 </div>
+
+                <span
+                    className={clsx(
+                        'rounded-full px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider',
+                        isIncome
+                            ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400'
+                            : isExpense
+                                ? 'bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400'
+                                : 'bg-slate-100 text-slate-500 dark:bg-white/5 dark:text-slate-400'
+                    )}
+                >
+                    {type === 'balance' ? 'Current' : type}
+                </span>
             </div>
-            <div>
-                <p className="text-slate-500 dark:text-slate-400 text-[8px] md:text-xs font-black uppercase tracking-wider line-clamp-1">{title}</p>
-                <h3 className={`text-[13px] md:text-2xl font-black mt-0.5 md:mt-1 tracking-tight truncate ${colorClass}`}>
+
+            <div className="relative mt-6">
+
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                    {title}
+                </p>
+
+                <p
+                    className={clsx(
+                        'mt-1.5 truncate text-2xl font-bold tracking-tight md:text-[27px]',
+                        isIncome
+                            ? 'text-emerald-600 dark:text-emerald-400'
+                            : isExpense
+                                ? 'text-rose-600 dark:text-rose-400'
+                                : 'text-slate-900 dark:text-white'
+                    )}
+                >
                     {formatAmount(amount)}
-                </h3>
+                </p>
+            </div>
+
+            <div className="mt-5 h-1 overflow-hidden rounded-full bg-slate-100 dark:bg-white/[0.05]">
+                <div
+                    className={clsx(
+                        'h-full rounded-full transition-all',
+                        isIncome
+                            ? 'w-[72%] bg-emerald-500'
+                            : isExpense
+                                ? 'w-[54%] bg-rose-500'
+                                : 'w-[85%] bg-indigo-500'
+                    )}
+                />
             </div>
         </div>
     );
 };
 
+/* =========================================================
+   CUSTOM TOOLTIP
+========================================================= */
+
+const ActivityTooltip = ({
+    active,
+    payload,
+    label,
+    formatAmount,
+}) => {
+    if (!active || !payload || !payload.length) return null;
+
+    return (
+        <div className="rounded-xl border border-slate-200 bg-white/95 px-4 py-3 shadow-xl backdrop-blur-md dark:border-white/10 dark:bg-[#11151C]/95">
+            <p className="mb-1 text-[9px] font-bold uppercase tracking-[0.16em] text-slate-400">
+                {label}
+            </p>
+
+            <p className="text-sm font-bold text-slate-900 dark:text-white">
+                {formatAmount(payload[0].value)}
+            </p>
+        </div>
+    );
+};
+
+/* =========================================================
+   SECTION HEADER
+========================================================= */
+
+const SectionHeader = ({
+    icon: Icon,
+    title,
+    description,
+    action,
+}) => (
+    <div className="flex items-center justify-between">
+
+        <div className="flex items-center gap-3">
+
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-600 dark:bg-white/[0.06] dark:text-slate-300">
+                <Icon size={16} strokeWidth={1.8} />
+            </div>
+
+            <div>
+                <h2 className="text-sm font-bold text-slate-900 dark:text-white">
+                    {title}
+                </h2>
+
+                {description && (
+                    <p className="mt-0.5 text-[10px] text-slate-400">
+                        {description}
+                    </p>
+                )}
+            </div>
+
+        </div>
+
+        {action}
+    </div>
+);
+
+/* =========================================================
+   DASHBOARD
+========================================================= */
+
 const Dashboard = () => {
-    const { transactions, fetchTransactions, loading } = useTransactionStore();
-    const { budgets, fetchBudgets } = useBudgetStore();
+    const {
+        transactions,
+        fetchTransactions,
+        loading,
+    } = useTransactionStore();
+
+    const {
+        budgets,
+        fetchBudgets,
+    } = useBudgetStore();
+
     const { currentUser } = useAuthStore();
+
     const { formatAmount } = useCurrencyStore();
+
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    /* =====================================================
+       FETCH DATA
+    ===================================================== */
 
     useEffect(() => {
         if (currentUser) {
@@ -61,301 +236,1017 @@ const Dashboard = () => {
         }
     }, [currentUser, fetchTransactions, fetchBudgets]);
 
+    /* =====================================================
+       FINANCIAL TOTALS
+    ===================================================== */
+
     const { income, expense, balance } = useMemo(() => {
-        return transactions.reduce((acc, t) => {
-            const amount = Number(t.amount);
-            if (t.type === 'income') acc.income += amount;
-            else acc.expense += amount;
-            acc.balance = acc.income - acc.expense;
-            return acc;
-        }, { income: 0, expense: 0, balance: 0 });
+        return transactions.reduce(
+            (acc, transaction) => {
+                const amount = Number(transaction.amount) || 0;
+
+                if (transaction.type === 'income') {
+                    acc.income += amount;
+                } else {
+                    acc.expense += amount;
+                }
+
+                acc.balance = acc.income - acc.expense;
+
+                return acc;
+            },
+            {
+                income: 0,
+                expense: 0,
+                balance: 0,
+            }
+        );
     }, [transactions]);
+
+    /* =====================================================
+       RECENT TRANSACTIONS
+    ===================================================== */
 
     const recentTransactions = useMemo(() => {
-        return [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+        return [...transactions]
+            .sort(
+                (a, b) =>
+                    new Date(b.date) - new Date(a.date)
+            )
+            .slice(0, 5);
     }, [transactions]);
 
-    const trendData = useMemo(() => {
-        const last7Days = [...Array(7)].map((_, i) => {
-            const d = new Date();
-            d.setDate(d.getDate() - i);
-            return d.toISOString().split('T')[0];
-        }).reverse();
+    /* =====================================================
+       7 DAY ACTIVITY
+    ===================================================== */
 
-        return last7Days.map(date => {
-            const dayAmount = transactions
-                .filter(t => {
-                    if (!t.date) return false;
-                    const d = t.date instanceof Date ? t.date : new Date(t.date);
-                    return d.toISOString().split('T')[0] === date;
+    const trendData = useMemo(() => {
+        const last7Days = [...Array(7)]
+            .map((_, index) => {
+                const date = new Date();
+
+                date.setDate(
+                    date.getDate() - index
+                );
+
+                return date
+                    .toISOString()
+                    .split('T')[0];
+            })
+            .reverse();
+
+        return last7Days.map((date) => {
+            const amount = transactions
+                .filter((transaction) => {
+                    if (!transaction.date) return false;
+
+                    const transactionDate =
+                        transaction.date instanceof Date
+                            ? transaction.date
+                            : new Date(transaction.date);
+
+                    return (
+                        transactionDate
+                            .toISOString()
+                            .split('T')[0] === date
+                    );
                 })
-                .reduce((acc, t) => acc + (t.type === 'income' ? t.amount : -t.amount), 0);
+                .reduce(
+                    (total, transaction) =>
+                        total +
+                        (transaction.type === 'income'
+                            ? Number(transaction.amount)
+                            : -Number(transaction.amount)),
+                    0
+                );
+
             return {
-                date: new Date(date).toLocaleDateString(undefined, { weekday: 'short' }),
-                amount: dayAmount
+                date: new Date(
+                    date
+                ).toLocaleDateString(undefined, {
+                    weekday: 'short',
+                }),
+                amount,
             };
         });
     }, [transactions]);
 
+    /* =====================================================
+       CATEGORY DATA
+    ===================================================== */
+
     const categoryData = useMemo(() => {
         const categories = transactions
-            .filter(t => t.type === 'expense')
-            .reduce((acc, t) => {
-                acc[t.category] = (acc[t.category] || 0) + t.amount;
+            .filter(
+                (transaction) =>
+                    transaction.type === 'expense'
+            )
+            .reduce((acc, transaction) => {
+                acc[transaction.category] =
+                    (acc[transaction.category] || 0) +
+                    Number(transaction.amount);
+
                 return acc;
             }, {});
 
         return Object.entries(categories)
-            .map(([name, value]) => ({ name, value }))
+            .map(([name, value]) => ({
+                name,
+                value,
+            }))
             .sort((a, b) => b.value - a.value)
             .slice(0, 5);
     }, [transactions]);
 
+    /* =====================================================
+       BUDGET ALERTS
+    ===================================================== */
+
     const budgetAlerts = useMemo(() => {
         const now = new Date();
-        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
-        const monthlyExpenses = transactions.filter(t =>
-            t.type === 'expense' && new Date(t.date) >= startOfMonth
+        const startOfMonth = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            1
         );
 
-        const spendingByCategory = monthlyExpenses.reduce((acc, t) => {
-            acc[t.category] = (acc[t.category] || 0) + t.amount;
-            return acc;
-        }, {});
+        const monthlyExpenses = transactions.filter(
+            (transaction) =>
+                transaction.type === 'expense' &&
+                new Date(transaction.date) >= startOfMonth
+        );
+
+        const spendingByCategory =
+            monthlyExpenses.reduce((acc, transaction) => {
+                acc[transaction.category] =
+                    (acc[transaction.category] || 0) +
+                    Number(transaction.amount);
+
+                return acc;
+            }, {});
 
         return budgets
-            .map(budget => ({
+            .map((budget) => ({
                 ...budget,
-                spent: spendingByCategory[budget.category] || 0
+                spent:
+                    spendingByCategory[budget.category] || 0,
             }))
-            .filter(b => b.spent >= b.limit * 0.8)
-            .sort((a, b) => (b.spent / b.limit) - (a.spent / a.limit));
+            .filter(
+                (budget) =>
+                    budget.spent >= budget.limit * 0.8
+            )
+            .sort(
+                (a, b) =>
+                    b.spent / b.limit -
+                    a.spent / a.limit
+            );
     }, [transactions, budgets]);
 
+    /* =====================================================
+       USER
+    ===================================================== */
+
+    const firstName =
+        currentUser?.displayName?.split(' ')[0] ||
+        currentUser?.email?.split('@')[0] ||
+        'there';
+
+    /* =====================================================
+       RENDER
+    ===================================================== */
+
     return (
-        <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6 md:space-y-10">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                <div>
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Financial Overview</h1>
-                    <p className="text-slate-500 dark:text-slate-400 mt-1">Ready to manage your wealth, {currentUser?.displayName?.split(' ')[0] || 'User'}?</p>
-                </div>
-                <div className="bg-white/5 backdrop-blur-md px-5 py-3 md:px-6 md:py-4 rounded-3xl border border-white/10 flex flex-col items-start md:items-end w-full md:w-auto">
-                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-none mb-1">Total Balance</p>
-                    <p className={`text-xl md:text-2xl font-bold tracking-tight ${balance >= 0 ? 'text-blue-500' : 'text-rose-500'}`}>
-                        {formatAmount(balance)}
-                    </p>
-                </div>
-            </div>
+        <div className="min-h-full bg-[#F6F7F9] text-slate-900 dark:bg-[#080B10] dark:text-slate-100">
 
-            {/* Budget Alerts Section */}
-            {budgetAlerts.length > 0 && (
-                <div className="space-y-4">
-                    {budgetAlerts.map(alert => (
-                        <div key={alert.id} className="bg-rose-500/10 backdrop-blur-md border border-rose-500/20 p-5 rounded-3xl flex items-center justify-between group animate-in fade-in slide-in-from-top-4 duration-500">
-                            <div className="flex items-center gap-4">
-                                <div className="p-3 bg-rose-500 text-white rounded-2xl shadow-lg shadow-rose-500/20">
-                                    <AlertCircle size={20} />
-                                </div>
-                                <div>
-                                    <p className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-tight">
-                                        Budget Alert: {alert.category}
-                                    </p>
-                                    <p className="text-xs text-slate-500 mt-0.5">
-                                        You've spent <span className="text-rose-400 font-semibold">{formatAmount(alert.spent)}</span> of your {formatAmount(alert.limit)} monthly limit.
-                                    </p>
-                                </div>
+            <div className="mx-auto max-w-[1500px] px-4 py-5 sm:px-6 lg:px-8 lg:py-7">
+
+                {/* =================================================
+                    HEADER
+                ================================================= */}
+
+                <header className="mb-7">
+
+                    <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+
+                        <div>
+
+                            <div className="mb-3 flex items-center gap-2">
+
+                                <span className="h-1.5 w-1.5 rounded-full bg-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.8)]" />
+
+                                <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-slate-400">
+                                    Personal Finance
+                                </span>
+
                             </div>
-                            <Link to="/budgets" className="px-5 py-2 bg-rose-500/20 text-rose-500 text-xs font-bold rounded-xl hover:bg-rose-500 hover:text-white transition-all uppercase tracking-widest">
-                                Fix Now
-                            </Link>
+
+                            <h1 className="text-3xl font-bold tracking-[-0.04em] text-slate-950 dark:text-white sm:text-4xl">
+                                Good morning, {firstName}.
+                            </h1>
+
+                            <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-500 dark:text-slate-400">
+                                Here's what's happening with your money today.
+                            </p>
+
                         </div>
-                    ))}
-                </div>
-            )}
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-3 gap-3 md:gap-8">
-                <DashboardStats
-                    title="Total Savings"
-                    amount={balance}
-                    type="balance"
-                    icon={CreditCard}
-                />
-                <DashboardStats
-                    title="Total Income"
-                    amount={income}
-                    type="income"
-                    icon={TrendingUp}
-                />
-                <DashboardStats
-                    title="Total Expenses"
-                    amount={expense}
-                    type="expense"
-                    icon={TrendingDown}
-                />
-            </div>
-
-            {/* Charts Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Balance Trend */}
-                <div className="bg-white dark:bg-white/5 backdrop-blur-xl p-8 rounded-3xl border border-gray-100 dark:border-white/10 shadow-xl">
-                    <div className="flex items-center justify-between mb-8">
                         <div className="flex items-center gap-3">
-                            <div className="p-2 bg-blue-500/10 text-blue-500 rounded-xl">
-                                <BarChart3 size={20} />
+
+                            <div className="hidden items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-2.5 dark:border-white/[0.07] dark:bg-[#11151C] sm:flex">
+
+                                <CalendarDays
+                                    size={15}
+                                    className="text-slate-400"
+                                />
+
+                                <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                                    {new Date().toLocaleDateString(
+                                        undefined,
+                                        {
+                                            month: 'short',
+                                            day: 'numeric',
+                                            year: 'numeric',
+                                        }
+                                    )}
+                                </span>
+
                             </div>
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Activity Trend</h2>
-                        </div>
-                    </div>
-                    <div className="h-[250px] md:h-[300px] w-full">
-                        {trendData.length > 0 ? (
-                            <ResponsiveContainer width="100%" height="100%">
-                                <AreaChart data={trendData}>
-                                    <defs>
-                                        <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.3} />
-                                            <stop offset="95%" stopColor="#3B82F6" stopOpacity={0} />
-                                        </linearGradient>
-                                    </defs>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#475569" opacity={0.1} />
-                                    <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 11, fontWeight: 500 }} />
-                                    <YAxis hide />
-                                    <Tooltip
-                                        contentStyle={{ backgroundColor: '#1e293b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', color: '#fff' }}
-                                        itemStyle={{ color: '#fff', fontWeight: 'bold' }}
-                                        formatter={(val) => formatAmount(val)}
-                                    />
-                                    <Area type="monotone" dataKey="amount" stroke="#3B82F6" fillOpacity={1} fill="url(#colorValue)" strokeWidth={3} />
-                                </AreaChart>
-                            </ResponsiveContainer>
-                        ) : (
-                            <div className="h-full flex items-center justify-center text-slate-500 text-sm italic py-12">No data yet</div>
-                        )}
-                    </div>
-                </div>
 
-                {/* Spending by Category */}
-                <div className="bg-white dark:bg-white/5 backdrop-blur-xl p-8 rounded-3xl border border-gray-100 dark:border-white/10 shadow-xl">
-                    <div className="flex items-center gap-3 mb-8">
-                        <div className="p-2 bg-purple-500/10 text-purple-500 rounded-xl">
-                            <PieIcon size={20} />
+                            <button
+                                onClick={() =>
+                                    setIsModalOpen(true)
+                                }
+                                className="group flex items-center gap-2 rounded-xl bg-slate-950 px-4 py-2.5 text-xs font-bold text-white shadow-lg shadow-slate-950/10 transition-all hover:-translate-y-0.5 hover:bg-indigo-600 dark:bg-white dark:text-slate-950 dark:hover:bg-indigo-400"
+                            >
+                                <Plus
+                                    size={15}
+                                    className="transition-transform group-hover:rotate-90"
+                                />
+
+                                Add transaction
+                            </button>
+
                         </div>
-                        <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Category Mix</h2>
+
                     </div>
-                    <div className="min-h-[280px] h-auto lg:h-[280px] w-full flex flex-col lg:flex-row items-center gap-8 px-2">
-                        {categoryData.length > 0 ? (
-                            <>
-                                <div className="w-full lg:w-1/2 h-[200px] lg:h-full">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <PieChart>
-                                            <Pie
-                                                data={categoryData}
-                                                cx="50%"
-                                                cy="50%"
-                                                innerRadius={60}
-                                                outerRadius={85}
-                                                paddingAngle={8}
-                                                dataKey="value"
-                                            >
-                                                {categoryData.map((entry, index) => (
-                                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                                ))}
-                                            </Pie>
-                                            <Tooltip formatter={(val) => formatAmount(val)} />
-                                        </PieChart>
-                                    </ResponsiveContainer>
+
+                </header>
+
+                {/* =================================================
+                    HERO BALANCE
+                ================================================= */}
+
+                <section className="mb-5 overflow-hidden rounded-2xl bg-slate-950 p-6 text-white shadow-xl shadow-slate-950/10 dark:border dark:border-white/[0.06] dark:bg-[#11151C] md:p-7">
+
+                    <div className="relative">
+
+
+
+                        <div className="relative grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
+
+                            <div>
+
+                                <div className="mb-5 flex items-center gap-2">
+
+                                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10">
+                                        <Wallet size={15} />
+                                    </div>
+
+                                    <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-white/50">
+                                        Total balance
+                                    </span>
+
                                 </div>
-                                <div className="w-full lg:w-1/2 space-y-3 md:space-y-4 pb-4 lg:pb-0">
-                                    {categoryData.map((item, index) => (
-                                        <div key={item.name} className="flex items-center justify-between">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-3 h-3 rounded-full shadow-lg" style={{ backgroundColor: COLORS[index % COLORS.length], boxShadow: `0 0 10px ${COLORS[index % COLORS.length]}80` }} />
-                                                <span className="text-sm font-medium text-slate-500 dark:text-slate-400 truncate max-w-[100px]">{item.name}</span>
-                                            </div>
-                                            <span className="text-sm font-bold text-gray-900 dark:text-white">{formatAmount(item.value)}</span>
+
+                                <p className="text-4xl font-bold tracking-[-0.04em] md:text-5xl">
+                                    {formatAmount(balance)}
+                                </p>
+
+                                <div className="mt-4 flex items-center gap-2">
+
+                                    {balance >= 0 ? (
+                                        <div className="flex items-center gap-1.5 rounded-full bg-emerald-400/10 px-2.5 py-1 text-[10px] font-bold text-emerald-300">
+                                            <TrendingUp size={12} />
+                                            Positive balance
                                         </div>
-                                    ))}
+                                    ) : (
+                                        <div className="flex items-center gap-1.5 rounded-full bg-rose-400/10 px-2.5 py-1 text-[10px] font-bold text-rose-300">
+                                            <TrendingDown size={12} />
+                                            Negative balance
+                                        </div>
+                                    )}
+
+                                    <span className="text-[10px] text-white/40">
+                                        Current financial position
+                                    </span>
+
                                 </div>
-                            </>
-                        ) : (
-                            <div className="w-full h-full flex items-center justify-center text-slate-500 text-sm italic">Analyze your spending</div>
-                        )}
-                    </div>
-                </div>
-            </div>
 
-            {/* Recent Transactions */}
-            <div className="bg-white dark:bg-white/5 backdrop-blur-xl rounded-3xl border border-gray-100 dark:border-white/10 shadow-xl overflow-hidden">
-                <div className="p-8 border-b border-gray-100 dark:border-white/10 flex justify-between items-center">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-slate-500/10 text-slate-500 rounded-xl">
-                            <History size={20} />
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:min-w-[430px]">
+
+                                <div className="rounded-xl border border-white/10 bg-white/[0.05] p-4 backdrop-blur-sm">
+                                    <p className="text-[9px] font-bold uppercase tracking-wider text-white/40">
+                                        Income
+                                    </p>
+
+                                    <p className="mt-2 text-sm font-bold text-emerald-300">
+                                        {formatAmount(income)}
+                                    </p>
+                                </div>
+
+                                <div className="rounded-xl border border-white/10 bg-white/[0.05] p-4 backdrop-blur-sm">
+                                    <p className="text-[9px] font-bold uppercase tracking-wider text-white/40">
+                                        Expenses
+                                    </p>
+
+                                    <p className="mt-2 text-sm font-bold text-rose-300">
+                                        {formatAmount(expense)}
+                                    </p>
+                                </div>
+
+                                <div className="col-span-2 rounded-xl border border-white/10 bg-white/[0.05] p-4 backdrop-blur-sm sm:col-span-1">
+                                    <p className="text-[9px] font-bold uppercase tracking-wider text-white/40">
+                                        Transactions
+                                    </p>
+
+                                    <p className="mt-2 text-sm font-bold text-white">
+                                        {transactions.length}
+                                    </p>
+                                </div>
+
+                            </div>
+
                         </div>
-                        <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Recent Activity</h2>
-                    </div>
-                    <Link to="/transactions" className="btn-primary px-4 md:px-5 py-2 md:py-2.5 text-xs">
-                        Full History
-                    </Link>
-                </div>
 
-                {loading ? (
-                    <div className="p-16 text-center text-slate-500 animate-pulse font-medium">Processing records...</div>
-                ) : recentTransactions.length === 0 ? (
-                    <div className="p-16 text-center text-slate-500 italic font-medium">No activity recorded yet.</div>
-                ) : (
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left">
-                            <thead className="bg-slate-500/5 text-slate-500 text-[10px] uppercase font-bold tracking-[0.1em]">
-                                <tr>
-                                    <th className="px-3 md:px-8 py-3 md:py-4">Transaction</th>
-                                    <th className="px-3 md:px-8 py-3 md:py-4 text-right">Amount</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-100 dark:divide-white/5">
-                                {recentTransactions.map((t) => (
-                                    <tr key={t.id} className="hover:bg-blue-500/5 transition-all group">
-                                        <td className="px-3 md:px-8 py-3 md:py-5">
-                                            <div className="flex items-center gap-2.5 md:gap-4">
-                                                <div className={clsx(
-                                                    'w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl flex items-center justify-center font-bold text-[10px] md:text-xs shadow-sm transition-transform group-hover:scale-110 shrink-0',
-                                                    t.type === 'income' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-rose-500/10 text-rose-500'
-                                                )}>
-                                                    {t.category[0].toUpperCase()}
-                                                </div>
-                                                <div className="min-w-0 overflow-hidden">
-                                                    <p className="font-black text-gray-900 dark:text-white tracking-tight truncate text-[13px] md:text-base">{t.description || "Untitled"}</p>
-                                                    <p className="text-[9px] uppercase font-bold text-slate-500 mt-0.5 tracking-wider truncate">{t.category} • {t.date ? new Date(t.date).toLocaleDateString() : 'N/A'}</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className={`px-3 md:px-8 py-3 md:py-5 text-right font-black text-[13px] md:text-lg tracking-tight shrink-0 ${t.type === 'income' ? 'text-emerald-500' : 'text-gray-900 dark:text-white'
-                                            }`}>
-                                            {t.type === 'income' ? '+' : '-'}{formatAmount(t.amount)}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
                     </div>
+
+                </section>
+
+                {/* =================================================
+                    STAT CARDS
+                ================================================= */}
+
+                <section className="mb-7 grid grid-cols-1 gap-3 sm:grid-cols-3">
+
+                    <DashboardStats
+                        title="Total Balance"
+                        amount={balance}
+                        type="balance"
+                        icon={CreditCard}
+                    />
+
+                    <DashboardStats
+                        title="Total Income"
+                        amount={income}
+                        type="income"
+                        icon={TrendingUp}
+                    />
+
+                    <DashboardStats
+                        title="Total Expenses"
+                        amount={expense}
+                        type="expense"
+                        icon={TrendingDown}
+                    />
+
+                </section>
+
+                {/* =================================================
+                    BUDGET ALERTS
+                ================================================= */}
+
+                {budgetAlerts.length > 0 && (
+                    <section className="mb-7 rounded-2xl border border-amber-200/80 bg-amber-50/70 p-5 dark:border-amber-500/10 dark:bg-amber-500/[0.04]">
+
+                        <div className="mb-4 flex items-center justify-between">
+
+                            <div className="flex items-center gap-3">
+
+                                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-100 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400">
+                                    <AlertCircle size={16} />
+                                </div>
+
+                                <div>
+                                    <h2 className="text-sm font-bold text-slate-900 dark:text-white">
+                                        Budget attention
+                                    </h2>
+
+                                    <p className="text-[10px] text-slate-500 dark:text-slate-400">
+                                        Some categories are approaching their limits.
+                                    </p>
+                                </div>
+
+                            </div>
+
+                            <Link
+                                to="/budgets"
+                                className="text-[10px] font-bold uppercase tracking-wider text-amber-700 hover:text-amber-900 dark:text-amber-400 dark:hover:text-amber-300"
+                            >
+                                View budgets
+                            </Link>
+
+                        </div>
+
+                        <div className="grid gap-3 md:grid-cols-2">
+
+                            {budgetAlerts.map((alert) => {
+
+                                const percentage = Math.round(
+                                    (alert.spent / alert.limit) * 100
+                                );
+
+                                const progress =
+                                    Math.min(percentage, 100);
+
+                                return (
+                                    <div
+                                        key={alert.id}
+                                        className="rounded-xl border border-amber-200/70 bg-white/70 p-4 dark:border-amber-500/10 dark:bg-white/[0.025]"
+                                    >
+
+                                        <div className="mb-3 flex items-center justify-between">
+
+                                            <div>
+                                                <p className="text-xs font-bold text-slate-900 dark:text-white">
+                                                    {alert.category}
+                                                </p>
+
+                                                <p className="mt-1 text-[10px] text-slate-500">
+                                                    {formatAmount(alert.spent)}
+                                                    {' '}of{' '}
+                                                    {formatAmount(alert.limit)}
+                                                </p>
+                                            </div>
+
+                                            <span className="text-xs font-bold text-amber-600 dark:text-amber-400">
+                                                {percentage}%
+                                            </span>
+
+                                        </div>
+
+                                        <div className="h-1.5 overflow-hidden rounded-full bg-slate-200 dark:bg-white/10">
+                                            <div
+                                                className={clsx(
+                                                    'h-full rounded-full transition-all',
+                                                    progress >= 100
+                                                        ? 'bg-rose-500'
+                                                        : 'bg-amber-500'
+                                                )}
+                                                style={{
+                                                    width: `${progress}%`,
+                                                }}
+                                            />
+                                        </div>
+
+                                    </div>
+                                );
+                            })}
+
+                        </div>
+
+                    </section>
                 )}
+
+                {/* =================================================
+                    ANALYTICS
+                ================================================= */}
+
+                <section className="mb-7 grid grid-cols-1 gap-4 xl:grid-cols-[1.55fr_1fr]">
+
+                    {/* ACTIVITY */}
+
+                    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-white/[0.07] dark:bg-[#11151C]">
+
+                        <div className="border-b border-slate-200 p-5 dark:border-white/[0.06]">
+
+                            <SectionHeader
+                                icon={Activity}
+                                title="Financial activity"
+                                description="Net movement across the last 7 days"
+                                action={
+                                    <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-slate-500 dark:bg-white/[0.05] dark:text-slate-400">
+                                        7 days
+                                    </span>
+                                }
+                            />
+
+                        </div>
+
+                        <div className="h-[320px] p-4 pt-7">
+
+                            {trendData.length > 0 ? (
+                                <ResponsiveContainer
+                                    width="100%"
+                                    height="100%"
+                                >
+                                    <AreaChart
+                                        data={trendData}
+                                        margin={{
+                                            top: 10,
+                                            right: 10,
+                                            left: -25,
+                                            bottom: 0,
+                                        }}
+                                    >
+
+
+
+                                        <CartesianGrid
+                                            vertical={false}
+                                            stroke="#94a3b8"
+                                            strokeOpacity={0.10}
+                                        />
+
+                                        <XAxis
+                                            dataKey="date"
+                                            axisLine={false}
+                                            tickLine={false}
+                                            tick={{
+                                                fill: '#94a3b8',
+                                                fontSize: 10,
+                                                fontWeight: 500,
+                                            }}
+                                            dy={10}
+                                        />
+
+                                        <YAxis hide />
+
+                                        <Tooltip
+                                            cursor={{
+                                                stroke: '#6366F1',
+                                                strokeOpacity: 0.15,
+                                            }}
+                                            content={({
+                                                active,
+                                                payload,
+                                                label,
+                                            }) => (
+                                                <ActivityTooltip
+                                                    active={active}
+                                                    payload={payload}
+                                                    label={label}
+                                                    formatAmount={
+                                                        formatAmount
+                                                    }
+                                                />
+                                            )}
+                                        />
+
+                                        <Area
+                                            type="monotone"
+                                            dataKey="amount"
+                                            stroke="#6366F1"
+                                            strokeWidth={2.5}
+                                            fill="none"
+                                            dot={{
+                                                r: 3,
+                                                fill: '#6366F1',
+                                                strokeWidth: 2,
+                                                stroke: '#11151C',
+                                            }}
+                                            activeDot={{
+                                                r: 5,
+                                                fill: '#6366F1',
+                                                strokeWidth: 3,
+                                                stroke: '#11151C',
+                                            }}
+                                        />
+
+                                    </AreaChart>
+                                </ResponsiveContainer>
+                            ) : (
+                                <div className="flex h-full items-center justify-center text-xs text-slate-400">
+                                    No activity recorded yet.
+                                </div>
+                            )}
+
+                        </div>
+
+                    </div>
+
+                    {/* SPENDING */}
+
+                    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-white/[0.07] dark:bg-[#11151C]">
+
+                        <div className="border-b border-slate-200 p-5 dark:border-white/[0.06]">
+
+                            <SectionHeader
+                                icon={PieIcon}
+                                title="Spending breakdown"
+                                description="Top expense categories"
+                                action={
+                                    <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
+                                        Expenses
+                                    </span>
+                                }
+                            />
+
+                        </div>
+
+                        <div className="flex min-h-[320px] flex-col justify-center gap-5 p-5 sm:flex-row sm:items-center">
+
+                            {categoryData.length > 0 ? (
+                                <>
+                                    <div className="relative h-[190px] w-[190px] shrink-0">
+
+                                        <ResponsiveContainer
+                                            width="100%"
+                                            height="100%"
+                                        >
+                                            <PieChart>
+
+                                                <Pie
+                                                    data={categoryData}
+                                                    cx="50%"
+                                                    cy="50%"
+                                                    innerRadius={58}
+                                                    outerRadius={82}
+                                                    paddingAngle={3}
+                                                    dataKey="value"
+                                                    stroke="none"
+                                                >
+                                                    {categoryData.map(
+                                                        (
+                                                            entry,
+                                                            index
+                                                        ) => (
+                                                            <Cell
+                                                                key={`cell-${index}`}
+                                                                fill={
+                                                                    CHART_COLORS[
+                                                                    index %
+                                                                    CHART_COLORS.length
+                                                                    ]
+                                                                }
+                                                            />
+                                                        )
+                                                    )}
+                                                </Pie>
+
+                                                <Tooltip
+                                                    formatter={(value) =>
+                                                        formatAmount(
+                                                            value
+                                                        )
+                                                    }
+                                                />
+
+                                            </PieChart>
+                                        </ResponsiveContainer>
+
+                                        <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+
+                                            <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
+                                                Total
+                                            </p>
+
+                                            <p className="mt-1 max-w-[100px] truncate text-sm font-bold text-slate-900 dark:text-white">
+                                                {formatAmount(
+                                                    categoryData.reduce(
+                                                        (sum, item) =>
+                                                            sum +
+                                                            item.value,
+                                                        0
+                                                    )
+                                                )}
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div className="w-full space-y-4">
+
+                                        {categoryData.map(
+                                            (item, index) => {
+
+                                                const total =
+                                                    categoryData.reduce(
+                                                        (sum, value) =>
+                                                            sum +
+                                                            value.value,
+                                                        0
+                                                    );
+
+                                                const percentage =
+                                                    total > 0
+                                                        ? Math.round(
+                                                            (item.value /
+                                                                total) *
+                                                            100
+                                                        )
+                                                        : 0;
+
+                                                return (
+                                                    <div
+                                                        key={
+                                                            item.name
+                                                        }
+                                                    >
+
+                                                        <div className="mb-1.5 flex items-center justify-between gap-3">
+
+                                                            <div className="flex min-w-0 items-center gap-2">
+
+                                                                <span
+                                                                    className="h-2 w-2 shrink-0 rounded-full"
+                                                                    style={{
+                                                                        backgroundColor:
+                                                                            CHART_COLORS[
+                                                                            index %
+                                                                            CHART_COLORS.length
+                                                                            ],
+                                                                    }}
+                                                                />
+
+                                                                <span className="truncate text-[11px] font-medium text-slate-600 dark:text-slate-300">
+                                                                    {
+                                                                        item.name
+                                                                    }
+                                                                </span>
+
+                                                            </div>
+
+                                                            <span className="text-[10px] font-bold text-slate-900 dark:text-white">
+                                                                {
+                                                                    percentage
+                                                                }%
+                                                            </span>
+
+                                                        </div>
+
+                                                        <div className="h-1 overflow-hidden rounded-full bg-slate-100 dark:bg-white/[0.06]">
+
+                                                            <div
+                                                                className="h-full rounded-full transition-all"
+                                                                style={{
+                                                                    width: `${percentage}%`,
+                                                                    backgroundColor:
+                                                                        CHART_COLORS[
+                                                                        index %
+                                                                        CHART_COLORS.length
+                                                                        ],
+                                                                }}
+                                                            />
+
+                                                        </div>
+
+                                                    </div>
+                                                );
+                                            }
+                                        )}
+
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="text-xs text-slate-400">
+                                    No spending data yet.
+                                </div>
+                            )}
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+                {/* =================================================
+                    RECENT TRANSACTIONS
+                ================================================= */}
+
+                <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-white/[0.07] dark:bg-[#11151C]">
+
+                    <div className="border-b border-slate-200 p-5 dark:border-white/[0.06]">
+
+                        <SectionHeader
+                            icon={History}
+                            title="Recent transactions"
+                            description="Your latest financial activity"
+                            action={
+                                <Link
+                                    to="/transactions"
+                                    className="group flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-slate-600 transition hover:bg-slate-200 dark:bg-white/[0.05] dark:text-slate-300 dark:hover:bg-white/[0.08]"
+                                >
+                                    View all
+                                    <ArrowUpRight
+                                        size={12}
+                                        className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                                    />
+                                </Link>
+                            }
+                        />
+
+                    </div>
+
+                    {loading ? (
+                        <div className="px-5 py-16 text-center">
+
+                            <div className="mx-auto mb-3 h-6 w-6 animate-spin rounded-full border-2 border-slate-200 border-t-indigo-500 dark:border-white/10 dark:border-t-indigo-400" />
+
+                            <p className="text-xs text-slate-400">
+                                Loading transactions...
+                            </p>
+
+                        </div>
+                    ) : recentTransactions.length === 0 ? (
+                        <div className="px-5 py-16 text-center">
+
+                            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-400 dark:bg-white/[0.05]">
+                                <History size={20} />
+                            </div>
+
+                            <p className="mt-4 text-sm font-bold text-slate-700 dark:text-slate-300">
+                                No transactions yet
+                            </p>
+
+                            <p className="mt-1 text-xs text-slate-400">
+                                Add your first transaction to start tracking.
+                            </p>
+
+                            <button
+                                onClick={() =>
+                                    setIsModalOpen(true)
+                                }
+                                className="mt-4 text-xs font-bold text-indigo-600 underline underline-offset-4 dark:text-indigo-400"
+                            >
+                                Add transaction
+                            </button>
+
+                        </div>
+                    ) : (
+                        <div className="overflow-x-auto">
+
+                            <table className="w-full min-w-[600px] text-left">
+
+                                <thead>
+                                    <tr className="border-b border-slate-100 dark:border-white/[0.05]">
+
+                                        <th className="px-5 py-3.5 text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                                            Transaction
+                                        </th>
+
+                                        <th className="px-5 py-3.5 text-right text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                                            Amount
+                                        </th>
+
+                                    </tr>
+                                </thead>
+
+                                <tbody className="divide-y divide-slate-100 dark:divide-white/[0.05]">
+
+                                    {recentTransactions.map(
+                                        (transaction) => {
+
+                                            const isIncome =
+                                                transaction.type ===
+                                                'income';
+
+                                            return (
+                                                <tr
+                                                    key={
+                                                        transaction.id
+                                                    }
+                                                    className="group transition-colors hover:bg-slate-50 dark:hover:bg-white/[0.025]"
+                                                >
+
+                                                    <td className="px-5 py-4">
+
+                                                        <div className="flex items-center gap-3">
+
+                                                            <div
+                                                                className={clsx(
+                                                                    'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-xs font-bold transition-transform group-hover:scale-105',
+                                                                    isIncome
+                                                                        ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400'
+                                                                        : 'bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400'
+                                                                )}
+                                                            >
+                                                                {transaction.category?.[0]?.toUpperCase() ||
+                                                                    'T'}
+                                                            </div>
+
+                                                            <div className="min-w-0">
+
+                                                                <p className="truncate text-sm font-semibold text-slate-900 dark:text-white">
+                                                                    {transaction.description ||
+                                                                        'Untitled'}
+                                                                </p>
+
+                                                                <div className="mt-1 flex items-center gap-2">
+
+                                                                    <span className="truncate text-[9px] font-bold uppercase tracking-wider text-slate-400">
+                                                                        {
+                                                                            transaction.category
+                                                                        }
+                                                                    </span>
+
+                                                                    <span className="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-700" />
+
+                                                                    <span className="text-[9px] text-slate-400">
+                                                                        {transaction.date
+                                                                            ? new Date(
+                                                                                transaction.date
+                                                                            ).toLocaleDateString()
+                                                                            : 'N/A'}
+                                                                    </span>
+
+                                                                </div>
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    </td>
+
+                                                    <td
+                                                        className={clsx(
+                                                            'whitespace-nowrap px-5 py-4 text-right'
+                                                        )}
+                                                    >
+
+                                                        <div className="flex items-center justify-end gap-2">
+
+                                                            <div
+                                                                className={clsx(
+                                                                    'flex h-6 w-6 items-center justify-center rounded-full',
+                                                                    isIncome
+                                                                        ? 'bg-emerald-50 text-emerald-500 dark:bg-emerald-500/10'
+                                                                        : 'bg-rose-50 text-rose-500 dark:bg-rose-500/10'
+                                                                )}
+                                                            >
+                                                                {isIncome ? (
+                                                                    <ArrowUpRight size={12} />
+                                                                ) : (
+                                                                    <ArrowDownRight size={12} />
+                                                                )}
+                                                            </div>
+
+                                                            <span
+                                                                className={clsx(
+                                                                    'text-sm font-bold',
+                                                                    isIncome
+                                                                        ? 'text-emerald-600 dark:text-emerald-400'
+                                                                        : 'text-slate-900 dark:text-white'
+                                                                )}
+                                                            >
+                                                                {isIncome
+                                                                    ? '+'
+                                                                    : '-'}
+                                                                {formatAmount(
+                                                                    transaction.amount
+                                                                )}
+                                                            </span>
+
+                                                        </div>
+
+                                                    </td>
+
+                                                </tr>
+                                            );
+                                        }
+                                    )}
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+                    )}
+
+                </section>
+
             </div>
+
+            {/* =================================================
+                MODAL
+            ================================================= */}
 
             <AddTransactionModal
                 isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
+                onClose={() =>
+                    setIsModalOpen(false)
+                }
             />
 
-            {/* Mobile FAB */}
+            {/* =================================================
+                MOBILE ACTION
+            ================================================= */}
+
             <button
-                onClick={() => setIsModalOpen(true)}
-                className="md:hidden fixed bottom-24 right-6 w-14 h-14 bg-blue-600 text-white rounded-full shadow-2xl flex items-center justify-center z-50 active:scale-90 transition-transform shadow-blue-600/40"
+                onClick={() =>
+                    setIsModalOpen(true)
+                }
+                aria-label="Add transaction"
+                className="fixed bottom-6 right-5 z-40 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-950 text-white shadow-xl shadow-slate-950/20 transition-all hover:scale-105 active:scale-95 dark:bg-white dark:text-slate-950 md:hidden"
             >
-                <Plus size={28} />
+                <Plus size={21} />
             </button>
+
         </div>
     );
 };
-
 
 export default Dashboard;
