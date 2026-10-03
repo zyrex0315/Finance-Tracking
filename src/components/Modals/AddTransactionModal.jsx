@@ -1,6 +1,14 @@
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
-import { X, Calendar, DollarSign, Tag, FileText } from 'lucide-react';
+import {
+    X,
+    Calendar,
+    Tag,
+    FileText,
+    Wallet,
+    ArrowDownRight,
+    ArrowUpRight,
+} from 'lucide-react';
 import useTransactionStore from '../../context/transactionStore';
 import useCurrencyStore from '../../context/currencyStore';
 import clsx from 'clsx';
@@ -8,6 +16,7 @@ import clsx from 'clsx';
 const AddTransactionModal = ({ isOpen, onClose }) => {
     const { addTransaction } = useTransactionStore();
     const { getCurrencyInfo } = useCurrencyStore();
+
     const [isLoading, setIsLoading] = useState(false);
 
     const currencyInfo = getCurrencyInfo();
@@ -16,13 +25,18 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
     const [type, setType] = useState('expense');
     const [amount, setAmount] = useState('');
     const [category, setCategory] = useState('');
-    const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+    const [date, setDate] = useState(
+        new Date().toISOString().split('T')[0]
+    );
     const [description, setDescription] = useState('');
 
     if (!isOpen) return null;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!amount || Number(amount) <= 0 || !category) return;
+
         setIsLoading(true);
 
         try {
@@ -31,7 +45,7 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
                 amount: parseFloat(amount),
                 category,
                 date: new Date(date),
-                description
+                description,
             });
 
             setAmount('');
@@ -39,166 +53,630 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
             setDescription('');
             setType('expense');
             setDate(new Date().toISOString().split('T')[0]);
+
             onClose();
         } catch (error) {
-            console.error("Failed to add transaction", error);
+            console.error('Failed to add transaction', error);
         } finally {
             setIsLoading(false);
         }
     };
 
-    const categories = type === 'expense'
-        ? ['Food', 'Transport', 'Housing', 'Utilities', 'Entertainment', 'Health', 'Shopping', 'Other']
-        : ['Salary', 'Freelance', 'Investments', 'Gifts', 'Other'];
+    const categories =
+        type === 'expense'
+            ? [
+                'Food',
+                'Transport',
+                'Housing',
+                'Utilities',
+                'Entertainment',
+                'Health',
+                'Shopping',
+                'Other',
+            ]
+            : [
+                'Salary',
+                'Freelance',
+                'Investments',
+                'Gifts',
+                'Other',
+            ];
 
     return createPortal(
-        <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center sm:p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-300">
-            <div className="bg-white/95 dark:bg-[#111827]/95 backdrop-blur-2xl w-full max-w-lg rounded-t-[2.5rem] sm:rounded-[2.5rem] shadow-2xl border-t sm:border border-gray-100 dark:border-white/10 animate-in slide-in-from-bottom-full sm:zoom-in-95 duration-500 sm:duration-200 flex flex-col max-h-[96dvh] sm:max-h-[min(90vh,800px)]">
+        <div
+            className="
+                fixed inset-0 z-[9999]
+                flex items-end justify-center
+                bg-slate-950/50
+                p-0
+                backdrop-blur-sm
+                animate-in fade-in duration-200
+                sm:items-center sm:p-4
+            "
+        >
+            <div
+                className="
+                    flex w-full max-w-xl
+                    max-h-[96dvh] flex-col
+                    overflow-hidden
+                    rounded-t-[2rem]
+                    border border-slate-200
+                    bg-white
+                    text-slate-900
+                    shadow-2xl
+                    animate-in slide-in-from-bottom-6 duration-300
 
-                {/* Mobile Handle */}
-                <div className="sm:hidden flex justify-center pt-3 shrink-0">
-                    <div className="w-12 h-1 bg-gray-200 dark:bg-gray-700 rounded-full" />
+                    dark:border-white/[0.07]
+                    dark:bg-[#11151C]
+                    dark:text-white
+
+                    sm:max-h-[90vh]
+                    sm:rounded-2xl
+                "
+            >
+
+                {/* =================================================
+                    MOBILE HANDLE
+                ================================================= */}
+
+                <div className="flex shrink-0 justify-center pt-3 sm:hidden">
+                    <div className="h-1 w-10 rounded-full bg-slate-200 dark:bg-white/10" />
                 </div>
 
-                {/* Header */}
-                <div className="p-4 md:p-8 border-b border-gray-50 dark:border-white/10 flex justify-between items-center bg-gray-50/50 dark:bg-white/5 shrink-0">
-                    <div>
-                        <h3 className="text-lg md:text-2xl font-black text-gray-900 dark:text-white tracking-tight">New Record</h3>
-                        <p className="text-gray-400 text-[10px] md:text-sm mt-0.5">Capture your financial activity</p>
-                    </div>
-                    <button
-                        onClick={onClose}
-                        className="w-10 h-10 rounded-2xl bg-white dark:bg-white/10 text-gray-400 hover:text-gray-600 dark:hover:text-white flex items-center justify-center shadow-sm border border-gray-100 dark:border-white/10 transition-all"
-                    >
-                        <X size={20} />
-                    </button>
-                </div>
+                {/* =================================================
+                    HEADER
+                ================================================= */}
 
-                <form onSubmit={handleSubmit} className="flex-1 flex flex-col min-h-0">
-                    <div className="flex-1 p-4 md:p-8 space-y-4 md:space-y-5 overflow-y-auto min-h-0 scroll-smooth">
-                        {/* Type Toggle */}
-                        <div className="flex bg-gray-50 dark:bg-[#0f172a] p-1 rounded-xl md:rounded-2xl border border-gray-100 dark:border-white/10 shrink-0">
-                            <button
-                                type="button"
-                                onClick={() => setType('expense')}
-                                className={clsx(
-                                    "flex-1 py-2 md:py-2.5 px-3 md:px-4 rounded-lg md:rounded-xl text-[10px] md:text-xs font-black transition-all",
-                                    type === 'expense'
-                                        ? "bg-white dark:bg-gray-800 text-rose-500 shadow-sm"
-                                        : "text-gray-400 hover:text-gray-600"
-                                )}
-                            >
-                                EXPENSE
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => setType('income')}
-                                className={clsx(
-                                    "flex-1 py-2 md:py-2.5 px-3 md:px-4 rounded-lg md:rounded-xl text-[10px] md:text-xs font-black transition-all",
-                                    type === 'income'
-                                        ? "bg-white dark:bg-gray-800 text-emerald-500 shadow-sm"
-                                        : "text-gray-400 hover:text-gray-600"
-                                )}
-                            >
-                                INCOME
-                            </button>
+                <div
+                    className="
+                        flex shrink-0 items-center justify-between
+                        border-b border-slate-200
+                        px-5 py-4
+                        dark:border-white/[0.06]
+                        sm:px-6 sm:py-5
+                    "
+                >
+                    <div className="flex items-center gap-3">
+
+                        <div
+                            className="
+                                flex h-10 w-10
+                                items-center justify-center
+                                rounded-xl
+                                bg-slate-100
+                                text-slate-600
+                                dark:bg-white/[0.06]
+                                dark:text-slate-300
+                            "
+                        >
+                            <Wallet size={18} strokeWidth={1.8} />
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            {/* Amount */}
-                            <div className="space-y-1">
-                                <label className="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Amount</label>
-                                <div className="relative group">
-                                    <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 font-bold group-focus-within:text-blue-500 transition-colors">
+                        <div>
+                            <h3 className="text-base font-bold tracking-tight text-slate-950 dark:text-white sm:text-lg">
+                                New transaction
+                            </h3>
+
+                            <p className="mt-0.5 text-[10px] text-slate-400 sm:text-xs">
+                                Record your financial activity
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        aria-label="Close modal"
+                        className="
+                            flex h-9 w-9
+                            items-center justify-center
+                            rounded-xl
+                            border border-slate-200
+                            bg-slate-50
+                            text-slate-400
+                            transition-colors
+                            hover:bg-slate-100
+                            hover:text-slate-700
+
+                            dark:border-white/[0.07]
+                            dark:bg-white/[0.04]
+                            dark:text-slate-400
+                            dark:hover:bg-white/[0.08]
+                            dark:hover:text-white
+                        "
+                    >
+                        <X size={17} />
+                    </button>
+
+                </div>
+
+                {/* =================================================
+                    FORM
+                ================================================= */}
+
+                <form
+                    onSubmit={handleSubmit}
+                    className="flex min-h-0 flex-1 flex-col"
+                >
+
+                    <div
+                        className="
+                            min-h-0
+                            flex-1
+                            space-y-5
+                            overflow-y-auto
+                            px-5 py-5
+                            sm:px-6 sm:py-6
+                        "
+                    >
+
+                        {/* =================================================
+                            TYPE
+                        ================================================= */}
+
+                        <div>
+                            <label className="mb-2 block text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                                Transaction type
+                            </label>
+
+                            <div
+                                className="
+                                    grid grid-cols-2
+                                    gap-2
+                                    rounded-xl
+                                    border border-slate-200
+                                    bg-slate-50
+                                    p-1
+                                    dark:border-white/[0.07]
+                                    dark:bg-white/[0.03]
+                                "
+                            >
+
+                                {/* EXPENSE */}
+
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setType('expense');
+                                        setCategory('');
+                                    }}
+                                    className={clsx(
+                                        `
+                                            flex items-center justify-center
+                                            gap-2
+                                            rounded-lg
+                                            px-3 py-2.5
+                                            text-[10px]
+                                            font-bold
+                                            uppercase
+                                            tracking-wider
+                                            transition-all
+                                        `,
+                                        type === 'expense'
+                                            ? `
+                                                bg-white
+                                                text-rose-600
+                                                shadow-sm
+                                                border border-slate-200
+                                                dark:border-white/[0.06]
+                                                dark:bg-[#11151C]
+                                                dark:text-rose-400
+                                            `
+                                            : `
+                                                text-slate-400
+                                                hover:text-slate-600
+                                                dark:hover:text-slate-200
+                                            `
+                                    )}
+                                >
+                                    <ArrowDownRight size={14} />
+                                    Expense
+                                </button>
+
+                                {/* INCOME */}
+
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setType('income');
+                                        setCategory('');
+                                    }}
+                                    className={clsx(
+                                        `
+                                            flex items-center justify-center
+                                            gap-2
+                                            rounded-lg
+                                            px-3 py-2.5
+                                            text-[10px]
+                                            font-bold
+                                            uppercase
+                                            tracking-wider
+                                            transition-all
+                                        `,
+                                        type === 'income'
+                                            ? `
+                                                bg-white
+                                                text-emerald-600
+                                                shadow-sm
+                                                border border-slate-200
+                                                dark:border-white/[0.06]
+                                                dark:bg-[#11151C]
+                                                dark:text-emerald-400
+                                            `
+                                            : `
+                                                text-slate-400
+                                                hover:text-slate-600
+                                                dark:hover:text-slate-200
+                                            `
+                                    )}
+                                >
+                                    <ArrowUpRight size={14} />
+                                    Income
+                                </button>
+
+                            </div>
+                        </div>
+
+                        {/* =================================================
+                            AMOUNT + DATE
+                        ================================================= */}
+
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+
+                            {/* AMOUNT */}
+
+                            <div>
+                                <label className="mb-2 block text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                                    Amount
+                                </label>
+
+                                <div className="relative">
+
+                                    <span
+                                        className="
+                                            absolute left-3.5 top-1/2
+                                            -translate-y-1/2
+                                            text-sm font-bold
+                                            text-slate-400
+                                        "
+                                    >
                                         {currencyInfo.symbol}
-                                    </div>
+                                    </span>
+
                                     <input
                                         type="number"
                                         required
                                         min="0"
                                         step="0.01"
                                         value={amount}
-                                        onChange={(e) => setAmount(e.target.value)}
+                                        onChange={(e) =>
+                                            setAmount(e.target.value)
+                                        }
                                         placeholder="0.00"
-                                        className="w-full pl-9 pr-4 py-2.5 md:py-3.5 rounded-xl md:rounded-2xl border border-gray-100 dark:border-white/10 bg-gray-50 dark:bg-[#0f172a] text-gray-900 dark:text-white focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-black text-base md:text-lg"
+                                        className="
+                                            w-full
+                                            rounded-xl
+                                            border border-slate-200
+                                            bg-slate-50
+                                            py-3
+                                            pl-9 pr-4
+                                            text-sm
+                                            font-bold
+                                            text-slate-900
+                                            outline-none
+                                            transition-all
+
+                                            placeholder:text-slate-300
+                                            focus:border-slate-400
+                                            focus:bg-white
+
+                                            dark:border-white/[0.07]
+                                            dark:bg-[#0C1016]
+                                            dark:text-white
+                                            dark:placeholder:text-slate-600
+                                            dark:focus:border-white/20
+                                            dark:focus:bg-[#0C1016]
+                                        "
                                     />
+
                                 </div>
                             </div>
 
-                            {/* Date */}
-                            <div className="space-y-1">
-                                <label className="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Date</label>
+                            {/* DATE */}
+
+                            <div>
+                                <label className="mb-2 block text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                                    Date
+                                </label>
+
                                 <div className="relative">
-                                    <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+
+                                    <Calendar
+                                        size={15}
+                                        className="
+                                            absolute left-3.5 top-1/2
+                                            -translate-y-1/2
+                                            text-slate-400
+                                        "
+                                    />
+
                                     <input
                                         type="date"
                                         required
                                         value={date}
-                                        onChange={(e) => setDate(e.target.value)}
-                                        className="w-full pl-10 pr-4 py-2.5 md:py-3.5 rounded-xl md:rounded-2xl border border-gray-100 dark:border-white/10 bg-gray-50 dark:bg-[#0f172a] text-gray-900 dark:text-white focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold text-sm"
+                                        onChange={(e) =>
+                                            setDate(e.target.value)
+                                        }
+                                        className="
+                                            w-full
+                                            rounded-xl
+                                            border border-slate-200
+                                            bg-slate-50
+                                            py-3
+                                            pl-10 pr-3
+                                            text-sm
+                                            font-semibold
+                                            text-slate-900
+                                            outline-none
+                                            transition-all
+
+                                            focus:border-slate-400
+                                            focus:bg-white
+
+                                            dark:border-white/[0.07]
+                                            dark:bg-[#0C1016]
+                                            dark:text-white
+                                            dark:focus:border-white/20
+                                        "
                                     />
+
                                 </div>
                             </div>
+
                         </div>
 
-                        {/* Category */}
-                        <div className="space-y-1">
-                            <label className="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Category</label>
+                        {/* =================================================
+                            CATEGORY
+                        ================================================= */}
+
+                        <div>
+
+                            <label className="mb-2 block text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                                Category
+                            </label>
+
                             <div className="relative">
-                                <Tag className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+
+                                <Tag
+                                    size={15}
+                                    className="
+                                        absolute left-3.5 top-1/2
+                                        -translate-y-1/2
+                                        text-slate-400
+                                    "
+                                />
+
                                 <select
                                     required
                                     value={category}
-                                    onChange={(e) => setCategory(e.target.value)}
-                                    className="w-full pl-10 pr-10 py-2.5 md:py-3.5 rounded-xl md:rounded-2xl border border-gray-100 dark:border-white/10 bg-gray-50 dark:bg-[#0f172a] text-gray-900 dark:text-white focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold appearance-none text-sm"
+                                    onChange={(e) =>
+                                        setCategory(e.target.value)
+                                    }
+                                    className="
+                                        w-full
+                                        appearance-none
+                                        rounded-xl
+                                        border border-slate-200
+                                        bg-slate-50
+                                        py-3
+                                        pl-10 pr-10
+                                        text-sm
+                                        font-semibold
+                                        text-slate-900
+                                        outline-none
+                                        transition-all
+
+                                        focus:border-slate-400
+                                        focus:bg-white
+
+                                        dark:border-white/[0.07]
+                                        dark:bg-[#0C1016]
+                                        dark:text-white
+                                        dark:focus:border-white/20
+                                    "
                                 >
-                                    <option value="" disabled>Choose Category</option>
-                                    {categories.map(cat => (
-                                        <option key={cat} value={cat}>{cat}</option>
+                                    <option value="" disabled>
+                                        Choose category
+                                    </option>
+
+                                    {categories.map((cat) => (
+                                        <option
+                                            key={cat}
+                                            value={cat}
+                                        >
+                                            {cat}
+                                        </option>
                                     ))}
                                 </select>
-                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                                    <svg width="10" height="10" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+
+                                <div
+                                    className="
+                                        pointer-events-none
+                                        absolute right-4 top-1/2
+                                        -translate-y-1/2
+                                        text-slate-400
+                                    "
+                                >
+                                    <svg
+                                        width="10"
+                                        height="10"
+                                        viewBox="0 0 12 12"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path
+                                            d="M2.5 4.5L6 8L9.5 4.5"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        />
                                     </svg>
                                 </div>
+
                             </div>
+
                         </div>
 
-                        {/* Description */}
-                        <div className="space-y-1 pb-2 md:pb-4">
-                            <label className="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Memo</label>
+                        {/* =================================================
+                            DESCRIPTION
+                        ================================================= */}
+
+                        <div>
+
+                            <label className="mb-2 block text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                                Memo
+                            </label>
+
                             <div className="relative">
-                                <FileText className="absolute left-3.5 top-3.5 text-gray-400" size={16} />
-                                <textarea
-                                    rows="1"
-                                    value={description}
-                                    onChange={(e) => setDescription(e.target.value)}
-                                    placeholder="Add notes (optional)..."
-                                    className="w-full pl-10 pr-4 py-2.5 md:py-3.5 rounded-xl md:rounded-2xl border border-gray-100 dark:border-white/10 bg-gray-50 dark:bg-[#0f172a] text-gray-900 dark:text-white focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-sm md:text-base"
+
+                                <FileText
+                                    size={15}
+                                    className="
+                                        absolute left-3.5 top-3.5
+                                        text-slate-400
+                                    "
                                 />
+
+                                <textarea
+                                    rows="3"
+                                    value={description}
+                                    onChange={(e) =>
+                                        setDescription(
+                                            e.target.value
+                                        )
+                                    }
+                                    placeholder="Add notes (optional)..."
+                                    className="
+                                        w-full
+                                        resize-none
+                                        rounded-xl
+                                        border border-slate-200
+                                        bg-slate-50
+                                        py-3
+                                        pl-10 pr-4
+                                        text-sm
+                                        font-medium
+                                        text-slate-900
+                                        outline-none
+                                        transition-all
+
+                                        placeholder:text-slate-300
+                                        focus:border-slate-400
+                                        focus:bg-white
+
+                                        dark:border-white/[0.07]
+                                        dark:bg-[#0C1016]
+                                        dark:text-white
+                                        dark:placeholder:text-slate-600
+                                        dark:focus:border-white/20
+                                    "
+                                />
+
                             </div>
+
                         </div>
+
                     </div>
 
-                    {/* Actions */}
-                    <div className="p-4 pb-10 md:p-8 border-t border-gray-50 dark:border-white/10 flex gap-3 md:gap-4 bg-white dark:bg-[#111827] shrink-0 mt-auto">
+                    {/* =================================================
+                        ACTIONS
+                    ================================================= */}
+
+                    <div
+                        className="
+                            flex shrink-0
+                            gap-3
+                            border-t border-slate-200
+                            bg-white
+                            px-5 py-4
+                            dark:border-white/[0.06]
+                            dark:bg-[#11151C]
+                            sm:px-6
+                        "
+                    >
+
                         <button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 py-3 md:py-4 rounded-xl md:rounded-2xl font-bold text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 transition-all border border-gray-100 dark:border-white/10 text-xs md:text-sm"
+                            className="
+                                flex-1
+                                rounded-xl
+                                border border-slate-200
+                                bg-white
+                                px-4 py-3
+                                text-xs
+                                font-bold
+                                text-slate-600
+                                transition-colors
+                                hover:bg-slate-50
+                                hover:text-slate-900
+
+                                dark:border-white/[0.07]
+                                dark:bg-transparent
+                                dark:text-slate-400
+                                dark:hover:bg-white/[0.05]
+                                dark:hover:text-white
+                            "
                         >
                             Cancel
                         </button>
+
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="flex-[2] py-3 md:py-4 rounded-xl md:rounded-2xl font-black text-white bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-600/20 transition-all disabled:opacity-50 text-xs md:text-base active:scale-[0.98] uppercase tracking-widest"
+                            className={clsx(
+                                `
+                                    flex-[1.5]
+                                    rounded-xl
+                                    px-4 py-3
+                                    text-xs
+                                    font-bold
+                                    uppercase
+                                    tracking-wider
+                                    text-white
+                                    transition-all
+                                    active:scale-[0.98]
+                                    disabled:cursor-not-allowed
+                                    disabled:opacity-50
+                                `,
+                                type === 'income'
+                                    ? `
+                                     bg-slate-900
+                                        hover:bg-slate-800
+                                        dark:bg-white
+                                        dark:text-slate-950
+                                        dark:hover:bg-slate-200
+                                    `
+                                    : `
+                                        bg-slate-900
+                                        hover:bg-slate-800
+                                        dark:bg-white
+                                        dark:text-slate-950
+                                        dark:hover:bg-slate-200
+                                    `
+                            )}
                         >
-                            {isLoading ? '...' : 'Secure Entry'}
+                            {isLoading
+                                ? 'Saving...'
+                                : 'Save transaction'}
                         </button>
+
                     </div>
+
                 </form>
+
             </div>
         </div>,
         document.body
@@ -206,4 +684,3 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
 };
 
 export default AddTransactionModal;
-
