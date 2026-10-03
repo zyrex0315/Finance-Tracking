@@ -21,7 +21,6 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
 
     const currencyInfo = getCurrencyInfo();
 
-    // Form State
     const [type, setType] = useState('expense');
     const [amount, setAmount] = useState('');
     const [category, setCategory] = useState('');
@@ -48,6 +47,7 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
                 description,
             });
 
+            // Reset form
             setAmount('');
             setCategory('');
             setDescription('');
@@ -83,26 +83,13 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
             ];
 
     return createPortal(
-        <div
-            className="
-                fixed inset-0 z-[9999]
-                flex items-end justify-center
-                bg-slate-950/50
-                p-0
-                backdrop-blur-sm
-                animate-in fade-in duration-200
-                sm:items-center sm:p-4
-            "
-        >
+        <div className="fixed inset-0 z-[9999] flex items-end justify-center bg-slate-950/50 p-0 backdrop-blur-sm animate-in fade-in duration-200 sm:items-center sm:p-4">
             <div
                 className="
-                    flex w-full max-w-xl
-                    max-h-[96dvh] flex-col
-                    overflow-hidden
-                    rounded-t-[2rem]
+                    flex w-full max-w-xl max-h-[96dvh] flex-col
+                    overflow-hidden rounded-t-[2rem]
                     border border-slate-200
-                    bg-white
-                    text-slate-900
+                    bg-white text-slate-900
                     shadow-2xl
                     animate-in slide-in-from-bottom-6 duration-300
 
@@ -114,42 +101,19 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
                     sm:rounded-2xl
                 "
             >
-
-                {/* =================================================
-                    MOBILE HANDLE
-                ================================================= */}
-
+                {/* Mobile drag indicator */}
                 <div className="flex shrink-0 justify-center pt-3 sm:hidden">
                     <div className="h-1 w-10 rounded-full bg-slate-200 dark:bg-white/10" />
                 </div>
 
-                {/* =================================================
-                    HEADER
-                ================================================= */}
-
-                <div
-                    className="
-                        flex shrink-0 items-center justify-between
-                        border-b border-slate-200
-                        px-5 py-4
-                        dark:border-white/[0.06]
-                        sm:px-6 sm:py-5
-                    "
-                >
+                {/* Header */}
+                <div className="flex shrink-0 items-center justify-between border-b border-slate-200 px-5 py-4 dark:border-white/[0.06] sm:px-6 sm:py-5">
                     <div className="flex items-center gap-3">
-
-                        <div
-                            className="
-                                flex h-10 w-10
-                                items-center justify-center
-                                rounded-xl
-                                bg-slate-100
-                                text-slate-600
-                                dark:bg-white/[0.06]
-                                dark:text-slate-300
-                            "
-                        >
-                            <Wallet size={18} strokeWidth={1.8} />
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-600 dark:bg-white/[0.06] dark:text-slate-300">
+                            <Wallet
+                                size={18}
+                                strokeWidth={1.8}
+                            />
                         </div>
 
                         <div>
@@ -161,7 +125,6 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
                                 Record your financial activity
                             </p>
                         </div>
-
                     </div>
 
                     <button
@@ -169,8 +132,7 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
                         onClick={onClose}
                         aria-label="Close modal"
                         className="
-                            flex h-9 w-9
-                            items-center justify-center
+                            flex h-9 w-9 items-center justify-center
                             rounded-xl
                             border border-slate-200
                             bg-slate-50
@@ -188,53 +150,23 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
                     >
                         <X size={17} />
                     </button>
-
                 </div>
 
-                {/* =================================================
-                    FORM
-                ================================================= */}
-
+                {/* Form */}
                 <form
                     onSubmit={handleSubmit}
                     className="flex min-h-0 flex-1 flex-col"
                 >
-
-                    <div
-                        className="
-                            min-h-0
-                            flex-1
-                            space-y-5
-                            overflow-y-auto
-                            px-5 py-5
-                            sm:px-6 sm:py-6
-                        "
-                    >
-
-                        {/* =================================================
-                            TYPE
-                        ================================================= */}
-
+                    {/* Scrollable content */}
+                    <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-5 py-5 sm:px-6 sm:py-6">
+                        {/* Transaction Type */}
                         <div>
                             <label className="mb-2 block text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">
                                 Transaction type
                             </label>
 
-                            <div
-                                className="
-                                    grid grid-cols-2
-                                    gap-2
-                                    rounded-xl
-                                    border border-slate-200
-                                    bg-slate-50
-                                    p-1
-                                    dark:border-white/[0.07]
-                                    dark:bg-white/[0.03]
-                                "
-                            >
-
-                                {/* EXPENSE */}
-
+                            <div className="grid grid-cols-2 gap-2 rounded-xl border border-slate-200 bg-slate-50 p-1 dark:border-white/[0.07] dark:bg-white/[0.03]">
+                                {/* Expense */}
                                 <button
                                     type="button"
                                     onClick={() => {
@@ -242,40 +174,17 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
                                         setCategory('');
                                     }}
                                     className={clsx(
-                                        `
-                                            flex items-center justify-center
-                                            gap-2
-                                            rounded-lg
-                                            px-3 py-2.5
-                                            text-[10px]
-                                            font-bold
-                                            uppercase
-                                            tracking-wider
-                                            transition-all
-                                        `,
+                                        'flex items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-[10px] font-bold uppercase tracking-wider transition-all',
                                         type === 'expense'
-                                            ? `
-                                                bg-white
-                                                text-rose-600
-                                                shadow-sm
-                                                border border-slate-200
-                                                dark:border-white/[0.06]
-                                                dark:bg-[#11151C]
-                                                dark:text-rose-400
-                                            `
-                                            : `
-                                                text-slate-400
-                                                hover:text-slate-600
-                                                dark:hover:text-slate-200
-                                            `
+                                            ? 'border border-slate-200 bg-white text-rose-600 shadow-sm dark:border-white/[0.06] dark:bg-[#11151C] dark:text-rose-400'
+                                            : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
                                     )}
                                 >
                                     <ArrowDownRight size={14} />
                                     Expense
                                 </button>
 
-                                {/* INCOME */}
-
+                                {/* Income */}
                                 <button
                                     type="button"
                                     onClick={() => {
@@ -283,64 +192,28 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
                                         setCategory('');
                                     }}
                                     className={clsx(
-                                        `
-                                            flex items-center justify-center
-                                            gap-2
-                                            rounded-lg
-                                            px-3 py-2.5
-                                            text-[10px]
-                                            font-bold
-                                            uppercase
-                                            tracking-wider
-                                            transition-all
-                                        `,
+                                        'flex items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-[10px] font-bold uppercase tracking-wider transition-all',
                                         type === 'income'
-                                            ? `
-                                                bg-white
-                                                text-emerald-600
-                                                shadow-sm
-                                                border border-slate-200
-                                                dark:border-white/[0.06]
-                                                dark:bg-[#11151C]
-                                                dark:text-emerald-400
-                                            `
-                                            : `
-                                                text-slate-400
-                                                hover:text-slate-600
-                                                dark:hover:text-slate-200
-                                            `
+                                            ? 'border border-slate-200 bg-white text-emerald-600 shadow-sm dark:border-white/[0.06] dark:bg-[#11151C] dark:text-emerald-400'
+                                            : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
                                     )}
                                 >
                                     <ArrowUpRight size={14} />
                                     Income
                                 </button>
-
                             </div>
                         </div>
 
-                        {/* =================================================
-                            AMOUNT + DATE
-                        ================================================= */}
-
+                        {/* Amount + Date */}
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-
-                            {/* AMOUNT */}
-
+                            {/* Amount */}
                             <div>
                                 <label className="mb-2 block text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">
                                     Amount
                                 </label>
 
                                 <div className="relative">
-
-                                    <span
-                                        className="
-                                            absolute left-3.5 top-1/2
-                                            -translate-y-1/2
-                                            text-sm font-bold
-                                            text-slate-400
-                                        "
-                                    >
+                                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-400">
                                         {currencyInfo.symbol}
                                     </span>
 
@@ -359,17 +232,20 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
                                             rounded-xl
                                             border border-slate-200
                                             bg-slate-50
-                                            py-3
-                                            pl-9 pr-4
-                                            text-sm
-                                            font-bold
+                                            py-3 pl-9 pr-4
+                                            text-sm font-bold
                                             text-slate-900
                                             outline-none
                                             transition-all
 
                                             placeholder:text-slate-300
+
                                             focus:border-slate-400
                                             focus:bg-white
+
+                                            [appearance:textfield]
+                                            [&::-webkit-inner-spin-button]:appearance-none
+                                            [&::-webkit-outer-spin-button]:appearance-none
 
                                             dark:border-white/[0.07]
                                             dark:bg-[#0C1016]
@@ -379,26 +255,19 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
                                             dark:focus:bg-[#0C1016]
                                         "
                                     />
-
                                 </div>
                             </div>
 
-                            {/* DATE */}
-
+                            {/* Date */}
                             <div>
                                 <label className="mb-2 block text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">
                                     Date
                                 </label>
 
                                 <div className="relative">
-
                                     <Calendar
                                         size={15}
-                                        className="
-                                            absolute left-3.5 top-1/2
-                                            -translate-y-1/2
-                                            text-slate-400
-                                        "
+                                        className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
                                     />
 
                                     <input
@@ -413,10 +282,8 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
                                             rounded-xl
                                             border border-slate-200
                                             bg-slate-50
-                                            py-3
-                                            pl-10 pr-3
-                                            text-sm
-                                            font-semibold
+                                            py-3 pl-10 pr-3
+                                            text-sm font-semibold
                                             text-slate-900
                                             outline-none
                                             transition-all
@@ -430,31 +297,20 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
                                             dark:focus:border-white/20
                                         "
                                     />
-
                                 </div>
                             </div>
-
                         </div>
 
-                        {/* =================================================
-                            CATEGORY
-                        ================================================= */}
-
+                        {/* Category */}
                         <div>
-
                             <label className="mb-2 block text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">
                                 Category
                             </label>
 
                             <div className="relative">
-
                                 <Tag
                                     size={15}
-                                    className="
-                                        absolute left-3.5 top-1/2
-                                        -translate-y-1/2
-                                        text-slate-400
-                                    "
+                                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
                                 />
 
                                 <select
@@ -469,10 +325,8 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
                                         rounded-xl
                                         border border-slate-200
                                         bg-slate-50
-                                        py-3
-                                        pl-10 pr-10
-                                        text-sm
-                                        font-semibold
+                                        py-3 pl-10 pr-10
+                                        text-sm font-semibold
                                         text-slate-900
                                         outline-none
                                         transition-all
@@ -486,7 +340,10 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
                                         dark:focus:border-white/20
                                     "
                                 >
-                                    <option value="" disabled>
+                                    <option
+                                        value=""
+                                        disabled
+                                    >
                                         Choose category
                                     </option>
 
@@ -500,14 +357,8 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
                                     ))}
                                 </select>
 
-                                <div
-                                    className="
-                                        pointer-events-none
-                                        absolute right-4 top-1/2
-                                        -translate-y-1/2
-                                        text-slate-400
-                                    "
-                                >
+                                {/* Select arrow */}
+                                <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">
                                     <svg
                                         width="10"
                                         height="10"
@@ -524,38 +375,26 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
                                         />
                                     </svg>
                                 </div>
-
                             </div>
-
                         </div>
 
-                        {/* =================================================
-                            DESCRIPTION
-                        ================================================= */}
-
+                        {/* Memo */}
                         <div>
-
                             <label className="mb-2 block text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">
                                 Memo
                             </label>
 
                             <div className="relative">
-
                                 <FileText
                                     size={15}
-                                    className="
-                                        absolute left-3.5 top-3.5
-                                        text-slate-400
-                                    "
+                                    className="absolute left-3.5 top-3.5 text-slate-400"
                                 />
 
                                 <textarea
                                     rows="3"
                                     value={description}
                                     onChange={(e) =>
-                                        setDescription(
-                                            e.target.value
-                                        )
+                                        setDescription(e.target.value)
                                     }
                                     placeholder="Add notes (optional)..."
                                     className="
@@ -564,15 +403,14 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
                                         rounded-xl
                                         border border-slate-200
                                         bg-slate-50
-                                        py-3
-                                        pl-10 pr-4
-                                        text-sm
-                                        font-medium
+                                        py-3 pl-10 pr-4
+                                        text-sm font-medium
                                         text-slate-900
                                         outline-none
                                         transition-all
 
                                         placeholder:text-slate-300
+
                                         focus:border-slate-400
                                         focus:bg-white
 
@@ -581,32 +419,16 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
                                         dark:text-white
                                         dark:placeholder:text-slate-600
                                         dark:focus:border-white/20
+                                        dark:focus:bg-[#0C1016]
                                     "
                                 />
-
                             </div>
-
                         </div>
-
                     </div>
 
-                    {/* =================================================
-                        ACTIONS
-                    ================================================= */}
-
-                    <div
-                        className="
-                            flex shrink-0
-                            gap-3
-                            border-t border-slate-200
-                            bg-white
-                            px-5 py-4
-                            dark:border-white/[0.06]
-                            dark:bg-[#11151C]
-                            sm:px-6
-                        "
-                    >
-
+                    {/* Footer */}
+                    <div className="flex shrink-0 gap-3 border-t border-slate-200 bg-white px-5 py-4 dark:border-white/[0.06] dark:bg-[#11151C] sm:px-6">
+                        {/* Cancel */}
                         <button
                             type="button"
                             onClick={onClose}
@@ -616,10 +438,10 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
                                 border border-slate-200
                                 bg-white
                                 px-4 py-3
-                                text-xs
-                                font-bold
+                                text-xs font-bold
                                 text-slate-600
                                 transition-colors
+
                                 hover:bg-slate-50
                                 hover:text-slate-900
 
@@ -633,6 +455,7 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
                             Cancel
                         </button>
 
+                        {/* Save */}
                         <button
                             type="submit"
                             disabled={isLoading}
@@ -641,19 +464,18 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
                                     flex-[1.5]
                                     rounded-xl
                                     px-4 py-3
-                                    text-xs
-                                    font-bold
-                                    uppercase
-                                    tracking-wider
+                                    text-xs font-bold
+                                    uppercase tracking-wider
                                     text-white
                                     transition-all
                                     active:scale-[0.98]
+
                                     disabled:cursor-not-allowed
                                     disabled:opacity-50
                                 `,
                                 type === 'income'
                                     ? `
-                                     bg-slate-900
+                                         bg-slate-900
                                         hover:bg-slate-800
                                         dark:bg-white
                                         dark:text-slate-950
@@ -672,11 +494,8 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
                                 ? 'Saving...'
                                 : 'Save transaction'}
                         </button>
-
                     </div>
-
                 </form>
-
             </div>
         </div>,
         document.body
