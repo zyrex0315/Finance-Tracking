@@ -365,10 +365,6 @@ const Transactions = () => {
                         <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
 
 
-                            <div className="hidden h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-400 dark:bg-white/[0.05] sm:flex">
-                                <SlidersHorizontal size={15} />
-                            </div>
-
 
                             <div className="flex rounded-xl border border-slate-200 bg-slate-50 p-1 dark:border-white/[0.07] dark:bg-[#0C1016]">
 
