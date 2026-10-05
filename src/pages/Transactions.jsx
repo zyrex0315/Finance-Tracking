@@ -108,19 +108,19 @@ const Transactions = () => {
 
                     <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
 
-                        <div>
+                        <div className="min-w-0 max-w-full">
 
                             <div className="mb-3 flex items-center gap-2">
 
-                                <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
+                                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500" />
 
-                                <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-slate-400">
+                                <span className="truncate text-[9px] font-bold uppercase tracking-[0.25em] text-slate-400">
                                     Financial Records
                                 </span>
 
                             </div>
 
-                            <h1 className="text-3xl font-bold tracking-[-0.04em] text-slate-950 dark:text-white sm:text-4xl">
+                            <h1 className="break-words text-xl font-bold tracking-[-0.04em] text-slate-950 dark:text-white sm:text-3xl md:text-4xl">
                                 Transactions
                             </h1>
 
@@ -129,6 +129,7 @@ const Transactions = () => {
                             </p>
 
                         </div>
+
 
                         <div className="flex items-center gap-3">
 

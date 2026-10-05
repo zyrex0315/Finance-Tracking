@@ -67,7 +67,7 @@ const DashboardStats = ({
     return (
         <div
             className={clsx(
-                'group relative overflow-hidden rounded-2xl border p-5 transition-all duration-300',
+                'group relative min-w-0 overflow-hidden rounded-2xl border p-4 sm:p-5 transition-all duration-300',
                 'hover:-translate-y-0.5 hover:shadow-xl',
                 'bg-white border-slate-200',
                 'dark:bg-[#11151C] dark:border-white/[0.07]'
@@ -76,7 +76,7 @@ const DashboardStats = ({
             <div className="relative flex items-start justify-between">
                 <div
                     className={clsx(
-                        'flex h-10 w-10 items-center justify-center rounded-xl',
+                        'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl',
                         isIncome
                             ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400'
                             : isExpense
@@ -89,7 +89,7 @@ const DashboardStats = ({
 
                 <span
                     className={clsx(
-                        'rounded-full px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider',
+                        'shrink-0 rounded-full px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider',
                         isIncome
                             ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400'
                             : isExpense
@@ -101,14 +101,14 @@ const DashboardStats = ({
                 </span>
             </div>
 
-            <div className="relative mt-6">
-                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+            <div className="relative mt-6 min-w-0">
+                <p className="truncate text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
                     {title}
                 </p>
 
                 <p
                     className={clsx(
-                        'mt-1.5 truncate text-2xl font-bold tracking-tight md:text-[27px]',
+                        'mt-1.5 min-w-0 truncate text-xl font-bold tracking-tight sm:text-2xl md:text-[27px]',
                         isIncome
                             ? 'text-emerald-600 dark:text-emerald-400'
                             : isExpense
@@ -149,12 +149,12 @@ const ActivityTooltip = ({
     if (!active || !payload || !payload.length) return null;
 
     return (
-        <div className="rounded-xl border border-slate-200 bg-white/95 px-4 py-3 shadow-xl backdrop-blur-md dark:border-white/10 dark:bg-[#11151C]/95">
-            <p className="mb-1 text-[9px] font-bold uppercase tracking-[0.16em] text-slate-400">
+        <div className="max-w-[180px] rounded-xl border border-slate-200 bg-white/95 px-4 py-3 shadow-xl backdrop-blur-md dark:border-white/10 dark:bg-[#11151C]/95">
+            <p className="mb-1 truncate text-[9px] font-bold uppercase tracking-[0.16em] text-slate-400">
                 {label}
             </p>
 
-            <p className="text-sm font-bold text-slate-900 dark:text-white">
+            <p className="truncate text-sm font-bold text-slate-900 dark:text-white">
                 {formatAmount(payload[0].value)}
             </p>
         </div>
@@ -171,19 +171,19 @@ const SectionHeader = ({
     description,
     action,
 }) => (
-    <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-600 dark:bg-white/[0.06] dark:text-slate-300">
+    <div className="flex min-w-0 items-center justify-between gap-3">
+        <div className="flex min-w-0 items-center gap-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-600 dark:bg-white/[0.06] dark:text-slate-300">
                 <Icon size={16} strokeWidth={1.8} />
             </div>
 
-            <div>
-                <h2 className="text-sm font-bold text-slate-900 dark:text-white">
+            <div className="min-w-0">
+                <h2 className="truncate text-sm font-bold text-slate-900 dark:text-white">
                     {title}
                 </h2>
 
                 {description && (
-                    <p className="mt-0.5 text-[10px] text-slate-400">
+                    <p className="mt-0.5 truncate text-[10px] text-slate-400">
                         {description}
                     </p>
                 )}
@@ -408,29 +408,27 @@ const Dashboard = () => {
     ===================================================== */
 
     return (
-        <div className="min-h-full bg-[#F6F7F9] text-slate-900 transition-colors duration-300 dark:bg-[#080B10] dark:text-slate-100">
+        <div className="min-h-full w-full max-w-full overflow-x-hidden bg-[#F6F7F9] text-slate-900 transition-colors duration-300 dark:bg-[#080B10] dark:text-slate-100">
 
-            <div className="mx-auto max-w-[1500px] px-4 py-5 sm:px-6 lg:px-8 lg:py-7">
+            <div className="mx-auto w-full max-w-[1500px] min-w-0 px-3 py-4 sm:px-6 sm:py-5 lg:px-8 lg:py-7">
 
                 {/* =================================================
                     HEADER
                 ================================================= */}
 
-                <header className="mb-7">
-                    <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+                <header className="mb-6 min-w-0 sm:mb-7">
+                    <div className="flex min-w-0 flex-col gap-3 sm:gap-4 lg:flex-row lg:items-end lg:justify-between">
 
-                        <div>
+                        <div className="min-w-0 max-w-full">
                             <div className="mb-3 flex items-center gap-2">
+                                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500" />
 
-                                <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
-
-                                <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-slate-400">
+                                <span className="truncate text-[9px] font-bold uppercase tracking-[0.25em] text-slate-400">
                                     Personal Finance
                                 </span>
-
                             </div>
 
-                            <h1 className="text-3xl font-bold tracking-[-0.04em] text-slate-950 dark:text-white sm:text-4xl">
+                            <h1 className="break-words text-xl font-bold tracking-[-0.04em] text-slate-950 dark:text-white sm:text-3xl md:text-4xl">
                                 Good morning, {firstName}.
                             </h1>
 
@@ -439,9 +437,9 @@ const Dashboard = () => {
                             </p>
                         </div>
 
-                        <div className="flex items-center gap-3">
+                        <div className="flex w-full min-w-0 items-center gap-2 sm:w-auto sm:gap-3 lg:shrink-0">
 
-                            <div className="hidden items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-2.5 transition-colors dark:border-white/[0.07] dark:bg-[#11151C] sm:flex">
+                            <div className="hidden shrink-0 items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-2.5 transition-colors dark:border-white/[0.07] dark:bg-[#11151C] sm:flex">
 
                                 <CalendarDays
                                     size={15}
@@ -461,18 +459,16 @@ const Dashboard = () => {
 
                             </div>
 
-                            {/* FIXED LIGHT/DARK ADD BUTTON */}
-
                             <button
                                 onClick={() =>
                                     setIsModalOpen(true)
                                 }
                                 className="
-                                    group flex items-center gap-2
+                                    group flex min-w-0 flex-1 items-center justify-center gap-2
                                     rounded-xl
                                     border border-slate-900
                                     bg-slate-900
-                                    px-4 py-2.5
+                                    px-3 py-2.5
                                     text-xs font-bold
                                     text-white
                                     shadow-sm
@@ -484,14 +480,17 @@ const Dashboard = () => {
                                     dark:bg-white
                                     dark:text-slate-950
                                     dark:hover:bg-slate-200
+                                    sm:flex-none sm:px-4
                                 "
                             >
                                 <Plus
                                     size={15}
-                                    className="transition-transform group-hover:rotate-90"
+                                    className="shrink-0 transition-transform group-hover:rotate-90"
                                 />
 
-                                Add transaction
+                                <span className="truncate">
+                                    Add transaction
+                                </span>
                             </button>
 
                         </div>
@@ -505,58 +504,60 @@ const Dashboard = () => {
                 <section
                     className="
                         mb-5
+                        min-w-0
                         overflow-hidden
                         rounded-2xl
                         border border-slate-200
                         bg-white
-                        p-6
+                        p-4
                         text-slate-900
                         shadow-sm
                         transition-colors duration-300
                         dark:border-white/[0.06]
                         dark:bg-[#11151C]
                         dark:text-white
+                        sm:p-6
                         md:p-7
                     "
                 >
 
-                    <div className="relative">
+                    <div className="relative min-w-0">
 
-                        <div className="relative grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
+                        <div className="relative grid min-w-0 gap-6 lg:grid-cols-[1fr_auto] lg:items-end lg:gap-8">
 
-                            <div>
+                            <div className="min-w-0">
 
-                                <div className="mb-5 flex items-center gap-2">
+                                <div className="mb-4 flex items-center gap-2 sm:mb-5">
 
-                                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-600 dark:bg-white/10 dark:text-white">
+                                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600 dark:bg-white/10 dark:text-white">
                                         <Wallet size={15} />
                                     </div>
 
-                                    <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400 dark:text-white/50">
+                                    <span className="truncate text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400 dark:text-white/50">
                                         Total balance
                                     </span>
 
                                 </div>
 
-                                <p className="text-4xl font-bold tracking-[-0.04em] text-slate-950 dark:text-white md:text-5xl">
+                                <p className="max-w-full truncate text-3xl font-bold tracking-[-0.04em] text-slate-950 dark:text-white sm:text-4xl md:text-5xl">
                                     {formatAmount(balance)}
                                 </p>
 
-                                <div className="mt-4 flex items-center gap-2">
+                                <div className="mt-3 flex min-w-0 flex-wrap items-center gap-2 sm:mt-4">
 
                                     {balance >= 0 ? (
-                                        <div className="flex items-center gap-1.5 rounded-full  px-2.5 py-1 text-[10px] font-bold text-emerald-600  dark:text-emerald-300">
+                                        <div className="flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-300">
                                             <TrendingUp size={12} />
                                             Positive balance
                                         </div>
                                     ) : (
-                                        <div className="flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold text-rose-600 dark:text-rose-300">
+                                        <div className="flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold text-rose-600 dark:text-rose-300">
                                             <TrendingDown size={12} />
                                             Negative balance
                                         </div>
                                     )}
 
-                                    <span className="text-[10px] text-slate-400 dark:text-white/40">
+                                    <span className="truncate text-[10px] text-slate-400 dark:text-white/40">
                                         Current financial position
                                     </span>
 
@@ -564,37 +565,37 @@ const Dashboard = () => {
 
                             </div>
 
-                            {/* FIXED TOTAL INCOME / EXPENSE / TRANSACTIONS BOXES */}
+                            {/* MOBILE: two columns, desktop: three columns */}
 
-                            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:min-w-[430px]">
+                            <div className="grid w-full min-w-0 grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3 lg:min-w-[430px]">
 
-                                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 transition-colors dark:border-white/10 dark:bg-white/[0.05]">
+                                <div className="min-w-0 overflow-hidden rounded-xl border border-slate-200 bg-slate-50 p-3 transition-colors dark:border-white/10 dark:bg-white/[0.05] sm:p-4">
 
-                                    <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 dark:text-white/40">
+                                    <p className="truncate text-[9px] font-bold uppercase tracking-wider text-slate-400 dark:text-white/40">
                                         Income
                                     </p>
 
-                                    <p className="mt-2 text-sm font-bold text-emerald-600 dark:text-emerald-300">
+                                    <p className="mt-2 truncate text-sm font-bold text-emerald-600 dark:text-emerald-300">
                                         {formatAmount(income)}
                                     </p>
 
                                 </div>
 
-                                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 transition-colors dark:border-white/10 dark:bg-white/[0.05]">
+                                <div className="min-w-0 overflow-hidden rounded-xl border border-slate-200 bg-slate-50 p-3 transition-colors dark:border-white/10 dark:bg-white/[0.05] sm:p-4">
 
-                                    <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 dark:text-white/40">
+                                    <p className="truncate text-[9px] font-bold uppercase tracking-wider text-slate-400 dark:text-white/40">
                                         Expenses
                                     </p>
 
-                                    <p className="mt-2 text-sm font-bold text-rose-600 dark:text-rose-300">
+                                    <p className="mt-2 truncate text-sm font-bold text-rose-600 dark:text-rose-300">
                                         {formatAmount(expense)}
                                     </p>
 
                                 </div>
 
-                                <div className="col-span-2 rounded-xl border border-slate-200 bg-slate-50 p-4 transition-colors dark:border-white/10 dark:bg-white/[0.05] sm:col-span-1">
+                                <div className="col-span-2 min-w-0 overflow-hidden rounded-xl border border-slate-200 bg-slate-50 p-3 transition-colors dark:border-white/10 dark:bg-white/[0.05] sm:col-span-1 sm:p-4">
 
-                                    <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 dark:text-white/40">
+                                    <p className="truncate text-[9px] font-bold uppercase tracking-wider text-slate-400 dark:text-white/40">
                                         Transactions
                                     </p>
 
@@ -616,7 +617,7 @@ const Dashboard = () => {
                     STAT CARDS
                 ================================================= */}
 
-                <section className="mb-7 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                <section className="mb-6 grid min-w-0 grid-cols-1 gap-3 sm:mb-7 sm:grid-cols-3">
 
                     <DashboardStats
                         title="Total Balance"
@@ -646,22 +647,22 @@ const Dashboard = () => {
                 ================================================= */}
 
                 {budgetAlerts.length > 0 && (
-                    <section className="mb-7 rounded-2xl border border-amber-200/80 bg-amber-50/70 p-5 dark:border-amber-500/10 dark:bg-amber-500/[0.04]">
+                    <section className="mb-6 min-w-0 overflow-hidden rounded-2xl border border-amber-200/80 bg-amber-50/70 p-4 dark:border-amber-500/10 dark:bg-amber-500/[0.04] sm:mb-7 sm:p-5">
 
-                        <div className="mb-4 flex items-center justify-between">
+                        <div className="mb-4 flex min-w-0 items-start justify-between gap-3">
 
-                            <div className="flex items-center gap-3">
+                            <div className="flex min-w-0 items-center gap-3">
 
-                                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-100 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400">
+                                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400">
                                     <AlertCircle size={16} />
                                 </div>
 
-                                <div>
-                                    <h2 className="text-sm font-bold text-slate-900 dark:text-white">
+                                <div className="min-w-0">
+                                    <h2 className="truncate text-sm font-bold text-slate-900 dark:text-white">
                                         Budget attention
                                     </h2>
 
-                                    <p className="text-[10px] text-slate-500 dark:text-slate-400">
+                                    <p className="mt-0.5 truncate text-[10px] leading-relaxed text-slate-500 dark:text-slate-400">
                                         Some categories are approaching their limits.
                                     </p>
                                 </div>
@@ -670,14 +671,14 @@ const Dashboard = () => {
 
                             <Link
                                 to="/budgets"
-                                className="text-[10px] font-bold uppercase tracking-wider text-amber-700 hover:text-amber-900 dark:text-amber-400 dark:hover:text-amber-300"
+                                className="shrink-0 text-[10px] font-bold uppercase tracking-wider text-amber-700 hover:text-amber-900 dark:text-amber-400 dark:hover:text-amber-300"
                             >
                                 View budgets
                             </Link>
 
                         </div>
 
-                        <div className="grid gap-3 md:grid-cols-2">
+                        <div className="grid min-w-0 gap-3 md:grid-cols-2">
 
                             {budgetAlerts.map((alert) => {
 
@@ -691,24 +692,24 @@ const Dashboard = () => {
                                 return (
                                     <div
                                         key={alert.id}
-                                        className="rounded-xl border border-amber-200/70 bg-white/70 p-4 dark:border-amber-500/10 dark:bg-white/[0.025]"
+                                        className="min-w-0 overflow-hidden rounded-xl border border-amber-200/70 bg-white/70 p-4 dark:border-amber-500/10 dark:bg-white/[0.025]"
                                     >
 
-                                        <div className="mb-3 flex items-center justify-between">
+                                        <div className="mb-3 flex min-w-0 items-center justify-between gap-3">
 
-                                            <div>
-                                                <p className="text-xs font-bold text-slate-900 dark:text-white">
+                                            <div className="min-w-0">
+                                                <p className="truncate text-xs font-bold text-slate-900 dark:text-white">
                                                     {alert.category}
                                                 </p>
 
-                                                <p className="mt-1 text-[10px] text-slate-500">
+                                                <p className="mt-1 truncate text-[10px] text-slate-500">
                                                     {formatAmount(alert.spent)}
                                                     {' '}of{' '}
                                                     {formatAmount(alert.limit)}
                                                 </p>
                                             </div>
 
-                                            <span className="text-xs font-bold text-amber-600 dark:text-amber-400">
+                                            <span className="shrink-0 text-xs font-bold text-amber-600 dark:text-amber-400">
                                                 {percentage}%
                                             </span>
 
@@ -743,20 +744,20 @@ const Dashboard = () => {
                     ANALYTICS
                 ================================================= */}
 
-                <section className="mb-7 grid grid-cols-1 gap-4 xl:grid-cols-[1.55fr_1fr]">
+                <section className="mb-6 grid min-w-0 grid-cols-1 gap-4 sm:mb-7 xl:grid-cols-[1.55fr_1fr]">
 
                     {/* ACTIVITY */}
 
-                    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-white/[0.07] dark:bg-[#11151C]">
+                    <div className="min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-white/[0.07] dark:bg-[#11151C]">
 
-                        <div className="border-b border-slate-200 p-5 dark:border-white/[0.06]">
+                        <div className="border-b border-slate-200 p-4 dark:border-white/[0.06] sm:p-5">
 
                             <SectionHeader
                                 icon={Activity}
                                 title="Financial activity"
                                 description="Net movement across the last 7 days"
                                 action={
-                                    <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-slate-500 dark:bg-white/[0.05] dark:text-slate-400">
+                                    <span className="shrink-0 rounded-full bg-slate-100 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-slate-500 dark:bg-white/[0.05] dark:text-slate-400">
                                         7 days
                                     </span>
                                 }
@@ -764,7 +765,7 @@ const Dashboard = () => {
 
                         </div>
 
-                        <div className="h-[320px] p-4 pt-7">
+                        <div className="h-[230px] w-full min-w-0 overflow-hidden p-1 pt-4 sm:h-[320px] sm:p-4 sm:pt-7">
 
                             {trendData.length > 0 ? (
                                 <ResponsiveContainer
@@ -776,8 +777,8 @@ const Dashboard = () => {
                                         data={trendData}
                                         margin={{
                                             top: 10,
-                                            right: 10,
-                                            left: -25,
+                                            right: 0,
+                                            left: -30,
                                             bottom: 0,
                                         }}
                                     >
@@ -794,10 +795,10 @@ const Dashboard = () => {
                                             tickLine={false}
                                             tick={{
                                                 fill: '#94a3b8',
-                                                fontSize: 10,
+                                                fontSize: 9,
                                                 fontWeight: 500,
                                             }}
-                                            dy={10}
+                                            dy={8}
                                         />
 
                                         <YAxis hide />
@@ -858,16 +859,16 @@ const Dashboard = () => {
 
                     {/* SPENDING */}
 
-                    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-white/[0.07] dark:bg-[#11151C]">
+                    <div className="min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-white/[0.07] dark:bg-[#11151C]">
 
-                        <div className="border-b border-slate-200 p-5 dark:border-white/[0.06]">
+                        <div className="border-b border-slate-200 p-4 dark:border-white/[0.06] sm:p-5">
 
                             <SectionHeader
                                 icon={PieIcon}
                                 title="Spending breakdown"
                                 description="Top expense categories"
                                 action={
-                                    <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
+                                    <span className="shrink-0 rounded-full bg-indigo-50 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
                                         Expenses
                                     </span>
                                 }
@@ -875,12 +876,12 @@ const Dashboard = () => {
 
                         </div>
 
-                        <div className="flex min-h-[320px] flex-col justify-center gap-5 p-5 sm:flex-row sm:items-center">
+                        <div className="flex min-w-0 min-h-[270px] flex-col items-center justify-center gap-5 overflow-hidden p-4 sm:min-h-[320px] sm:p-5 md:flex-row md:items-center">
 
                             {categoryData.length > 0 ? (
                                 <>
 
-                                    <div className="relative h-[190px] w-[190px] shrink-0">
+                                    <div className="relative h-[140px] w-[140px] shrink-0 sm:h-[170px] sm:w-[170px] md:h-[190px] md:w-[190px]">
 
                                         <ResponsiveContainer
                                             width="100%"
@@ -893,8 +894,8 @@ const Dashboard = () => {
                                                     data={categoryData}
                                                     cx="50%"
                                                     cy="50%"
-                                                    innerRadius={58}
-                                                    outerRadius={82}
+                                                    innerRadius={48}
+                                                    outerRadius={68}
                                                     paddingAngle={3}
                                                     dataKey="value"
                                                     stroke="none"
@@ -937,7 +938,7 @@ const Dashboard = () => {
                                                 Total
                                             </p>
 
-                                            <p className="mt-1 max-w-[100px] truncate text-sm font-bold text-slate-900 dark:text-white">
+                                            <p className="mt-1 max-w-[90px] truncate text-xs font-bold text-slate-900 dark:text-white sm:max-w-[100px] sm:text-sm">
                                                 {formatAmount(
                                                     categoryData.reduce(
                                                         (sum, item) =>
@@ -952,7 +953,7 @@ const Dashboard = () => {
 
                                     </div>
 
-                                    <div className="w-full space-y-4">
+                                    <div className="w-full min-w-0 max-w-xs sm:max-w-none space-y-3 sm:space-y-4">
 
                                         {categoryData.map(
                                             (item, index) => {
@@ -979,9 +980,10 @@ const Dashboard = () => {
                                                         key={
                                                             item.name
                                                         }
+                                                        className="min-w-0"
                                                     >
 
-                                                        <div className="mb-1.5 flex items-center justify-between gap-3">
+                                                        <div className="mb-1.5 flex min-w-0 items-center justify-between gap-3">
 
                                                             <div className="flex min-w-0 items-center gap-2">
 
@@ -1004,7 +1006,7 @@ const Dashboard = () => {
 
                                                             </div>
 
-                                                            <span className="text-[10px] font-bold text-slate-900 dark:text-white">
+                                                            <span className="shrink-0 text-[10px] font-bold text-slate-900 dark:text-white">
                                                                 {
                                                                     percentage
                                                                 }%
@@ -1052,9 +1054,9 @@ const Dashboard = () => {
                     RECENT TRANSACTIONS
                 ================================================= */}
 
-                <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-white/[0.07] dark:bg-[#11151C]">
+                <section className="min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-white/[0.07] dark:bg-[#11151C]">
 
-                    <div className="border-b border-slate-200 p-5 dark:border-white/[0.06]">
+                    <div className="border-b border-slate-200 p-4 dark:border-white/[0.06] sm:p-5">
 
                         <SectionHeader
                             icon={History}
@@ -1063,12 +1065,14 @@ const Dashboard = () => {
                             action={
                                 <Link
                                     to="/transactions"
-                                    className="group flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-slate-600 transition hover:bg-slate-200 dark:bg-white/[0.05] dark:text-slate-300 dark:hover:bg-white/[0.08]"
+                                    className="group flex shrink-0 items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-slate-600 transition hover:bg-slate-200 dark:bg-white/[0.05] dark:text-slate-300 dark:hover:bg-white/[0.08] min-h-[36px]"
                                 >
-                                    View all
+                                    <span className="hidden xs:inline sm:inline">
+                                        View all
+                                    </span>
 
                                     <ArrowUpRight
-                                        size={12}
+                                        size={13}
                                         className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
                                     />
                                 </Link>
@@ -1113,9 +1117,79 @@ const Dashboard = () => {
 
                         </div>
                     ) : (
-                        <div className="overflow-x-auto">
+                        <>
+                        {/* Mobile: card list | Desktop: table */}
+                        <div className="sm:hidden divide-y divide-slate-100 dark:divide-white/[0.05]">
+                            {recentTransactions.map((transaction) => {
+                                const isIncome = transaction.type === 'income';
+                                return (
+                                    <div
+                                        key={transaction.id}
+                                        className="flex items-center justify-between gap-3 px-4 py-3.5 transition-colors hover:bg-slate-50 dark:hover:bg-white/[0.025]"
+                                    >
+                                        <div className="flex min-w-0 items-center gap-3">
+                                            <div
+                                                className={clsx(
+                                                    'flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-xs font-bold',
+                                                    isIncome
+                                                        ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400'
+                                                        : 'bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400'
+                                                )}
+                                            >
+                                                {transaction.category?.[0]?.toUpperCase() || 'T'}
+                                            </div>
+                                            <div className="min-w-0">
+                                                <p className="truncate text-sm font-semibold text-slate-900 dark:text-white">
+                                                    {transaction.description || 'Untitled'}
+                                                </p>
+                                                <div className="mt-0.5 flex min-w-0 items-center gap-1.5">
+                                                    <span className="max-w-[90px] truncate text-[9px] font-bold uppercase tracking-wider text-slate-400">
+                                                        {transaction.category}
+                                                    </span>
+                                                    <span className="h-1 w-1 shrink-0 rounded-full bg-slate-300 dark:bg-slate-700" />
+                                                    <span className="shrink-0 text-[9px] text-slate-400">
+                                                        {transaction.date
+                                                            ? new Date(transaction.date).toLocaleDateString()
+                                                            : 'N/A'}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="flex shrink-0 items-center gap-1.5">
+                                            <div
+                                                className={clsx(
+                                                    'flex h-5 w-5 shrink-0 items-center justify-center rounded-full',
+                                                    isIncome
+                                                        ? 'bg-emerald-50 text-emerald-500 dark:bg-emerald-500/10'
+                                                        : 'bg-rose-50 text-rose-500 dark:bg-rose-500/10'
+                                                )}
+                                            >
+                                                {isIncome ? (
+                                                    <ArrowUpRight size={10} />
+                                                ) : (
+                                                    <ArrowDownRight size={10} />
+                                                )}
+                                            </div>
+                                            <span
+                                                className={clsx(
+                                                    'text-sm font-bold',
+                                                    isIncome
+                                                        ? 'text-emerald-600 dark:text-emerald-400'
+                                                        : 'text-slate-900 dark:text-white'
+                                                )}
+                                            >
+                                                {isIncome ? '+' : '-'}{formatAmount(transaction.amount)}
+                                            </span>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
 
-                            <table className="w-full min-w-[600px] text-left">
+                        {/* ≥ sm: classic table */}
+                        <div className="hidden sm:block w-full overflow-x-auto">
+
+                            <table className="w-full min-w-[500px] text-left">
 
                                 <thead>
                                     <tr className="border-b border-slate-100 dark:border-white/[0.05]">
@@ -1150,7 +1224,7 @@ const Dashboard = () => {
 
                                                     <td className="px-5 py-4">
 
-                                                        <div className="flex items-center gap-3">
+                                                        <div className="flex min-w-0 items-center gap-3">
 
                                                             <div
                                                                 className={clsx(
@@ -1171,17 +1245,17 @@ const Dashboard = () => {
                                                                         'Untitled'}
                                                                 </p>
 
-                                                                <div className="mt-1 flex items-center gap-2">
+                                                                <div className="mt-1 flex min-w-0 items-center gap-2">
 
-                                                                    <span className="truncate text-[9px] font-bold uppercase tracking-wider text-slate-400">
+                                                                    <span className="max-w-[120px] truncate text-[9px] font-bold uppercase tracking-wider text-slate-400">
                                                                         {
                                                                             transaction.category
                                                                         }
                                                                     </span>
 
-                                                                    <span className="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-700" />
+                                                                    <span className="h-1 w-1 shrink-0 rounded-full bg-slate-300 dark:bg-slate-700" />
 
-                                                                    <span className="text-[9px] text-slate-400">
+                                                                    <span className="shrink-0 text-[9px] text-slate-400">
                                                                         {transaction.date
                                                                             ? new Date(
                                                                                 transaction.date
@@ -1197,17 +1271,13 @@ const Dashboard = () => {
 
                                                     </td>
 
-                                                    <td
-                                                        className={clsx(
-                                                            'whitespace-nowrap px-5 py-4 text-right'
-                                                        )}
-                                                    >
+                                                    <td className="whitespace-nowrap px-5 py-4 text-right">
 
                                                         <div className="flex items-center justify-end gap-2">
 
                                                             <div
                                                                 className={clsx(
-                                                                    'flex h-6 w-6 items-center justify-center rounded-full',
+                                                                    'flex h-6 w-6 shrink-0 items-center justify-center rounded-full',
                                                                     isIncome
                                                                         ? 'bg-emerald-50 text-emerald-500 dark:bg-emerald-500/10'
                                                                         : 'bg-rose-50 text-rose-500 dark:bg-rose-500/10'
@@ -1250,6 +1320,7 @@ const Dashboard = () => {
                             </table>
 
                         </div>
+                        </>
                     )}
 
                 </section>
@@ -1277,8 +1348,8 @@ const Dashboard = () => {
                 }
                 aria-label="Add transaction"
                 className="
-                    fixed bottom-6 right-5 z-40
-                    flex h-14 w-14 items-center justify-center
+                    fixed bottom-5 right-4 z-40
+                    flex h-14 w-14 shrink-0 items-center justify-center
                     rounded-2xl
                     border border-slate-900
                     bg-slate-900
