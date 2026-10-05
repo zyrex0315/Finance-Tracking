@@ -86,7 +86,7 @@ const Sidebar = () => {
                     className={clsx(
                         'group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all duration-200',
                         isActive
-                            ? 'bg-slate-100 font-medium text-slate-900 dark:bg-white/[0.07] dark:text-white'
+                            ? 'bg-slate-100 font-medium text-slate-900 dark:bg-[#11151C] dark:text-white'
                             : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/[0.04] dark:hover:text-slate-200'
                     )}
                 >
@@ -95,7 +95,7 @@ const Sidebar = () => {
                         className={clsx(
                             'absolute left-0 h-5 w-[2px] rounded-full transition-all duration-200',
                             isActive
-                                ? 'bg-emerald-500 opacity-100'
+                                ? 'bg-indigo-500 opacity-100'
                                 : 'bg-transparent opacity-0'
                         )}
                     />
@@ -106,7 +106,7 @@ const Sidebar = () => {
                         className={clsx(
                             'shrink-0 transition-transform duration-200',
                             isActive
-                                ? 'text-slate-900 dark:text-white'
+                                ? 'text-indigo-600 dark:text-indigo-400'
                                 : 'text-slate-400 group-hover:text-slate-700 dark:text-slate-500 dark:group-hover:text-slate-300'
                         )}
                     />
@@ -117,7 +117,7 @@ const Sidebar = () => {
         });
 
     return (
-        <aside className="fixed left-0 top-0 z-50 hidden h-screen w-64 flex-col border-r border-slate-200 bg-white dark:border-white/[0.07] dark:bg-[#0f172a] md:flex">
+        <aside className="fixed left-0 top-0 z-50 hidden h-screen w-64 flex-col border-r border-slate-200 bg-white dark:border-white/[0.07] dark:bg-[#080B10] md:flex">
 
             {/* ===================================================== */}
             {/* BRAND */}

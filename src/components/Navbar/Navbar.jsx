@@ -54,7 +54,7 @@ const Navbar = ({ title }) => {
     };
 
     return (
-        <header className="relative z-[100] flex h-16 w-full shrink-0 items-center justify-between border-b border-slate-200 bg-white/90 px-3 backdrop-blur-xl dark:border-white/[0.07] dark:bg-[#0f172a]/90 md:h-20 md:px-8">
+        <header className="relative z-[100] flex h-16 w-full shrink-0 items-center justify-between border-b border-slate-200 bg-white/90 px-3 backdrop-blur-xl dark:border-white/[0.07] dark:bg-[#080B10]/95 md:h-20 md:px-8">
 
 
             <div className="flex min-w-0 items-center gap-3">
@@ -156,14 +156,14 @@ const Navbar = ({ title }) => {
                                 bg-white
                                 p-1.5
                                 shadow-2xl
-                                dark:border-white/[0.08]
-                                dark:bg-[#111827]
+                                dark:border-white/[0.07]
+                                dark:bg-[#11151C]
                             "
                             role="menu"
                         >
 
                             {/* User Information */}
-                            <div className="border-b border-slate-100 px-3 py-3 dark:border-white/[0.06]">
+                            <div className="border-b border-slate-100 px-3 py-3 dark:border-white/[0.07]">
                                 <div className="flex items-center gap-3">
 
                                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-900 text-xs font-semibold text-white dark:bg-white dark:text-slate-900">
@@ -210,7 +210,7 @@ const Navbar = ({ title }) => {
                             </button>
 
                             {/* Divider */}
-                            <div className="my-1 border-t border-slate-100 dark:border-white/[0.06]" />
+                            <div className="my-1 border-t border-slate-100 dark:border-white/[0.07]" />
 
                             {/* Logout */}
                             <button
