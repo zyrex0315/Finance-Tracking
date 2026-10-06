@@ -1,127 +1,293 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Plus, Target, AlertTriangle, Trash2, Edit2 } from 'lucide-react';
+import {
+    Plus,
+    Target,
+    AlertTriangle,
+    Trash2,
+    Edit2,
+    TrendingUp,
+    Wallet,
+    AlertCircle,
+    X,
+} from 'lucide-react';
+import clsx from 'clsx';
+
 import useBudgetStore from '../context/budgetStore';
 import useTransactionStore from '../context/transactionStore';
 import useAuthStore from '../context/authStore';
 import useCurrencyStore from '../context/currencyStore';
-import clsx from 'clsx';
 
 
-const BudgetCard = ({ category, spent, limit, onDelete, onEdit }) => {
+const BudgetCard = ({
+    category,
+    spent,
+    limit,
+    onDelete,
+    onEdit,
+}) => {
     const { formatAmount } = useCurrencyStore();
-    const percentage = Math.min((spent / limit) * 100, 100);
-    const isOver = spent > limit;
-    const isNear = spent > limit * 0.8 && !isOver;
+
+    const safeLimit = Number(limit) || 0;
+    const safeSpent = Number(spent) || 0;
+
+    const percentage =
+        safeLimit > 0
+            ? Math.min((safeSpent / safeLimit) * 100, 100)
+            : 0;
+
+    const isOver = safeSpent > safeLimit;
+    const isNear =
+        safeSpent > safeLimit * 0.8 && !isOver;
+
+    const remaining = Math.abs(safeLimit - safeSpent);
 
     return (
-        <div className="bg-white dark:bg-white/5 backdrop-blur-xl p-3 md:p-8 rounded-2xl md:rounded-[2.5rem] border border-gray-100 dark:border-white/10 transition-all hover:translate-y-[-8px] hover:shadow-2xl hover:shadow-blue-600/10 shadow-xl group">
-            <div className="flex justify-between items-start mb-4 md:mb-6">
-                <div className="flex items-center gap-3 md:gap-4">
-                    <div className={clsx(
-                        "p-2 md:p-3 rounded-xl md:rounded-2xl shadow-lg transition-transform group-hover:rotate-6",
-                        isOver ? "bg-rose-500 text-white shadow-rose-500/30" :
-                            isNear ? "bg-amber-500 text-white shadow-amber-500/30" :
-                                "bg-blue-600 text-white shadow-sm"
-                    )}>
-                        <Target size={18} className="md:w-6 md:h-6" />
+        <div
+            className="
+                group relative overflow-hidden
+                rounded-2xl
+                border border-slate-200
+                bg-white
+                p-5
+                shadow-sm
+                transition-all duration-300
+                hover:-translate-y-0.5
+                hover:shadow-lg
+                dark:border-white/[0.07]
+                dark:bg-[#11151C]
+            "
+        >
+            {/* HEADER */}
+
+            <div className="flex items-start justify-between gap-3">
+
+                <div className="flex min-w-0 items-center gap-3">
+
+                    <div
+                        className={clsx(
+                            'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl',
+                            isOver
+                                ? 'bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400'
+                                : isNear
+                                    ? 'bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400'
+                                    : 'bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400'
+                        )}
+                    >
+                        <Target
+                            size={18}
+                            strokeWidth={1.8}
+                        />
                     </div>
-                    <div>
-                        <h3 className="font-black text-gray-900 dark:text-white tracking-tight text-base md:text-xl">{category}</h3>
-                        <p className="text-[8px] md:text-[10px] text-slate-500 uppercase tracking-widest font-black">Control Limit</p>
+
+                    <div className="min-w-0">
+
+                        <h3 className="truncate text-sm font-bold text-slate-900 dark:text-white">
+                            {category}
+                        </h3>
+
+                        <p className="mt-0.5 text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                            Monthly limit
+                        </p>
+
                     </div>
+
                 </div>
-                <div className="flex gap-1.5 md:gap-2 md:opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button onClick={onEdit} className="p-1.5 md:p-2 bg-slate-100 dark:bg-white/10 text-slate-500 hover:text-blue-500 rounded-lg md:rounded-xl transition-all">
-                        <Edit2 size={12} className="md:w-4 md:h-4" />
+
+                {/* ACTIONS */}
+
+                <div className="flex gap-1 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100">
+
+                    <button
+                        type="button"
+                        onClick={onEdit}
+                        aria-label={`Edit ${category} budget`}
+                        className="
+                            flex h-8 w-8 items-center justify-center
+                            rounded-lg
+                            bg-slate-100
+                            text-slate-500
+                            transition-colors
+                            hover:bg-slate-200
+                            hover:text-slate-900
+                            dark:bg-white/[0.06]
+                            dark:text-slate-400
+                            dark:hover:bg-white/[0.1]
+                            dark:hover:text-white
+                        "
+                    >
+                        <Edit2 size={14} />
                     </button>
-                    <button onClick={onDelete} className="p-1.5 md:p-2 bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white rounded-lg md:rounded-xl transition-all">
-                        <Trash2 size={12} className="md:w-4 md:h-4" />
+
+                    <button
+                        type="button"
+                        onClick={onDelete}
+                        aria-label={`Delete ${category} budget`}
+                        className="
+                            flex h-8 w-8 items-center justify-center
+                            rounded-lg
+                            bg-rose-50
+                            text-rose-500
+                            transition-colors
+                            hover:bg-rose-500
+                            hover:text-white
+                            dark:bg-rose-500/10
+                        "
+                    >
+                        <Trash2 size={14} />
                     </button>
+
                 </div>
+
             </div>
 
-            <div className="space-y-4 md:space-y-6">
-                <div>
-                    <div className="flex justify-between items-center mb-1.5 md:mb-2">
-                        <div className="flex flex-col">
-                            <span className="text-[8px] md:text-[10px] font-black text-slate-500 uppercase tracking-widest mb-0.5 md:mb-1">Utilization</span>
-                            <span className="text-lg md:text-3xl font-black text-gray-900 dark:text-white tracking-tighter">
-                                {formatAmount(spent)}
-                                <span className="text-[10px] md:text-sm font-bold text-slate-500 ml-1 md:ml-2 tracking-tight">/ {formatAmount(limit)}</span>
-                            </span>
-                        </div>
-                        <div className={clsx(
-                            "px-2 md:px-4 py-1 rounded-lg md:rounded-xl text-[10px] md:text-xs font-black shadow-sm",
-                            isOver ? "bg-rose-500/10 text-rose-500" :
-                                isNear ? "bg-amber-500/10 text-amber-500" :
-                                    "bg-blue-500/10 text-blue-500"
-                        )}>
-                            {percentage.toFixed(0)}%
-                        </div>
+            {/* AMOUNT */}
+
+            <div className="mt-6">
+
+                <div className="flex items-end justify-between gap-3">
+
+                    <div className="min-w-0">
+
+                        <p className="mb-1 text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                            Spent
+                        </p>
+
+                        <p className="truncate text-2xl font-bold tracking-tight text-slate-950 dark:text-white">
+                            {formatAmount(safeSpent)}
+                        </p>
+
                     </div>
 
-                    <div className="w-full bg-slate-100 dark:bg-white/5 rounded-full h-2 md:h-3.5 overflow-hidden p-0.5 border border-transparent dark:border-white/5">
-                        <div
-                            className={clsx(
-                                "h-full rounded-full transition-all duration-1000 relative",
-                                isOver ? "bg-rose-500" :
-                                    isNear ? "bg-amber-500" :
-                                        "bg-blue-600"
-                            )}
-                            style={{ width: `${percentage}%` }}
-                        >
-                            <div className="absolute top-0 right-0 h-full w-4 bg-white/20 blur-sm rounded-full" />
-                        </div>
+                    <div
+                        className={clsx(
+                            'shrink-0 rounded-full px-2.5 py-1 text-[9px] font-bold',
+                            isOver
+                                ? 'bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400'
+                                : isNear
+                                    ? 'bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400'
+                                    : 'bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400'
+                        )}
+                    >
+                        {percentage.toFixed(0)}%
                     </div>
+
                 </div>
 
-                <div className="flex justify-between text-[10px] md:text-xs font-bold pt-3 md:pt-4 border-t border-gray-50 dark:border-white/5">
-                    <span className="text-slate-500 uppercase tracking-widest">{isOver ? 'Exceeded By' : 'Safe Margin'}</span>
-                    <span className={clsx(
-                        "font-black tracking-tight",
-                        isOver ? "text-rose-500" : "text-emerald-500"
-                    )}>
-                        {formatAmount(Math.abs(limit - spent))}
-                    </span>
+                <div className="mt-1 text-[10px] text-slate-400">
+                    of {formatAmount(safeLimit)}
                 </div>
+
             </div>
+
+            {/* PROGRESS */}
+
+            <div className="mt-5">
+
+                <div className="h-1.5 overflow-hidden rounded-full bg-slate-100 dark:bg-white/[0.06]">
+
+                    <div
+                        className={clsx(
+                            'h-full rounded-full transition-all duration-700',
+                            isOver
+                                ? 'bg-rose-500'
+                                : isNear
+                                    ? 'bg-amber-500'
+                                    : 'bg-indigo-500'
+                        )}
+                        style={{
+                            width: `${percentage}%`,
+                        }}
+                    />
+
+                </div>
+
+            </div>
+
+            {/* FOOTER */}
+
+            <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4 dark:border-white/[0.05]">
+
+                <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-slate-400">
+                    {isOver
+                        ? 'Exceeded by'
+                        : 'Remaining'}
+                </span>
+
+                <span
+                    className={clsx(
+                        'text-xs font-bold',
+                        isOver
+                            ? 'text-rose-500'
+                            : 'text-slate-700 dark:text-slate-200'
+                    )}
+                >
+                    {formatAmount(remaining)}
+                </span>
+
+            </div>
+
         </div>
     );
 };
 
-const BudgetModal = ({ isOpen, onClose, initialData = null }) => {
+
+
+const BudgetModal = ({
+    isOpen,
+    onClose,
+    initialData = null,
+}) => {
     const { upsertBudget } = useBudgetStore();
     const { getCurrencyInfo } = useCurrencyStore();
-    const [category, setCategory] = useState(initialData?.category || '');
-    const [limit, setLimit] = useState(initialData?.limit || '');
+
+    const [category, setCategory] = useState('');
+    const [limit, setLimit] = useState('');
     const [isSaving, setIsSaving] = useState(false);
+
     const currencyInfo = getCurrencyInfo();
+
+    const categories = [
+        'Food',
+        'Transport',
+        'Housing',
+        'Utilities',
+        'Entertainment',
+        'Health',
+        'Shopping',
+        'Other',
+    ];
 
     useEffect(() => {
         if (initialData) {
-            setCategory(initialData.category);
-            setLimit(initialData.limit);
+            setCategory(initialData.category || '');
+            setLimit(initialData.limit || '');
         } else {
             setCategory('');
             setLimit('');
         }
     }, [initialData, isOpen]);
 
-    const categories = ['Food', 'Transport', 'Housing', 'Utilities', 'Entertainment', 'Health', 'Shopping', 'Other'];
+    const handleSubmit = async (event) => {
+        event.preventDefault();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+        if (!category || !limit) return;
+
         setIsSaving(true);
+
         try {
             await upsertBudget({
                 category,
                 limit: parseFloat(limit),
-                period: 'monthly'
+                period: 'monthly',
             });
+
             onClose();
         } catch (error) {
-            console.error(error);
+            console.error(
+                'Failed to save budget:',
+                error
+            );
         } finally {
             setIsSaving(false);
         }
@@ -130,118 +296,396 @@ const BudgetModal = ({ isOpen, onClose, initialData = null }) => {
     if (!isOpen) return null;
 
     return createPortal(
-        <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center sm:p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-300">
-            <div className="bg-white/95 dark:bg-[#111827]/95 backdrop-blur-2xl w-full max-w-md shadow-2xl border-t sm:border border-gray-100 dark:border-white/10 animate-in slide-in-from-bottom-full sm:zoom-in-95 duration-500 sm:duration-300 flex flex-col max-h-[96dvh] sm:max-h-[min(90vh,800px)] overflow-hidden">
+        <div
+            className="
+                fixed inset-0 z-[9999]
+                flex items-end justify-center
+                bg-black/50
+                p-0
+                backdrop-blur-sm
+                sm:items-center
+                sm:p-4
+            "
+        >
 
-                {/* Mobile Handle */}
-                <div className="sm:hidden flex justify-center pt-3 shrink-0">
-                    <div className="w-12 h-1 bg-gray-200 dark:bg-gray-700 rounded-full" />
+            <div
+                className="
+                    flex max-h-[95dvh] w-full
+                    max-w-lg
+                    flex-col
+                    overflow-hidden
+                    rounded-t-2xl
+                    border
+                    border-slate-200
+                    bg-white
+                    shadow-2xl
+                    dark:border-white/[0.07]
+                    dark:bg-[#11151C]
+                    sm:rounded-2xl
+                "
+            >
+
+                {/* MOBILE HANDLE */}
+
+                <div className="flex justify-center pt-3 sm:hidden">
+
+                    <div className="h-1 w-10 rounded-full bg-slate-200 dark:bg-white/10" />
+
                 </div>
 
-                <div className="p-5 md:p-10 border-b border-gray-50 dark:border-white/10 shrink-0 relative bg-gray-50/50 dark:bg-white/5">
-                    <h2 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white tracking-tight">
-                        {initialData ? 'Update Limit' : 'Smart Budgeting'}
-                    </h2>
-                    <p className="text-slate-500 text-xs md:text-sm mt-1 font-medium italic">Set clear rules for your financial freedom</p>
-                    {/* Decorative blob in header */}
-                    <div className="absolute -top-12 -right-12 w-24 h-24 bg-blue-600/10 rounded-full blur-2xl pointer-events-none" />
-                </div>
+                {/* HEADER */}
 
-                <form onSubmit={handleSubmit} className="flex-1 flex flex-col min-h-0">
-                    <div className="flex-1 p-5 md:p-10 space-y-6 md:space-y-8 overflow-y-auto min-h-0">
-                        <div>
-                            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-3">Target Category</label>
-                            <div className="relative">
-                                <select
-                                    required
-                                    disabled={!!initialData}
-                                    value={category}
-                                    onChange={(e) => setCategory(e.target.value)}
-                                    className="w-full p-4 rounded-2xl border border-gray-100 dark:border-white/10 bg-gray-50 dark:bg-[#0f172a] text-gray-900 dark:text-white focus:ring-4 focus:ring-blue-500/20 outline-none disabled:opacity-50 transition-all font-bold appearance-none cursor-pointer"
-                                >
-                                    <option value="">Choose Wisely</option>
-                                    {categories.map(cat => (
-                                        <option key={cat} value={cat}>{cat}</option>
-                                    ))}
-                                </select>
-                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                    </svg>
-                                </div>
+                <div className="flex items-center justify-between border-b border-slate-100 px-5 py-5 dark:border-white/[0.06] sm:px-6">
+
+                    <div>
+
+                        <div className="flex items-center gap-2">
+
+                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
+                                <Target size={15} />
                             </div>
+
+                            <h2 className="text-sm font-bold text-slate-900 dark:text-white">
+                                {initialData
+                                    ? 'Edit budget'
+                                    : 'Create budget'}
+                            </h2>
+
                         </div>
+
+                        <p className="mt-1 text-[10px] text-slate-400">
+                            Set a monthly spending limit.
+                        </p>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="
+                            flex h-8 w-8 items-center
+                            justify-center rounded-lg
+                            text-slate-400
+                            transition-colors
+                            hover:bg-slate-100
+                            hover:text-slate-700
+                            dark:hover:bg-white/[0.06]
+                            dark:hover:text-white
+                        "
+                    >
+                        <X size={16} />
+                    </button>
+
+                </div>
+
+                {/* FORM */}
+
+                <form
+                    onSubmit={handleSubmit}
+                    className="flex min-h-0 flex-1 flex-col"
+                >
+
+                    <div className="flex-1 space-y-6 overflow-y-auto p-5 sm:p-6">
+
+                        {/* CATEGORY */}
+
                         <div>
-                            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-3">Monthly Safeguard ({currencyInfo.symbol})</label>
+
+                            <label className="mb-2 block text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                                Category
+                            </label>
+
+                            <select
+                                required
+                                disabled={!!initialData}
+                                value={category}
+                                onChange={(event) =>
+                                    setCategory(
+                                        event.target.value
+                                    )
+                                }
+                                className="
+                                    w-full appearance-none
+                                    rounded-xl
+                                    border border-slate-200
+                                    bg-slate-50
+                                    px-4 py-3
+                                    text-sm font-medium
+                                    text-slate-900
+                                    outline-none
+                                    transition
+                                    focus:border-indigo-400
+                                    focus:ring-2
+                                    focus:ring-indigo-500/10
+                                    disabled:cursor-not-allowed
+                                    disabled:opacity-50
+                                    dark:border-white/[0.07]
+                                    dark:bg-white/[0.04]
+                                    dark:text-white
+                                "
+                            >
+
+                                <option value="">
+                                    Select category
+                                </option>
+
+                                {categories.map((item) => (
+                                    <option
+                                        key={item}
+                                        value={item}
+                                    >
+                                        {item}
+                                    </option>
+                                ))}
+
+                            </select>
+
+                        </div>
+
+                        {/* LIMIT */}
+
+                        <div>
+
+                            <label className="mb-2 block text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                                Monthly limit ({currencyInfo.symbol})
+                            </label>
+
                             <div className="relative">
+
+                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-400">
+                                    {currencyInfo.symbol}
+                                </span>
                                 <input
                                     type="number"
                                     required
                                     min="1"
+                                    step="0.01"
                                     value={limit}
-                                    onChange={(e) => setLimit(e.target.value)}
+                                    onChange={(event) => setLimit(event.target.value)}
                                     placeholder="0.00"
-                                    className="w-full p-4 pl-14 rounded-2xl border border-gray-100 dark:border-white/10 bg-gray-50 dark:bg-[#0f172a] text-gray-900 dark:text-white focus:ring-4 focus:ring-blue-500/20 outline-none transition-all font-black text-lg"
+                                    className="
+                                         w-full
+                                        rounded-xl
+                                        border border-slate-200
+                                        bg-slate-50
+                                        py-3 pl-10 pr-4
+                                        text-sm font-bold
+                                        text-slate-900
+                                        outline-none
+                                        transition
+                                        focus:border-indigo-400
+                                        focus:ring-2
+                                        focus:ring-indigo-500/10
+                                        dark:border-white/[0.07]
+                                        dark:bg-white/[0.04]
+                                        dark:text-white
+
+                                        [appearance:textfield]
+                                        [&::-webkit-inner-spin-button]:appearance-none
+                                        [&::-webkit-outer-spin-button]:appearance-none
+                                    "
                                 />
-                                <span className="absolute left-6 top-1/2 -translate-y-1/2 text-blue-500 font-bold text-lg">{currencyInfo.symbol}</span>
+
                             </div>
+
                         </div>
+
                     </div>
-                    <div className="p-5 pb-10 md:p-10 border-t border-gray-50 dark:border-white/10 flex gap-4 bg-white dark:bg-[#111827] shrink-0 mt-auto">
+
+                    {/* ACTIONS */}
+
+                    <div className="flex gap-3 border-t border-slate-100 p-5 dark:border-white/[0.06] sm:p-6">
+
                         <button
                             type="button"
                             onClick={onClose}
-                            className="btn-secondary flex-1 px-6 py-4 rounded-2xl uppercase tracking-widest text-[10px] font-black"
+                            className="
+                                flex-1 rounded-xl
+                                border border-slate-200
+                                bg-white
+                                px-4 py-3
+                                text-[10px]
+                                font-bold uppercase
+                                tracking-[0.15em]
+                                text-slate-500
+                                transition-colors
+                                hover:bg-slate-50
+                                dark:border-white/[0.07]
+                                dark:bg-white/[0.03]
+                                dark:text-slate-400
+                                dark:hover:bg-white/[0.06]
+                            "
                         >
                             Cancel
                         </button>
+
                         <button
                             type="submit"
                             disabled={isSaving}
-                            className="btn-primary flex-1 px-6 py-4 rounded-2xl uppercase tracking-widest text-[10px] font-black shadow-blue-600/20 active:scale-[0.98]"
+                            className="
+                                flex-1 rounded-xl
+                                bg-slate-900
+                                px-4 py-3
+                                text-[10px]
+                                font-bold uppercase
+                                tracking-[0.15em]
+                                text-white
+                                transition-all
+                                hover:bg-slate-800
+                                active:scale-[0.98]
+                                disabled:cursor-not-allowed
+                                disabled:opacity-50
+                                dark:bg-white
+                                dark:text-slate-950
+                                dark:hover:bg-slate-200
+                            "
                         >
-                            {isSaving ? 'Saving...' : 'Lock Goal'}
+                            {isSaving
+                                ? 'Saving...'
+                                : initialData
+                                    ? 'Update budget'
+                                    : 'Create budget'}
                         </button>
+
                     </div>
+
                 </form>
+
             </div>
+
         </div>,
         document.body
     );
 };
 
+
+
 const Budgets = () => {
-    const { budgets, fetchBudgets, deleteBudget } = useBudgetStore();
-    const { transactions, fetchTransactions } = useTransactionStore();
+    const {
+        budgets,
+        fetchBudgets,
+        deleteBudget,
+    } = useBudgetStore();
+
+    const {
+        transactions,
+        fetchTransactions,
+    } = useTransactionStore();
+
     const { currentUser } = useAuthStore();
+
     const { formatAmount } = useCurrencyStore();
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingBudget, setEditingBudget] = useState(null);
+
+    const [isModalOpen, setIsModalOpen] =
+        useState(false);
+
+    const [editingBudget, setEditingBudget] =
+        useState(null);
+
+
 
     useEffect(() => {
-        if (currentUser) {
-            fetchBudgets();
-            fetchTransactions();
-        }
-    }, [currentUser, fetchBudgets, fetchTransactions]);
+        if (!currentUser) return;
 
-    // Calculate spending per category for current month
+        fetchBudgets();
+        fetchTransactions();
+    }, [
+        currentUser,
+        fetchBudgets,
+        fetchTransactions,
+    ]);
+
+
+
     const categorySpending = useMemo(() => {
         const now = new Date();
-        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
-        const monthlyTransactions = transactions.filter(t =>
-            t.type === 'expense' && new Date(t.date) >= startOfMonth
+        const startOfMonth = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            1
         );
 
-        return monthlyTransactions.reduce((acc, curr) => {
-            acc[curr.category] = (acc[curr.category] || 0) + curr.amount;
-            return acc;
-        }, {});
+        return transactions
+            .filter((transaction) => {
+                if (transaction.type !== 'expense')
+                    return false;
+
+                return (
+                    new Date(transaction.date) >=
+                    startOfMonth
+                );
+            })
+            .reduce((acc, transaction) => {
+
+                const category =
+                    transaction.category || 'Other';
+
+                acc[category] =
+                    (acc[category] || 0) +
+                    Number(transaction.amount || 0);
+
+                return acc;
+
+            }, {});
     }, [transactions]);
+
+
+
+    const summary = useMemo(() => {
+
+        const totalLimit = budgets.reduce(
+            (sum, budget) =>
+                sum + Number(budget.limit || 0),
+            0
+        );
+
+        const totalSpent = budgets.reduce(
+            (sum, budget) =>
+                sum +
+                Number(
+                    categorySpending[budget.category] ||
+                    0
+                ),
+            0
+        );
+
+        const activeBudgets = budgets.length;
+
+        const attentionCount = budgets.filter(
+            (budget) => {
+                const spent =
+                    Number(
+                        categorySpending[
+                        budget.category
+                        ] || 0
+                    );
+
+                return (
+                    spent >=
+                    Number(budget.limit || 0) * 0.8
+                );
+            }
+        ).length;
+
+        return {
+            totalLimit,
+            totalSpent,
+            activeBudgets,
+            attentionCount,
+        };
+
+    }, [budgets, categorySpending]);
+
+
 
     const handleEdit = (budget) => {
         setEditingBudget(budget);
+        setIsModalOpen(true);
+    };
+
+    const handleCreate = () => {
+        setEditingBudget(null);
         setIsModalOpen(true);
     };
 
@@ -250,69 +694,373 @@ const Budgets = () => {
         setEditingBudget(null);
     };
 
+
+
     return (
-        <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6 md:space-y-10 animate-in fade-in duration-700">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-                <div>
-                    <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Smart Thresholds</h1>
-                    <p className="text-slate-500 font-medium text-sm md:text-base">Create boundaries for a healthier financial life</p>
-                </div>
-                <button
-                    onClick={() => setIsModalOpen(true)}
-                    className="btn-primary flex items-center justify-center gap-2 px-6 md:px-8 py-3.5 rounded-2xl uppercase tracking-[0.15em] text-xs w-full md:w-auto"
-                >
-                    <Plus size={20} />
-                    <span>Set Barrier</span>
-                </button>
-            </div>
+        <div
+            className="
+                min-h-full
+                bg-[#F6F7F9]
+                text-slate-900
+                transition-colors duration-300
+                dark:bg-[#080B10]
+                dark:text-slate-100
+            "
+        >
 
-            {budgets.length === 0 ? (
-                <div className="bg-white dark:bg-white/5 backdrop-blur-xl p-10 md:p-24 rounded-[2rem] md:rounded-[4rem] text-center border border-gray-100 dark:border-white/10 shadow-2xl flex flex-col items-center">
-                    <div className="bg-blue-600/10 w-20 h-20 md:w-32 md:h-32 rounded-2xl md:rounded-[2.5rem] flex items-center justify-center mb-6 md:mb-10 text-blue-500 shadow-inner">
-                        <Target size={40} className="md:w-[60px] md:h-[60px]" strokeWidth={1.5} />
+            <div
+                className="
+                    mx-auto
+                    max-w-[1500px]
+                    px-4 py-5
+                    sm:px-6
+                    lg:px-8 lg:py-7
+                "
+            >
+
+
+
+                <header className="mb-7">
+
+                    <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+
+                        <div>
+
+                            <div className="mb-3 flex items-center gap-2">
+
+                                <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
+
+                                <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-slate-400">
+                                    Budget management
+                                </span>
+
+                            </div>
+
+                            <h1 className="text-3xl font-bold tracking-[-0.04em] text-slate-950 dark:text-white sm:text-4xl">
+                                Spending limits.
+                            </h1>
+
+                            <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-500 dark:text-slate-400">
+                                Set boundaries for your spending and keep your finances on track.
+                            </p>
+
+                        </div>
+
+                        <button
+                            onClick={handleCreate}
+                            className="
+                                group flex
+                                w-full items-center
+                                justify-center gap-2
+                                rounded-xl
+                                border border-slate-900
+                                bg-slate-900
+                                px-4 py-2.5
+                                text-xs font-bold
+                                text-white
+                                shadow-sm
+                                transition-all duration-200
+                                hover:-translate-y-0.5
+                                hover:bg-slate-800
+                                active:translate-y-0
+                                dark:border-white
+                                dark:bg-white
+                                dark:text-slate-950
+                                dark:hover:bg-slate-200
+                                sm:w-auto
+                            "
+                        >
+                            <Plus
+                                size={15}
+                                className="transition-transform group-hover:rotate-90"
+                            />
+
+                            Add budget
+                        </button>
+
                     </div>
-                    <h3 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white mb-2 md:mb-4 tracking-tight">Financial Discipline</h3>
-                    <p className="text-slate-500 text-sm md:text-base max-w-md mx-auto mb-8 md:mb-12 font-medium leading-relaxed italic">
-                        Define how much you're willing to spend in each category. We'll watch your back and notify you if things get tight.
-                    </p>
-                    <button
-                        onClick={() => setIsModalOpen(true)}
-                        className="btn-primary px-8 md:px-10 py-3.5 md:py-4 rounded-2xl md:rounded-3xl uppercase tracking-widest text-xs"
-                    >
-                        Initialize Your First Budget
-                    </button>
-                </div>
-            ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-10">
-                    {budgets.map(budget => (
-                        <BudgetCard
-                            key={budget.id}
-                            category={budget.category}
-                            limit={budget.limit}
-                            spent={categorySpending[budget.category] || 0}
-                            onDelete={() => {
-                                if (window.confirm(`Delete budget for ${budget.category}?`)) {
-                                    deleteBudget(budget.id);
-                                }
-                            }}
-                            onEdit={() => handleEdit(budget)}
-                        />
-                    ))}
-                </div>
-            )}
 
-            {/* Insight Note */}
-            <div className="bg-blue-600/10 backdrop-blur-md p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] border border-blue-600/20 flex flex-col md:flex-row gap-6 md:gap-8 items-start md:items-center transition-all hover:border-amber-500/40 group">
-                <div className="p-3 md:p-4 bg-amber-500 text-white rounded-xl md:rounded-2xl shadow-xl shadow-amber-500/20 group-hover:rotate-12 transition-transform duration-500 shrink-0">
-                    <AlertTriangle size={28} className="md:w-8 md:h-8" />
-                </div>
-                <div>
-                    <h4 className="font-black text-gray-900 dark:text-white tracking-tight text-lg md:text-xl">How it works</h4>
-                    <p className="text-slate-500 text-sm md:text-base mt-1 leading-relaxed max-w-3xl font-medium">
-                        Your budgets automatically synchronize with your transactions. We'll signal a critical warning as you hit <span className="text-rose-500 font-black">90%</span> of your target, keeping you on the path to financial freedom.
-                    </p>
-                </div>
+                </header>
+
+
+
+                <section className="mb-7 grid grid-cols-1 gap-3 sm:grid-cols-3">
+
+                    {/* TOTAL LIMIT */}
+
+                    <div
+                        className="
+                            rounded-2xl
+                            border border-slate-200
+                            bg-white
+                            p-5
+                            shadow-sm
+                            dark:border-white/[0.07]
+                            dark:bg-[#11151C]
+                        "
+                    >
+
+                        <div className="flex items-center justify-between">
+
+                            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
+                                <Wallet size={16} />
+                            </div>
+
+                            <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
+                                Monthly
+                            </span>
+
+                        </div>
+
+                        <p className="mt-5 text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                            Total budget
+                        </p>
+
+                        <p className="mt-1 text-2xl font-bold tracking-tight text-slate-950 dark:text-white">
+                            {formatAmount(
+                                summary.totalLimit
+                            )}
+                        </p>
+
+                    </div>
+
+                    {/* SPENT */}
+
+                    <div
+                        className="
+                            rounded-2xl
+                            border border-slate-200
+                            bg-white
+                            p-5
+                            shadow-sm
+                            dark:border-white/[0.07]
+                            dark:bg-[#11151C]
+                        "
+                    >
+
+                        <div className="flex items-center justify-between">
+
+                            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400">
+                                <TrendingUp size={16} />
+                            </div>
+
+                            <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
+                                Current
+                            </span>
+
+                        </div>
+
+                        <p className="mt-5 text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                            Total spent
+                        </p>
+
+                        <p className="mt-1 text-2xl font-bold tracking-tight text-slate-950 dark:text-white">
+                            {formatAmount(
+                                summary.totalSpent
+                            )}
+                        </p>
+
+                    </div>
+
+                    {/* ATTENTION */}
+
+                    <div
+                        className="
+                            rounded-2xl
+                            border border-slate-200
+                            bg-white
+                            p-5
+                            shadow-sm
+                            dark:border-white/[0.07]
+                            dark:bg-[#11151C]
+                        "
+                    >
+
+                        <div className="flex items-center justify-between">
+
+                            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400">
+                                <AlertCircle size={16} />
+                            </div>
+
+                            <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
+                                Attention
+                            </span>
+
+                        </div>
+
+                        <p className="mt-5 text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                            Near limit
+                        </p>
+
+                        <p className="mt-1 text-2xl font-bold tracking-tight text-slate-950 dark:text-white">
+                            {summary.attentionCount}
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+
+                <section>
+
+                    <div className="mb-4 flex items-center justify-between">
+
+                        <div>
+
+                            <h2 className="text-sm font-bold text-slate-900 dark:text-white">
+                                Your budgets
+                            </h2>
+
+                            <p className="mt-0.5 text-[10px] text-slate-400">
+                                Monitor your monthly spending limits.
+                            </p>
+
+                        </div>
+
+                        <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-slate-500 dark:bg-white/[0.05] dark:text-slate-400">
+                            {budgets.length} active
+                        </span>
+
+                    </div>
+
+                    {budgets.length === 0 ? (
+
+                        /* EMPTY STATE */
+
+                        <div
+                            className="
+                                rounded-2xl
+                                border border-slate-200
+                                bg-white
+                                px-6 py-16
+                                text-center
+                                shadow-sm
+                                dark:border-white/[0.07]
+                                dark:bg-[#11151C]
+                            "
+                        >
+
+                            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-500 dark:bg-indigo-500/10 dark:text-indigo-400">
+                                <Target size={21} />
+                            </div>
+
+                            <h3 className="mt-5 text-base font-bold text-slate-900 dark:text-white">
+                                No budgets yet
+                            </h3>
+
+                            <p className="mx-auto mt-2 max-w-sm text-xs leading-relaxed text-slate-400">
+                                Create your first spending limit to start monitoring your monthly expenses.
+                            </p>
+
+                            <button
+                                onClick={handleCreate}
+                                className="
+                                    mt-5
+                                    rounded-xl
+                                    bg-slate-900
+                                    px-4 py-2.5
+                                    text-[10px]
+                                    font-bold uppercase
+                                    tracking-wider
+                                    text-white
+                                    transition-colors
+                                    hover:bg-slate-800
+                                    dark:bg-white
+                                    dark:text-slate-950
+                                    dark:hover:bg-slate-200
+                                "
+                            >
+                                Create budget
+                            </button>
+
+                        </div>
+
+                    ) : (
+
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+
+                            {budgets.map((budget) => (
+
+                                <BudgetCard
+                                    key={budget.id}
+                                    category={
+                                        budget.category
+                                    }
+                                    limit={budget.limit}
+                                    spent={
+                                        categorySpending[
+                                        budget.category
+                                        ] || 0
+                                    }
+                                    onDelete={() => {
+
+                                        if (
+                                            window.confirm(
+                                                `Delete budget for ${budget.category}?`
+                                            )
+                                        ) {
+                                            deleteBudget(
+                                                budget.id
+                                            );
+                                        }
+
+                                    }}
+                                    onEdit={() =>
+                                        handleEdit(
+                                            budget
+                                        )
+                                    }
+                                />
+
+                            ))}
+
+                        </div>
+
+                    )}
+
+                </section>
+
+
+
+                <section
+                    className="
+                        mt-7
+                        rounded-2xl
+                        border
+                        border-slate-200
+                        bg-white
+                        p-5
+                        shadow-sm
+                        dark:border-white/[0.07]
+                        dark:bg-[#11151C]
+                    "
+                >
+
+                    <div className="flex items-start gap-3">
+
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400">
+                            <AlertTriangle size={16} />
+                        </div>
+
+                        <div>
+
+                            <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                                How budgets work
+                            </h4>
+
+                            <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+                                Your budgets automatically track expenses from the current month. A category receives attention when spending reaches 80% of its limit.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
             </div>
+
 
             <BudgetModal
                 isOpen={isModalOpen}
@@ -320,16 +1068,36 @@ const Budgets = () => {
                 initialData={editingBudget}
             />
 
-            {/* Mobile FAB */}
+
+
             <button
-                onClick={() => setIsModalOpen(true)}
-                className="md:hidden fixed bottom-24 right-6 w-14 h-14 bg-blue-600 text-white rounded-full shadow-2xl flex items-center justify-center z-50 active:scale-90 transition-transform shadow-blue-600/40"
+                onClick={handleCreate}
+                aria-label="Add budget"
+                className="
+                    fixed bottom-6 right-5 z-40
+                    flex h-14 w-14
+                    items-center justify-center
+                    rounded-2xl
+                    border border-slate-900
+                    bg-slate-900
+                    text-white
+                    shadow-lg
+                    transition-all duration-200
+                    hover:scale-105
+                    hover:bg-slate-800
+                    active:scale-95
+                    dark:border-white
+                    dark:bg-white
+                    dark:text-slate-950
+                    dark:hover:bg-slate-200
+                    md:hidden
+                "
             >
-                <Plus size={28} />
+                <Plus size={21} />
             </button>
+
         </div>
     );
 };
-
 
 export default Budgets;
