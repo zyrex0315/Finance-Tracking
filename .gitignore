@@ -115,3 +115,29 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# dependencies
+node_modules/
+
+# Vite
+dist/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Android
+android/.gradle/
+android/.idea/
+android/build/
+android/app/build/
+android/captures/
+android/local.properties
+
+# IDE
+.idea/
+*.iml
+
+# OS
+.DS_Store
