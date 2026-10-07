@@ -18,6 +18,9 @@ import useTransactionStore from '../context/transactionStore';
 import useAuthStore from '../context/authStore';
 import useCurrencyStore from '../context/currencyStore';
 
+/* =========================================================
+   BUDGET CARD
+========================================================= */
 
 const BudgetCard = ({
     category,
@@ -37,6 +40,7 @@ const BudgetCard = ({
             : 0;
 
     const isOver = safeSpent > safeLimit;
+
     const isNear =
         safeSpent > safeLimit * 0.8 && !isOver;
 
@@ -49,24 +53,25 @@ const BudgetCard = ({
                 rounded-2xl
                 border border-slate-200
                 bg-white
-                p-5
+                p-3.5
                 shadow-sm
                 transition-all duration-300
                 hover:-translate-y-0.5
                 hover:shadow-lg
+                sm:p-5
                 dark:border-white/[0.07]
                 dark:bg-[#11151C]
             "
         >
             {/* HEADER */}
 
-            <div className="flex items-start justify-between gap-3">
+            <div className="flex items-start justify-between gap-2.5 sm:gap-3">
 
-                <div className="flex min-w-0 items-center gap-3">
+                <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
 
                     <div
                         className={clsx(
-                            'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl',
+                            'flex h-9 w-9 shrink-0 items-center justify-center rounded-xl sm:h-10 sm:w-10',
                             isOver
                                 ? 'bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400'
                                 : isNear
@@ -75,18 +80,18 @@ const BudgetCard = ({
                         )}
                     >
                         <Target
-                            size={18}
+                            size={17}
                             strokeWidth={1.8}
                         />
                     </div>
 
                     <div className="min-w-0">
 
-                        <h3 className="truncate text-sm font-bold text-slate-900 dark:text-white">
+                        <h3 className="truncate text-xs font-bold text-slate-900 dark:text-white sm:text-sm">
                             {category}
                         </h3>
 
-                        <p className="mt-0.5 text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                        <p className="mt-0.5 text-[8px] font-bold uppercase tracking-[0.18em] text-slate-400 sm:text-[9px]">
                             Monthly limit
                         </p>
 
@@ -96,27 +101,28 @@ const BudgetCard = ({
 
                 {/* ACTIONS */}
 
-                <div className="flex gap-1 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100">
+                <div className="flex shrink-0 gap-1 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100">
 
                     <button
                         type="button"
                         onClick={onEdit}
                         aria-label={`Edit ${category} budget`}
                         className="
-                            flex h-8 w-8 items-center justify-center
+                            flex h-7 w-7 items-center justify-center
                             rounded-lg
                             bg-slate-100
                             text-slate-500
                             transition-colors
                             hover:bg-slate-200
                             hover:text-slate-900
+                            sm:h-8 sm:w-8
                             dark:bg-white/[0.06]
                             dark:text-slate-400
                             dark:hover:bg-white/[0.1]
                             dark:hover:text-white
                         "
                     >
-                        <Edit2 size={14} />
+                        <Edit2 size={13} />
                     </button>
 
                     <button
@@ -124,17 +130,18 @@ const BudgetCard = ({
                         onClick={onDelete}
                         aria-label={`Delete ${category} budget`}
                         className="
-                            flex h-8 w-8 items-center justify-center
+                            flex h-7 w-7 items-center justify-center
                             rounded-lg
                             bg-rose-50
                             text-rose-500
                             transition-colors
                             hover:bg-rose-500
                             hover:text-white
+                            sm:h-8 sm:w-8
                             dark:bg-rose-500/10
                         "
                     >
-                        <Trash2 size={14} />
+                        <Trash2 size={13} />
                     </button>
 
                 </div>
@@ -143,17 +150,17 @@ const BudgetCard = ({
 
             {/* AMOUNT */}
 
-            <div className="mt-6">
+            <div className="mt-4 sm:mt-6">
 
                 <div className="flex items-end justify-between gap-3">
 
                     <div className="min-w-0">
 
-                        <p className="mb-1 text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                        <p className="mb-1 text-[8px] font-bold uppercase tracking-[0.18em] text-slate-400 sm:text-[9px]">
                             Spent
                         </p>
 
-                        <p className="truncate text-2xl font-bold tracking-tight text-slate-950 dark:text-white">
+                        <p className="truncate text-xl font-bold tracking-tight text-slate-950 dark:text-white sm:text-2xl">
                             {formatAmount(safeSpent)}
                         </p>
 
@@ -161,7 +168,7 @@ const BudgetCard = ({
 
                     <div
                         className={clsx(
-                            'shrink-0 rounded-full px-2.5 py-1 text-[9px] font-bold',
+                            'shrink-0 rounded-full px-2 py-1 text-[8px] font-bold sm:px-2.5 sm:text-[9px]',
                             isOver
                                 ? 'bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400'
                                 : isNear
@@ -174,7 +181,7 @@ const BudgetCard = ({
 
                 </div>
 
-                <div className="mt-1 text-[10px] text-slate-400">
+                <div className="mt-1 text-[9px] text-slate-400 sm:text-[10px]">
                     of {formatAmount(safeLimit)}
                 </div>
 
@@ -182,7 +189,7 @@ const BudgetCard = ({
 
             {/* PROGRESS */}
 
-            <div className="mt-5">
+            <div className="mt-4 sm:mt-5">
 
                 <div className="h-1.5 overflow-hidden rounded-full bg-slate-100 dark:bg-white/[0.06]">
 
@@ -206,9 +213,9 @@ const BudgetCard = ({
 
             {/* FOOTER */}
 
-            <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4 dark:border-white/[0.05]">
+            <div className="mt-3 flex items-center justify-between border-t border-slate-100 pt-3 dark:border-white/[0.05] sm:mt-4 sm:pt-4">
 
-                <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-slate-400">
+                <span className="text-[8px] font-bold uppercase tracking-[0.15em] text-slate-400 sm:text-[9px]">
                     {isOver
                         ? 'Exceeded by'
                         : 'Remaining'}
@@ -216,7 +223,7 @@ const BudgetCard = ({
 
                 <span
                     className={clsx(
-                        'text-xs font-bold',
+                        'text-[11px] font-bold sm:text-xs',
                         isOver
                             ? 'text-rose-500'
                             : 'text-slate-700 dark:text-slate-200'
@@ -231,7 +238,9 @@ const BudgetCard = ({
     );
 };
 
-
+/* =========================================================
+   BUDGET MODAL
+========================================================= */
 
 const BudgetModal = ({
     isOpen,
@@ -328,14 +337,12 @@ const BudgetModal = ({
                 {/* MOBILE HANDLE */}
 
                 <div className="flex justify-center pt-3 sm:hidden">
-
                     <div className="h-1 w-10 rounded-full bg-slate-200 dark:bg-white/10" />
-
                 </div>
 
                 {/* HEADER */}
 
-                <div className="flex items-center justify-between border-b border-slate-100 px-5 py-5 dark:border-white/[0.06] sm:px-6">
+                <div className="flex items-center justify-between border-b border-slate-100 px-4 py-4 dark:border-white/[0.06] sm:px-6 sm:py-5">
 
                     <div>
 
@@ -362,6 +369,7 @@ const BudgetModal = ({
                     <button
                         type="button"
                         onClick={onClose}
+                        aria-label="Close budget modal"
                         className="
                             flex h-8 w-8 items-center
                             justify-center rounded-lg
@@ -385,7 +393,7 @@ const BudgetModal = ({
                     className="flex min-h-0 flex-1 flex-col"
                 >
 
-                    <div className="flex-1 space-y-6 overflow-y-auto p-5 sm:p-6">
+                    <div className="flex-1 space-y-5 overflow-y-auto p-4 sm:space-y-6 sm:p-6">
 
                         {/* CATEGORY */}
 
@@ -400,9 +408,7 @@ const BudgetModal = ({
                                 disabled={!!initialData}
                                 value={category}
                                 onChange={(event) =>
-                                    setCategory(
-                                        event.target.value
-                                    )
+                                    setCategory(event.target.value)
                                 }
                                 className="
                                     w-full appearance-none
@@ -455,16 +461,19 @@ const BudgetModal = ({
                                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-400">
                                     {currencyInfo.symbol}
                                 </span>
+
                                 <input
                                     type="number"
                                     required
                                     min="1"
                                     step="0.01"
                                     value={limit}
-                                    onChange={(event) => setLimit(event.target.value)}
+                                    onChange={(event) =>
+                                        setLimit(event.target.value)
+                                    }
                                     placeholder="0.00"
                                     className="
-                                         w-full
+                                        w-full
                                         rounded-xl
                                         border border-slate-200
                                         bg-slate-50
@@ -479,7 +488,6 @@ const BudgetModal = ({
                                         dark:border-white/[0.07]
                                         dark:bg-white/[0.04]
                                         dark:text-white
-
                                         [appearance:textfield]
                                         [&::-webkit-inner-spin-button]:appearance-none
                                         [&::-webkit-outer-spin-button]:appearance-none
@@ -494,7 +502,7 @@ const BudgetModal = ({
 
                     {/* ACTIONS */}
 
-                    <div className="flex gap-3 border-t border-slate-100 p-5 dark:border-white/[0.06] sm:p-6">
+                    <div className="flex gap-2.5 border-t border-slate-100 p-4 dark:border-white/[0.06] sm:gap-3 sm:p-6">
 
                         <button
                             type="button"
@@ -558,7 +566,9 @@ const BudgetModal = ({
     );
 };
 
-
+/* =========================================================
+   BUDGETS PAGE
+========================================================= */
 
 const Budgets = () => {
     const {
@@ -582,8 +592,6 @@ const Budgets = () => {
     const [editingBudget, setEditingBudget] =
         useState(null);
 
-
-
     useEffect(() => {
         if (!currentUser) return;
 
@@ -595,7 +603,9 @@ const Budgets = () => {
         fetchTransactions,
     ]);
 
-
+    /* =====================================================
+       CATEGORY SPENDING
+    ===================================================== */
 
     const categorySpending = useMemo(() => {
         const now = new Date();
@@ -608,8 +618,19 @@ const Budgets = () => {
 
         return transactions
             .filter((transaction) => {
-                if (transaction.type !== 'expense')
+                const type = String(
+                    transaction.type || ''
+                )
+                    .trim()
+                    .toLowerCase();
+
+                if (type !== 'expense') {
                     return false;
+                }
+
+                if (!transaction.date) {
+                    return false;
+                }
 
                 return (
                     new Date(transaction.date) >=
@@ -617,7 +638,6 @@ const Budgets = () => {
                 );
             })
             .reduce((acc, transaction) => {
-
                 const category =
                     transaction.category || 'Other';
 
@@ -626,14 +646,14 @@ const Budgets = () => {
                     Number(transaction.amount || 0);
 
                 return acc;
-
             }, {});
     }, [transactions]);
 
-
+    /* =====================================================
+       SUMMARY
+    ===================================================== */
 
     const summary = useMemo(() => {
-
         const totalLimit = budgets.reduce(
             (sum, budget) =>
                 sum + Number(budget.limit || 0),
@@ -644,8 +664,9 @@ const Budgets = () => {
             (sum, budget) =>
                 sum +
                 Number(
-                    categorySpending[budget.category] ||
-                    0
+                    categorySpending[
+                    budget.category
+                    ] || 0
                 ),
             0
         );
@@ -661,9 +682,12 @@ const Budgets = () => {
                         ] || 0
                     );
 
+                const budgetLimit =
+                    Number(budget.limit || 0);
+
                 return (
-                    spent >=
-                    Number(budget.limit || 0) * 0.8
+                    budgetLimit > 0 &&
+                    spent >= budgetLimit * 0.8
                 );
             }
         ).length;
@@ -674,10 +698,11 @@ const Budgets = () => {
             activeBudgets,
             attentionCount,
         };
-
     }, [budgets, categorySpending]);
 
-
+    /* =====================================================
+       MODAL HANDLERS
+    ===================================================== */
 
     const handleEdit = (budget) => {
         setEditingBudget(budget);
@@ -694,7 +719,9 @@ const Budgets = () => {
         setEditingBudget(null);
     };
 
-
+    /* =====================================================
+       RENDER
+    ===================================================== */
 
     return (
         <div
@@ -711,42 +738,46 @@ const Budgets = () => {
             <div
                 className="
                     mx-auto
+                    w-full
                     max-w-[1500px]
-                    px-4 py-5
-                    sm:px-6
+                    px-3 py-4
+                    sm:px-6 sm:py-5
                     lg:px-8 lg:py-7
                 "
             >
 
+                {/* =================================================
+                    HEADER
+                ================================================= */}
 
+                <header className="mb-5 sm:mb-7">
 
-                <header className="mb-7">
+                    <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
 
-                    <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+                        <div className="min-w-0">
 
-                        <div>
+                            <div className="mb-2 flex items-center gap-2 sm:mb-3">
 
-                            <div className="mb-3 flex items-center gap-2">
+                                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500" />
 
-                                <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
-
-                                <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-slate-400">
+                                <span className="truncate text-[8px] font-bold uppercase tracking-[0.25em] text-slate-400 sm:text-[9px]">
                                     Budget management
                                 </span>
 
                             </div>
 
-                            <h1 className="text-3xl font-bold tracking-[-0.04em] text-slate-950 dark:text-white sm:text-4xl">
+                            <h1 className="text-2xl font-bold tracking-[-0.04em] text-slate-950 dark:text-white sm:text-3xl md:text-4xl">
                                 Spending limits.
                             </h1>
 
-                            <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-500 dark:text-slate-400">
+                            <p className="mt-2 hidden max-w-xl text-sm leading-relaxed text-slate-500 dark:text-slate-400 sm:block">
                                 Set boundaries for your spending and keep your finances on track.
                             </p>
 
                         </div>
 
                         <button
+                            type="button"
                             onClick={handleCreate}
                             className="
                                 group flex
@@ -782,9 +813,12 @@ const Budgets = () => {
 
                 </header>
 
+                {/* =================================================
+                    SUMMARY
+                    Hidden on mobile, same approach as dashboard
+                ================================================= */}
 
-
-                <section className="mb-7 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                <section className="mb-5 hidden grid-cols-3 gap-3 sm:mb-7 sm:grid">
 
                     {/* TOTAL LIMIT */}
 
@@ -900,25 +934,27 @@ const Budgets = () => {
 
                 </section>
 
-
+                {/* =================================================
+                    BUDGETS
+                ================================================= */}
 
                 <section>
 
-                    <div className="mb-4 flex items-center justify-between">
+                    <div className="mb-3 flex items-center justify-between sm:mb-4">
 
-                        <div>
+                        <div className="min-w-0">
 
                             <h2 className="text-sm font-bold text-slate-900 dark:text-white">
                                 Your budgets
                             </h2>
 
-                            <p className="mt-0.5 text-[10px] text-slate-400">
+                            <p className="mt-0.5 hidden text-[10px] text-slate-400 sm:block">
                                 Monitor your monthly spending limits.
                             </p>
 
                         </div>
 
-                        <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-slate-500 dark:bg-white/[0.05] dark:text-slate-400">
+                        <span className="shrink-0 rounded-full bg-slate-100 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-slate-500 dark:bg-white/[0.05] dark:text-slate-400">
                             {budgets.length} active
                         </span>
 
@@ -926,16 +962,19 @@ const Budgets = () => {
 
                     {budgets.length === 0 ? (
 
-                        /* EMPTY STATE */
+                        /* =================================================
+                           EMPTY STATE
+                        ================================================= */
 
                         <div
                             className="
                                 rounded-2xl
                                 border border-slate-200
                                 bg-white
-                                px-6 py-16
+                                px-5 py-12
                                 text-center
                                 shadow-sm
+                                sm:px-6 sm:py-16
                                 dark:border-white/[0.07]
                                 dark:bg-[#11151C]
                             "
@@ -945,7 +984,7 @@ const Budgets = () => {
                                 <Target size={21} />
                             </div>
 
-                            <h3 className="mt-5 text-base font-bold text-slate-900 dark:text-white">
+                            <h3 className="mt-4 text-base font-bold text-slate-900 dark:text-white sm:mt-5">
                                 No budgets yet
                             </h3>
 
@@ -954,6 +993,7 @@ const Budgets = () => {
                             </p>
 
                             <button
+                                type="button"
                                 onClick={handleCreate}
                                 className="
                                     mt-5
@@ -978,15 +1018,13 @@ const Budgets = () => {
 
                     ) : (
 
-                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+                        <div className="grid grid-cols-1 gap-3.5 sm:gap-4 md:grid-cols-2 xl:grid-cols-3">
 
                             {budgets.map((budget) => (
 
                                 <BudgetCard
                                     key={budget.id}
-                                    category={
-                                        budget.category
-                                    }
+                                    category={budget.category}
                                     limit={budget.limit}
                                     spent={
                                         categorySpending[
@@ -994,7 +1032,6 @@ const Budgets = () => {
                                         ] || 0
                                     }
                                     onDelete={() => {
-
                                         if (
                                             window.confirm(
                                                 `Delete budget for ${budget.category}?`
@@ -1004,12 +1041,9 @@ const Budgets = () => {
                                                 budget.id
                                             );
                                         }
-
                                     }}
                                     onEdit={() =>
-                                        handleEdit(
-                                            budget
-                                        )
+                                        handleEdit(budget)
                                     }
                                 />
 
@@ -1021,35 +1055,38 @@ const Budgets = () => {
 
                 </section>
 
-
+                {/* =================================================
+                    HOW BUDGETS WORK
+                ================================================= */}
 
                 <section
                     className="
-                        mt-7
+                        mt-5
                         rounded-2xl
                         border
                         border-slate-200
                         bg-white
-                        p-5
+                        p-3.5
                         shadow-sm
+                        sm:mt-7 sm:p-5
                         dark:border-white/[0.07]
                         dark:bg-[#11151C]
                     "
                 >
 
-                    <div className="flex items-start gap-3">
+                    <div className="flex items-start gap-2.5 sm:gap-3">
 
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400">
-                            <AlertTriangle size={16} />
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-600 sm:h-9 sm:w-9 dark:bg-amber-500/10 dark:text-amber-400">
+                            <AlertTriangle size={15} />
                         </div>
 
-                        <div>
+                        <div className="min-w-0">
 
-                            <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                            <h4 className="text-xs font-bold text-slate-900 dark:text-white sm:text-sm">
                                 How budgets work
                             </h4>
 
-                            <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+                            <p className="mt-1 text-[10px] leading-relaxed text-slate-500 dark:text-slate-400 sm:text-xs">
                                 Your budgets automatically track expenses from the current month. A category receives attention when spending reaches 80% of its limit.
                             </p>
 
@@ -1061,41 +1098,15 @@ const Budgets = () => {
 
             </div>
 
+            {/* =====================================================
+                BUDGET MODAL
+            ===================================================== */}
 
             <BudgetModal
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
                 initialData={editingBudget}
             />
-
-
-
-            <button
-                onClick={handleCreate}
-                aria-label="Add budget"
-                className="
-                    fixed bottom-6 right-5 z-40
-                    flex h-14 w-14
-                    items-center justify-center
-                    rounded-2xl
-                    border border-slate-900
-                    bg-slate-900
-                    text-white
-                    shadow-lg
-                    transition-all duration-200
-                    hover:scale-105
-                    hover:bg-slate-800
-                    active:scale-95
-                    dark:border-white
-                    dark:bg-white
-                    dark:text-slate-950
-                    dark:hover:bg-slate-200
-                    md:hidden
-                "
-            >
-                <Plus size={21} />
-            </button>
-
         </div>
     );
 };
