@@ -19,13 +19,11 @@ const MainLayout = () => {
     };
 
     return (
-        <div className="flex min-h-screen bg-gray-50 dark:bg-[#0f172a] font-sans text-gray-900 dark:text-slate-200 transition-colors duration-200 relative overflow-hidden">
-
-
+        <div className="flex min-h-screen bg-[#F6F7F9] dark:bg-[#080B10] font-sans text-gray-900 dark:text-slate-200 transition-colors duration-200 relative overflow-hidden">
             <Sidebar />
-            <div className="flex-1 md:ml-64 flex flex-col min-h-screen">
+            <div className="flex-1 md:ml-64 flex flex-col min-h-screen bg-[#F6F7F9] dark:bg-[#080B10]">
                 <Navbar title={getPageTitle(location.pathname)} />
-                <main className="flex-1 overflow-x-hidden overflow-y-auto pb-24 md:pb-0">
+                <main className="flex-1 overflow-x-hidden overflow-y-auto pb-24 md:pb-0 bg-[#F6F7F9] dark:bg-[#080B10]">
                     <Outlet />
                 </main>
             </div>
