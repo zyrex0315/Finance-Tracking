@@ -45,10 +45,6 @@ const CHART_COLORS = [
     '#14B8A6',
 ];
 
-/* =========================================================
-   SMALL STAT
-========================================================= */
-
 const SmallStat = ({ label, value, type, icon: Icon }) => {
     const isIncome = type === 'income';
 
@@ -98,10 +94,6 @@ const SmallStat = ({ label, value, type, icon: Icon }) => {
     );
 };
 
-/* =========================================================
-   ACTIVITY TOOLTIP
-========================================================= */
-
 const ActivityTooltip = ({
     active,
     payload,
@@ -132,10 +124,6 @@ const ActivityTooltip = ({
         </div>
     );
 };
-
-/* =========================================================
-   SECTION HEADER
-========================================================= */
 
 const SectionHeader = ({
     icon: Icon,
@@ -175,9 +163,6 @@ const SectionHeader = ({
     </div>
 );
 
-/* =========================================================
-   DASHBOARD
-========================================================= */
 
 const Dashboard = () => {
     const {
@@ -197,10 +182,6 @@ const Dashboard = () => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    /* =====================================================
-       FETCH DATA
-    ===================================================== */
-
     useEffect(() => {
         if (currentUser) {
             fetchTransactions();
@@ -211,10 +192,6 @@ const Dashboard = () => {
         fetchTransactions,
         fetchBudgets,
     ]);
-
-    /* =====================================================
-       FINANCIAL TOTALS
-    ===================================================== */
 
     const {
         income,
@@ -245,9 +222,6 @@ const Dashboard = () => {
         );
     }, [transactions]);
 
-    /* =====================================================
-       RECENT TRANSACTIONS
-    ===================================================== */
 
     const recentTransactions = useMemo(() => {
         return [...transactions]
@@ -259,9 +233,6 @@ const Dashboard = () => {
             .slice(0, 5);
     }, [transactions]);
 
-    /* =====================================================
-       7 DAY ACTIVITY
-    ===================================================== */
 
     const trendData = useMemo(() => {
         const last7Days = [...Array(7)]
@@ -327,9 +298,6 @@ const Dashboard = () => {
         });
     }, [transactions]);
 
-    /* =====================================================
-       EXPENSE CATEGORIES
-    ===================================================== */
 
     const categoryData = useMemo(() => {
         const categories = transactions
@@ -366,10 +334,6 @@ const Dashboard = () => {
             )
             .slice(0, 5);
     }, [transactions]);
-
-    /* =====================================================
-       BUDGET ALERTS
-    ===================================================== */
 
     const budgetAlerts = useMemo(() => {
         const now = new Date();
@@ -429,9 +393,6 @@ const Dashboard = () => {
             );
     }, [transactions, budgets]);
 
-    /* =====================================================
-       USER
-    ===================================================== */
 
     const firstName =
         currentUser?.displayName?.split(
@@ -442,9 +403,6 @@ const Dashboard = () => {
         )[0] ||
         'there';
 
-    /* =====================================================
-       CATEGORY TOTAL
-    ===================================================== */
 
     const categoryTotal = useMemo(() => {
         return categoryData.reduce(
@@ -453,10 +411,6 @@ const Dashboard = () => {
             0
         );
     }, [categoryData]);
-
-    /* =====================================================
-       RENDER
-    ===================================================== */
 
     return (
         <div
@@ -483,9 +437,6 @@ const Dashboard = () => {
                     lg:py-7
                 "
             >
-                {/* =================================================
-                    HEADER
-                ================================================= */}
 
                 <header className="mb-5 sm:mb-7">
                     <div className="flex items-end justify-between gap-3">
@@ -601,10 +552,6 @@ const Dashboard = () => {
                         </div>
                     </div>
                 </header>
-
-                {/* =================================================
-                    BALANCE HERO
-                ================================================= */}
 
                 <section
                     className="
@@ -777,11 +724,6 @@ const Dashboard = () => {
                     </div>
                 </section>
 
-                {/* =================================================
-                    ORIGINAL DASHBOARD STAT CARDS
-                    Hidden only on mobile
-                ================================================= */}
-
                 <section
                     className="
                         hidden
@@ -935,10 +877,6 @@ const Dashboard = () => {
                     </div>
                 </section>
 
-                {/* =================================================
-                    BUDGET ALERTS
-                ================================================= */}
-
                 {budgetAlerts.length > 0 && (
                     <section
                         className="
@@ -1060,10 +998,6 @@ const Dashboard = () => {
                         </div>
                     </section>
                 )}
-
-                {/* =================================================
-                    CHARTS
-                ================================================= */}
 
                 <section
                     className="
@@ -1439,9 +1373,7 @@ const Dashboard = () => {
                     </div>
                 </section>
 
-                {/* =================================================
-                    RECENT TRANSACTIONS
-                ================================================= */}
+               
 
                 <section
                     className="
@@ -1564,10 +1496,7 @@ const Dashboard = () => {
                         </div>
                     ) : (
                         <>
-                            {/* =================================================
-                                MOBILE TRANSACTIONS
-                            ================================================= */}
-
+                          
                             <div
                                 className="
                                     divide-y
@@ -1671,9 +1600,7 @@ const Dashboard = () => {
                                 )}
                             </div>
 
-                            {/* =================================================
-                                DESKTOP TABLE
-                            ================================================= */}
+                         
 
                             <div className="hidden overflow-x-auto sm:block">
                                 <table className="w-full min-w-[500px] text-left">
@@ -1793,9 +1720,7 @@ const Dashboard = () => {
                 </section>
             </div>
 
-            {/* =================================================
-                ADD TRANSACTION MODAL
-            ================================================= */}
+          
 
             <AddTransactionModal
                 isOpen={isModalOpen}
