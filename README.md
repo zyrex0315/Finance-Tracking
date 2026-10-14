@@ -271,4 +271,4 @@ GitHub: [@zyrex0315](https://github.com/zyrex0315)
 
 ## License
 
-No license has been specified in this repository yet. If you intend to distribute the project as open source, add a license file that reflects your chosen terms.
+Licensed under the [MIT License](LICENSE).
